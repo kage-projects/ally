@@ -27,10 +27,9 @@ export function ProfileGauge({ profile }: ProfileGaugeProps) {
       <div className={styles.panelHeader}>
         <div>
           <h2 className={styles.sectionHeading} id="profile-title">
-            <span className={styles.sectionIcon} aria-hidden="true" />
-            User profile
+            Friction profile
           </h2>
-          <p className={styles.panelHint}>Rule-layer friction scores · threshold 60%</p>
+          <p className={styles.panelHint}>Adaptation threshold at 60%</p>
         </div>
       </div>
 

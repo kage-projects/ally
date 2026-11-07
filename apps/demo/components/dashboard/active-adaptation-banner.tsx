@@ -17,7 +17,7 @@ export function ActiveAdaptationBanner({
           <div className={styles.eyebrow}>Active adaptation</div>
           <h2 className={styles.adaptationTitle}>No adaptation applied</h2>
           <p className={styles.adaptationCopy}>
-            Ally is listening for aggregated friction signals from the checkout.
+            Load a sample session to explore adaptation decisions.
           </p>
         </div>
       </section>
@@ -34,28 +34,27 @@ export function ActiveAdaptationBanner({
           {formatPreset(decision.preset)}
         </h2>
         <p className={styles.adaptationCopy}>
-          {decision.source.toUpperCase()} · {decision.latencyMs}ms · Confidence{" "}
-          {formatPercent(decision.confidence)} · {decision.status.toUpperCase()}
+          {formatPercent(decision.confidence)} confidence · {decision.latencyMs}ms ·{" "}
+          {decision.status === "kept" ? "Kept by user" : decision.status}
         </p>
       </div>
 
       <div className={styles.chipRow} aria-label="Active token changes">
-        <span className={styles.chip}>
-          Target <strong>{plan.tokens.targetMinSize}px</strong>
-        </span>
-        <span className={styles.chip}>
-          Spacing <strong>{plan.tokens.spacingScale.toFixed(1)}×</strong>
-        </span>
-        <span className={styles.chip}>
-          Font <strong>{plan.tokens.fontScale.toFixed(2)}×</strong>
-        </span>
-        <span className={styles.chip}>
-          Contrast <strong>{plan.tokens.contrast.toUpperCase()}</strong>
-        </span>
-        <span className={styles.chip}>
-          Sticky CTA <strong>{plan.layout.primaryActionSticky ? "ON" : "OFF"}</strong>
-        </span>
+        <TokenValue label="Target size" value={`${plan.tokens.targetMinSize}px`} />
+        <TokenValue label="Spacing" value={`${plan.tokens.spacingScale.toFixed(1)}×`} />
+        <TokenValue label="Font scale" value={`${plan.tokens.fontScale.toFixed(2)}×`} />
+        <TokenValue label="Contrast" value={plan.tokens.contrast} />
+        <TokenValue label="Sticky CTA" value={plan.layout.primaryActionSticky ? "On" : "Off"} />
       </div>
     </section>
+  );
+}
+
+function TokenValue({ label, value }: { label: string; value: string }) {
+  return (
+    <div className={styles.tokenValue}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
   );
 }

@@ -19,7 +19,6 @@ export function SessionImpactPanel({ comparison }: SessionImpactPanelProps) {
       <div className={styles.panelHeader}>
         <div>
           <h2 className={styles.sectionHeading} id="session-impact-title">
-            <span className={styles.sectionIcon} aria-hidden="true" />
             Session impact
           </h2>
           <p className={styles.panelHint}>
@@ -31,19 +30,19 @@ export function SessionImpactPanel({ comparison }: SessionImpactPanelProps) {
       <div className={styles.panelBody}>
         {before && after ? (
           <div className={styles.metricList}>
-            <MetricCard
+            <MetricRow
               after={after.misTapRate}
               before={before.misTapRate}
               format={(value) => (value === null ? "—" : formatPercent(value))}
               label="Mis-tap rate"
             />
-            <MetricCard
+            <MetricRow
               after={after.avgTimeToTarget}
               before={before.avgTimeToTarget}
               format={(value) => (value === null ? "—" : formatDuration(value))}
               label="Time to target"
             />
-            <MetricCard
+            <MetricRow
               after={after.errorLoops}
               before={before.errorLoops}
               format={(value) => (value === null ? "—" : value.toFixed(0))}
@@ -67,7 +66,7 @@ export function SessionImpactPanel({ comparison }: SessionImpactPanelProps) {
   );
 }
 
-function MetricCard({
+function MetricRow({
   label,
   before,
   after,
@@ -87,7 +86,7 @@ function MetricCard({
         : `↓ ${Math.max(0, improvement).toFixed(0)}%`;
 
   return (
-    <div className={styles.metricCard}>
+    <div className={styles.metricRow}>
       <div className={styles.metricHeader}>
         <span className={styles.metricName}>{label}</span>
         <span className={styles.metricImprovement}>{improvementLabel}</span>

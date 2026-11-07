@@ -24,14 +24,13 @@ const SIGNALS: Array<{
 
 export function LiveSignalsPanel({ summary }: LiveSignalsPanelProps) {
   return (
-    <section className={styles.panel} aria-labelledby="live-signals-title">
+    <section className={styles.panel} id="live-signals" aria-labelledby="live-signals-title">
       <div className={styles.panelHeader}>
         <div>
           <h2 className={styles.sectionHeading} id="live-signals-title">
-            <span className={styles.sectionIcon} aria-hidden="true" />
-            Live signals
+            Signals
           </h2>
-          <p className={styles.panelHint}>Aggregated 10-second window</p>
+          <p className={styles.panelHint}>Interaction counts · 10s window</p>
         </div>
       </div>
 

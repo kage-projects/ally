@@ -12,14 +12,14 @@ export function DashboardEmptyState({ onRestore }: DashboardEmptyStateProps) {
       <div>
         <div className={styles.emptyIcon} aria-hidden="true">⌁</div>
         <h2 className={styles.emptyTitle} id="empty-dashboard-title">
-          Waiting for Ally events
+          A fresh perspective.
         </h2>
         <p className={styles.emptyCopy}>
-          Open the checkout on the same origin or restore the mock session to preview
-          the complete judge-dashboard story.
+          Your view is clear. Load a demo session to explore interaction signals,
+          adaptation decisions, and their impact.
         </p>
-        <Button onClick={onRestore} type="button" variant="primary">
-          Restore mock session
+        <Button className={styles.restoreButton} onClick={onRestore} type="button" variant="primary">
+          Load demo session
         </Button>
       </div>
     </section>

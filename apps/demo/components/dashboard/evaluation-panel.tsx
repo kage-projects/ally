@@ -1,4 +1,3 @@
-import { Badge } from "@/components/arc/badge/badge";
 import type { EvaluationResults } from "@/lib/dashboard/types";
 
 import styles from "./dashboard.module.css";
@@ -17,8 +16,7 @@ export function EvaluationPanel({ evaluation }: EvaluationPanelProps) {
       <div className={styles.panelHeader}>
         <div>
           <h2 className={styles.sectionHeading} id="evaluation-title">
-            <span className={styles.sectionIcon} aria-hidden="true" />
-            Evaluation evidence
+            Evaluation
           </h2>
           <p className={styles.panelHint}>
             {evaluation.sessionsPerVariant} sessions per variant
@@ -29,14 +27,19 @@ export function EvaluationPanel({ evaluation }: EvaluationPanelProps) {
       <div className={styles.panelBody}>
         {evaluation.isMock ? (
           <div className={styles.mockNotice} role="note">
-            <Badge outline pill size="sm" tone="warning">
-              MOCK
-            </Badge>
+            <span className={styles.mockBadge}>SAMPLE</span>
             <span>{evaluation.label}</span>
           </div>
         ) : null}
 
         <div className={styles.evaluationGrid}>
+          <div className={styles.evaluationColumnLabels}>
+            <span>Metric</span>
+            <span className={styles.evaluationNumbers}>
+              <span>Ally off</span>
+              <span>Ally on</span>
+            </span>
+          </div>
           <EvaluationRow
             allyOff={formatMetric(evaluation.metrics.misTapRate.allyOff.mean, "percent")}
             allyOn={formatMetric(evaluation.metrics.misTapRate.allyOn.mean, "percent")}

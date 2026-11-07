@@ -31,12 +31,21 @@ export function DashboardClient({
   return (
     <div className={styles.page}>
       <main className={styles.shell}>
+        <a className={styles.skipLink} href="#decision-stream">Skip to decisions</a>
         <DashboardHeader
           hasData={hasData}
           onReset={() => setEvents([])}
           onRestore={() => setEvents(initialEvents)}
           summary={dashboard.currentSummary}
         />
+
+        <div className={styles.workspaceBar}>
+          <span className={styles.workspaceLabel}>
+            <span className={styles.workspaceDot} aria-hidden="true" />
+            Adaptation workspace
+          </span>
+          <span className={styles.demoLabel}>Preview · Sample data</span>
+        </div>
 
         {hasData ? (
           <>
@@ -63,9 +72,9 @@ export function DashboardClient({
         )}
 
         <footer className={styles.footer}>
-          <strong>Privacy by design</strong>
-          <span aria-hidden="true">·</span>
-          Counters and timings only · No screen content · No form values · No PII
+          <span className={styles.footerBrand}>ally.</span>
+          <span>Counters and timings only. No form values, screen content, or PII.</span>
+          <span className={styles.footerNote}>Built around people.</span>
         </footer>
       </main>
     </div>

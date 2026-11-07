@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-import { Badge } from "@/components/arc/badge/badge";
 import SegmentedControl from "@/components/arc/segmented-control/segmented-control";
 import {
   formatClock,
@@ -39,19 +38,22 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
   );
 
   return (
-    <section className={styles.panel} aria-labelledby="decision-stream-title">
+    <section className={`${styles.panel} ${styles.streamPanel}`} id="decision-stream" aria-labelledby="decision-stream-title">
       <div className={styles.panelHeader}>
         <div>
           <h2 className={styles.sectionHeading} id="decision-stream-title">
-            <span className={styles.sectionIcon} aria-hidden="true" />
             Decision stream
           </h2>
           <p className={styles.panelHint}>
-            White-box adaptations from rule and LLM paths
+            How Ally responds, and why.
           </p>
         </div>
 
-        <SegmentedControl
+        <span className={styles.entryCount}>{decisions.length} decisions</span>
+      </div>
+
+      <SegmentedControl
+          className={styles.streamTabs}
           label="Filter decisions by source"
           onValueChange={(value) => setFilter(value as DecisionFilter)}
           options={[
@@ -61,7 +63,6 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
           ]}
           value={filter}
         />
-      </div>
 
       {filteredDecisions.length ? (
         <div className={styles.decisionList}>
@@ -70,22 +71,19 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
             const changes = getPlanDiff(decision.previousPlan, decision.plan);
 
             return (
-              <button
-                aria-expanded={expanded}
-                className={`${styles.decisionButton} ${
-                  expanded ? styles.decisionExpanded : ""
-                }`}
-                key={decision.id}
-                onClick={() => setExpandedId(expanded ? null : decision.id)}
-                type="button"
-              >
+              <article className={styles.decisionEntry} key={decision.id}>
+                <div className={styles.decisionAvatar} aria-hidden="true">
+                  {decision.source === "llm" ? "AI" : "A"}
+                </div>
+                <div className={styles.decisionContent}>
                 <div className={styles.decisionTopline}>
                   <div>
-                    <div className={styles.decisionTitle}>
+                    <h3 className={styles.decisionTitle}>
                       {formatPreset(decision.preset)}
-                    </div>
+                    </h3>
                     <div className={styles.sourceMeta}>
                       <SourceBadge source={decision.source} />
+                      <span aria-hidden="true">·</span>
                       <span>{formatClock(decision.at)}</span>
                       <span>{decision.latencyMs}ms</span>
                       <span>{formatPercent(decision.confidence)} confidence</span>
@@ -100,14 +98,16 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
                 </p>
 
                 {expanded ? (
-                  <>
-                    <div className={styles.diffList}>
+                  <div className={styles.decisionDetails} id={`details-${decision.id}`}>
+                    <div className={styles.detailLabel}>What changed</div>
+                    <dl className={styles.diffList}>
                       {changes.map((change) => (
-                        <span className={styles.diffItem} key={change.label}>
-                          <strong>{change.label}</strong> · {change.value}
-                        </span>
+                        <div className={styles.diffItem} key={change.label}>
+                          <dt>{change.label}</dt>
+                          <dd>{change.value}</dd>
+                        </div>
                       ))}
-                    </div>
+                    </dl>
 
                     <div className={styles.guardrailList}>
                       <GuardrailItem
@@ -126,9 +126,22 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
                         validCopy="Preserved"
                       />
                     </div>
-                  </>
+                  </div>
                 ) : null}
-              </button>
+
+                <button
+                  aria-expanded={expanded}
+                  aria-controls={expanded ? `details-${decision.id}` : undefined}
+                  aria-label={`${expanded ? "Hide" : "View"} details for ${formatPreset(decision.preset)}`}
+                  className={styles.detailToggle}
+                  onClick={() => setExpandedId(expanded ? null : decision.id)}
+                  type="button"
+                >
+                  {expanded ? "Hide details" : "View details"}
+                  <span aria-hidden="true">{expanded ? "↑" : "↓"}</span>
+                </button>
+                </div>
+              </article>
             );
           })}
         </div>
@@ -137,29 +150,33 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
           <p className={styles.panelHint}>No decisions match this filter.</p>
         </div>
       )}
+
+      <div className={styles.streamEnd}>
+        <span className={styles.streamEndMark} aria-hidden="true">✳</span>
+        <span>You’re all caught up.</span>
+        <p>Every adaptation leaves a clear trail.</p>
+      </div>
     </section>
   );
 }
 
 function SourceBadge({ source }: { source: DecisionSource }) {
-  const color =
-    source === "llm" ? "violet" : source === "rule" ? "amber" : "sky";
-
   return (
-    <Badge color={color} outline pill size="sm">
+    <span className={source === "llm" ? styles.sourceLlm : styles.sourceTag}>
       {source.toUpperCase()}
-    </Badge>
+    </span>
   );
 }
 
 function StatusBadge({ status }: { status: DecisionStatus }) {
-  const tone =
-    status === "kept" ? "success" : status === "undone" ? "danger" : "info";
+  const statusClass =
+    status === "kept" ? styles.statusKept : status === "undone" ? styles.statusUndone : styles.statusNeutral;
 
   return (
-    <Badge outline pill size="sm" tone={tone}>
-      {status.toUpperCase()}
-    </Badge>
+    <span className={`${styles.decisionStatus} ${statusClass}`}>
+      <span aria-hidden="true">{status === "kept" ? "✓" : status === "undone" ? "↶" : "·"}</span>
+      {status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
   );
 }
 
