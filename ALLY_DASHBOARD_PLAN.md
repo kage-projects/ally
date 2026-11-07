@@ -647,7 +647,7 @@ type FrictionSummary = {
 Tipe final harus dimiliki SDK di:
 
 ```text
-packages/ally-react/src/bus.ts
+contracts/dashboard.ts
 ```
 
 Dashboard hanya mengimpor tipe tersebut.
@@ -743,10 +743,10 @@ Dashboard development tidak perlu menunggu SDK selesai. Provisional contract dan
 fixture tersedia di:
 
 ```text
-mocks/dashboard/contracts.ts
-mocks/dashboard/ally-events.v1.json
-mocks/dashboard/eval-results.mock.json
-mocks/dashboard/README.md
+contracts/dashboard.ts
+dashboard/mocks/ally-events.v1.json
+dashboard/mocks/eval-results.mock.json
+dashboard/mocks/README.md
 ```
 
 Contract memakai `version: 1`, event `keep` eksplisit, dan optional `heartbeat`.
@@ -821,7 +821,7 @@ misTapRate = totalMissTap / totalTaps
 ## 10. Target file structure
 
 ```text
-apps/demo/
+dashboard/
 ├─ app/
 │  └─ dashboard/
 │     └─ page.tsx
@@ -851,7 +851,7 @@ apps/demo/
 Shared event type:
 
 ```text
-packages/ally-react/src/bus.ts
+contracts/dashboard.ts
 ```
 
 ---
@@ -860,7 +860,7 @@ packages/ally-react/src/bus.ts
 
 ### Phase 0 — Team synchronization
 
-- [x] Dashboard branch created a minimal shared `apps/demo` scaffold because no remote scaffold was available.
+- [x] Dashboard branch created a minimal shared `dashboard` scaffold because no remote scaffold was available.
 - [x] Confirm stack: Next.js 15.5.29, React 19.1, TypeScript, Tailwind CSS 4.
 - [x] Tetapkan ownership Arc UI: dashboard owns components; checkout owns scaffold/global layout.
 - [x] Tetapkan provisional `AllyBusEvent` v1 untuk mock-first development.
@@ -1160,17 +1160,17 @@ Never cut:
 Potential shared/conflict files:
 
 ```text
-apps/demo/package.json
-apps/demo/app/layout.tsx
-apps/demo/app/globals.css
-apps/demo/components/ui/*
-packages/ally-react/src/bus.ts
+dashboard/package.json
+dashboard/app/layout.tsx
+dashboard/app/globals.css
+dashboard/components/ui/*
+contracts/dashboard.ts
 ```
 
 Rules:
 
-- Checkout developer owns initial `apps/demo` scaffold.
-- SDK developer owns final bus/event types.
+- Dashboard developer owns the `dashboard/` app; checkout stays in `shopee-clone/`.
+- SDK and dashboard developers coordinate the shared wire contract in `contracts/dashboard.ts`.
 - Dashboard imports types; avoid duplicating contracts.
 - Agree before modifying root layout/global styles.
 - Merge main into `feature/dashboard` after each team sync.
