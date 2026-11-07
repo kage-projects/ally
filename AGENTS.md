@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-Ally is a planned adaptive UI engine that detects interaction friction and applies explainable, reversible UI changes. This repository contains planning documents, `Poster.pdf`, and SDK design documents; application code has not been scaffolded.
+Ally is an adaptive UI engine in development. This repository contains planning documents, `Poster.pdf`, SDK design documents, and the Phase 0 SDK package foundation.
 
 - `ALLY_PRD.md`: product requirements, data contracts, privacy rules, and evaluation targets.
 - `ALLY_BUILD_PLAN.md`: implementation milestones, target architecture, and acceptance criteria.
@@ -12,7 +12,7 @@ Use `sdk/` for the React SDK, its script-based tests, and documentation. The old
 
 ## Build, Test, and Development Commands
 
-No package manifest or executable scripts exist yet. The SDK should expose:
+The SDK package in `sdk/` exposes:
 
 - `pnpm -C sdk build`: build the SDK package.
 - `pnpm -C sdk typecheck`: check SDK types.

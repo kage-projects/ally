@@ -4,7 +4,7 @@
 
 Folder `sdk/` menjadi root implementasi package React SDK Ally (`@ally/react`). Teman satu tim membangun aplikasi host dan endpoint server. Pekerjaan dalam folder ini hanya membangun package, kontrak integrasi, dokumentasi, dan pengujian berbasis skrip.
 
-Folder ini belum memiliki kode atau konfigurasi. Gunakan struktur berikut saat scaffolding:
+Package Fase 0–1 sudah memiliki schema, guard, sensor, rule, preset, entry React/core, dan pengujian skrip. Planner client dan UI adaptasi masih direncanakan:
 
 - `src/index.ts`: ekspor API publik, termasuk `AllyProvider` dan `useAlly`.
 - `src/provider.tsx`, `src/useAlly.ts`: lifecycle, context, penerapan adaptasi, Keep/Undo.
@@ -17,7 +17,7 @@ Rujuk `../ALLY_PRD.md` untuk tujuan produk, `docs/ARCHITECTURE.md` untuk batas s
 
 ## Build, Test, dan Pengembangan
 
-Gunakan pnpm. Belum ada `package.json` atau script yang dapat dijalankan. Saat scaffolding, sediakan dan verifikasi perintah berikut dari `sdk/`:
+Gunakan pnpm. Perintah berikut tersedia dari `sdk/`:
 
 - `pnpm build`: menghasilkan package dan deklarasi tipe.
 - `pnpm test`: menjalankan Vitest dan simulasi DOM.

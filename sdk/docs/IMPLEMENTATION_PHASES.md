@@ -1,6 +1,6 @@
 # Rencana Implementasi SDK Ally — Analisis dan Indeks Fase
 
-Status: rancangan teknis siap menjadi panduan coding; implementasi kode belum dimulai. Lingkup kerja ini hanya package sdk dan pengujian berbasis skrip. Aplikasi React host serta endpoint OpenAI dibangun rekan tim. Mulai dari [arsitektur proyek](ARCHITECTURE.md) dan [kontrak bersama](CONTRACTS.md).
+Status: Fase 0–1 package sdk selesai; Fase 2–5 belum diimplementasikan. Lingkup kerja ini hanya package sdk dan pengujian berbasis skrip. Aplikasi React host serta endpoint OpenAI dibangun rekan tim. Mulai dari [arsitektur proyek](ARCHITECTURE.md) dan [kontrak bersama](CONTRACTS.md).
 
 ## Temuan analisis dan keputusan perbaikan
 
@@ -45,13 +45,13 @@ Jika terlambat: tunda slowTargeting/scrollThrash, BroadcastChannel opsional, sco
 
 Masing-masing dokumen fase mempunyai empat deliverable bernomor, total 24. Satu deliverable = 25% fase atau 100/24% total (sekitar 4,17%). Rumus: progres total = jumlah deliverable terverifikasi / 24 × 100, dibulatkan dua desimal. Gate fase hanya dicentang setelah 4/4 selesai dan semua kriteria wajib terpenuhi.
 
-- [ ] Fase 0: 0/4 deliverable — **0%**.
-- [ ] Fase 1: 0/4 deliverable — **0%**.
+- [x] Fase 0: 4/4 deliverable — **100%**.
+- [x] Fase 1: 4/4 deliverable — **100%**.
 - [ ] Fase 2: 0/4 deliverable — **0%**.
 - [ ] Fase 3: 0/4 deliverable — **0%**.
 - [ ] Fase 4: 0/4 deliverable — **0%**.
 - [ ] Fase 5: 0/4 deliverable — **0%**.
 
-**Total implementasi: 0/24 = 0%.** Riset, analisis celah, dan dokumen fase adalah persiapan; tidak dihitung sebagai kode yang selesai. Saat menandai item, tambahkan path artefak, perintah/skenario verifikasi, hasil, dan tanggal pada dokumen fase; kemudian sinkronkan angka di indeks ini.
+**Total implementasi: 8/24 = 33,33%.** Bukti Fase 0 berada di [dokumen fondasi](PHASE_0_FOUNDATION.md) dan bukti Fase 1 di [dokumen sensor/rule](PHASE_1_SENSORS_RULES.md). Riset dan dokumen perencanaan tidak dihitung sebagai kode. Saat menandai item berikutnya, tambahkan path artefak, perintah/skenario verifikasi, hasil, dan tanggal pada dokumen fase; kemudian sinkronkan angka di indeks ini.
 
 Referensi proyek: [PRD](../../ALLY_PRD.md), [build plan](../../ALLY_BUILD_PLAN.md), [riset SDK](SDK_IMPLEMENTATION_RESEARCH.md). Referensi teknis yang digunakan pada analisis ditautkan di fase terkait.

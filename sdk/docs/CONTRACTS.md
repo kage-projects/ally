@@ -1,6 +1,6 @@
 # Kontrak Bersama Implementasi MVP
 
-Status: keputusan desain untuk implementasi berikutnya; belum berupa kode. Dokumen ini merinci dan memperbaiki rancangan awal PRD. Perubahan yang disengaja dicatat di [indeks fase](IMPLEMENTATION_PHASES.md). Semua fase memakai kontrak ini agar tidak mendefinisikan ulang API.
+Status: keputusan desain v1; Fase 0–1 sudah berupa kode, lifecycle provider dan planner masih tahap berikutnya. Dokumen ini merinci dan memperbaiki rancangan awal PRD. Perubahan yang disengaja dicatat di [indeks fase](IMPLEMENTATION_PHASES.md). Semua fase memakai kontrak ini agar tidak mendefinisikan ulang API.
 
 ## Batas package dan kepemilikan
 

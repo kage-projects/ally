@@ -1,6 +1,6 @@
 # Arsitektur Proyek Ally SDK — React Web MVP
 
-Status: rancangan implementasi, belum merupakan arsitektur yang sudah berjalan. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
+Status: Fase 0–1 (package, schema, guard, sensor, rule, preset) sudah berjalan; integrasi provider hingga preferensi masih rancangan. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
 
 ## Tujuan dan batas sistem
 
@@ -85,7 +85,7 @@ Structured Outputs membatasi bentuk jawaban, sedangkan schema runtime, guard, po
 
 ## Build, verifikasi, dan observabilitas
 
-Tahap pembangunan SDK: Fase 0 kontrak/guard; Fase 1 sensor/rule; Fase 2 provider/applier; Fase 3 client planner/kontrak HTTP; Fase 4 preferensi; Fase 5 skrip verifikasi dan handoff. Mock planner dapat disiapkan setelah kontrak. Evaluasi AI nyata menunggu endpoint rekan; ini status terpisah dari kelulusan SDK. Scripts pnpm belum tersedia sampai scaffold.
+Tahap pembangunan SDK: Fase 0 kontrak/guard; Fase 1 sensor/rule; Fase 2 provider/applier; Fase 3 client planner/kontrak HTTP; Fase 4 preferensi; Fase 5 skrip verifikasi dan handoff. Mock planner dapat disiapkan setelah kontrak. Evaluasi AI nyata menunggu endpoint rekan; ini status terpisah dari kelulusan SDK. Skrip pnpm build, typecheck, test, dan test:contract sudah tersedia.
 
 Verifikasi SDK memakai skrip pnpm -C sdk build, typecheck, test, dan test:contract. Vitest/jsdom dengan fake timers menguji schema/rule/guard, sensor, scope, fokus, Keep/Undo/TTL, dan slot terkunci. Mock HTTP menguji 200/204/400/429/5xx, timeout, payload, cache, dan respons stale. Consumer fixture yang memasang tarball memeriksa export, tipe, React peer, dan import core tanpa DOM. jsdom memakai stub geometri; hasilnya tidak membuktikan rendering atau kompatibilitas browser nyata. Skrip test:ai opsional dapat menguji endpoint rekan dengan tujuh fixture × tiga run, tetapi kualitas model dinyatakan unknown sampai endpoint nyata tersedia.
 
@@ -95,4 +95,4 @@ Log keputusan hanya berisi timestamp, source, reason codes, jenis preset, koreks
 
 ## Keputusan yang masih memerlukan bukti implementasi
 
-Versi dependensi/model, ukuran bundle, kompatibilitas browser, latency model, dan penurunan friksi belum dapat dipastikan dari dokumen. Pin versi package saat scaffold; hasil skrip SDK dapat dicatat di sdk/test-results/, sedangkan hasil aplikasi adalah tanggung jawab rekan. [Checklist implementasi](IMPLEMENTATION_PHASES.md) tetap 0/24 sampai artefak dan bukti tiap fase tersedia.
+Versi model, kompatibilitas browser, latency model, dan penurunan friksi belum dapat dipastikan dari dokumen. Dependensi package Fase 0 sudah dipin; hasil skrip SDK berikutnya dapat dicatat di sdk/test-results/, sedangkan hasil aplikasi adalah tanggung jawab rekan. [Checklist implementasi](IMPLEMENTATION_PHASES.md) kini 8/24; artefak dan bukti Fase 2–5 belum tersedia.

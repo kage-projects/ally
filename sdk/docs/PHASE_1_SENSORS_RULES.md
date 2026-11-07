@@ -28,11 +28,13 @@ Event dalam scope → cek kelayakan dan deduplikasi → agregasi window → snap
 
 Fake timers: focus tanpa input memicu satu kali; unmount menghentikan emit; hidden tab tidak memicu. Geometri jsdom memakai stub getBoundingClientRect: hit child, titik 10px di luar target, 30px di luar, target disabled, dan scope berbeda. Tiga miss menghasilkan motor 0.75; snapshot nol tidak memanggil planner; dua skor 0.6 masuk combined walau confidence nol. sensor.inject menguji pipeline; event DOM yang didispatch skrip menguji listener. Keduanya belum membuktikan geometri browser nyata.
 
-## Checklist bukti — 0/4 (0%)
+## Checklist bukti — 4/4 (100%)
 
-- [ ] 1A — Sensor scope, waktu, lifecycle, dan payload tersaring terimplementasi serta diuji.
-- [ ] 1B — Host step/error dan deduplikasi episode bekerja.
-- [ ] 1C — Rule no-op/single/combined, preset, dan guard lulus fixture.
-- [ ] 1D — sensor.inject dan event DOM lewat skrip menghasilkan sinyal yang diharapkan, dengan hasil berlabel.
+Terverifikasi 7 November 2026 dengan `pnpm -C sdk typecheck`, `test` (20 test lulus), `build`, dan `test:contract`.
 
-Setiap item bernilai 25% fase; catat artefak dan hasil pemeriksaannya.
+- [x] 1A — `src/sensor.ts`: listener dibatasi scope, window 10 detik dengan durasi aktual, fast path sekali per window, pause tab tersembunyi, cleanup timer/listener, dan snapshot hanya counter/ukuran/waktu. `test/sensor.test.ts` menguji hit anak tombol, jarak 10/30px, target disabled, scope luar, UI Ally, serta unmount.
+- [x] 1B — `reportStep` memakai urutan host dan `reportError` memakai allowlist; duplikasi kategori/field reset saat step berubah. Rage click, hesitation, dan zoom dihitung per episode. Test memakai fake timers, event DOM, dan stub visualViewport.
+- [x] 1C — `src/rules.ts` menghitung skor dan evidence gate; `src/presets.ts` membuat plan dengan explanation dari reason code, TTL 120 detik, lalu `guardPlan`. `test/rules.test.ts` memeriksa no-op, single, combined, confidence, clamp, serta preset visual/kognitif. `@ally/react/core` mengekspor rule untuk server host dan lulus `test:contract`.
+- [x] 1D — `sensor.inject` hanya aktif pada mode simulation dan snapshot berlabel; mode itu tidak memasang listener input DOM. Test terpisah membuktikan event DOM live dan sinyal simulasi sama-sama menghasilkan ringkasan yang valid.
+
+Sensor/rule belum dipasang ke `AllyProvider`; penerapan, deduplikasi keputusan antar-snapshot, cooldown 10 detik, dan blokir reapply setelah Undo 60 detik termasuk Fase 2. Geometri jsdom memakai stub sehingga perilaku rendering browser nyata masih perlu diuji oleh aplikasi host.

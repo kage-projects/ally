@@ -32,11 +32,11 @@ Uji schema menolak extra fields, NaN/Infinity, min > max, serta enum invalid. Uj
 
 Serahkan API types, fixture, default policy, dan contoh integrasi ke pengerjaan Fase 1–3 serta rekan pemilik host. Detail UI provider belum dianggap selesai pada fase ini.
 
-## Checklist bukti — 0/4 (0%)
+## Checklist bukti — 4/4 (100%)
 
-- [ ] 0A — Workspace, manifest/lockfile, build ESM dan tipe berhasil; simpan ringkasan perintah.
-- [ ] 0B — Schema dan fixture kontrak termasuk preferences kosong lolos pemeriksaan.
-- [ ] 0C — Guard dasar beserta pengujian kebijakan lulus.
-- [ ] 0D — Consumer fixture mengimpor package dan core tanpa DOM; typecheck lulus.
+- [x] 0A — Package mandiri, manifest/lockfile, build ESM dan tipe berhasil: `sdk/package.json`, `sdk/pnpm-lock.yaml`, `sdk/dist/`; `pnpm build` exit 0.
+- [x] 0B — Schema dan fixture kontrak termasuk preferences kosong lolos: `sdk/src/schema.ts`, `sdk/test/fixtures.ts`, `sdk/test/schema.test.ts`.
+- [x] 0C — Guard dasar dan pengujian policy lulus: `sdk/src/guard.ts`, `sdk/test/guard.test.ts`; `pnpm test` 7/7 lulus.
+- [x] 0D — Consumer fixture mengimpor entry React/core hasil build tanpa DOM global dan typecheck lulus: `sdk/test/contract.mjs`; `pnpm test:contract` dan `pnpm typecheck` exit 0.
 
-Setiap item bernilai 25% fase. Isi bukti berupa path artefak dan hasil pemeriksaan ketika dicentang.
+Verifikasi Fase 0: 2026-11-07, Node 24.15.0, pnpm 11.18.0. Provider masih kerangka bertipe; fungsi sensor, penerapan plan, Keep/Undo, dan planner belum aktif.

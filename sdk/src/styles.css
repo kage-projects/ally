@@ -1,0 +1,12 @@
+[data-ally-root] {
+  --ally-target: 44px;
+  --ally-space: 1;
+  --ally-font: 1;
+}
+
+[data-ally-hide~="promoBanner"] [data-ally-optional="promoBanner"],
+[data-ally-hide~="recommendations"] [data-ally-optional="recommendations"],
+[data-ally-hide~="voucherCarousel"] [data-ally-optional="voucherCarousel"],
+[data-ally-hide~="socialProof"] [data-ally-optional="socialProof"] {
+  display: none;
+}
