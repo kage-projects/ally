@@ -1,0 +1,31 @@
+# Shopee UI Replication — Codex Configuration
+
+# Gunakan model yang benar-benar tersedia di Codex CLI kamu.
+# Jika identifier GPT-6.1 Terra berbeda, pilih lewat /model.
+# model = "..."
+
+# Batasi akses tulis ke workspace project.
+sandbox_mode = "workspace-write"
+
+# Minta persetujuan ketika diperlukan.
+approval_policy = "never"
+
+# Instruksi tambahan untuk project.
+developer_instructions = """
+You are working on a high-fidelity Shopee Indonesia UI replication project.
+
+Always read AGENTS.md before implementation.
+
+Prioritize:
+1. Screenshot fidelity
+2. Correct component structure
+3. Responsive accuracy
+4. Functional interactions
+5. Maintainable code
+
+Do not redesign the reference.
+Do not introduce generic e-commerce styling.
+Do not claim pixel-perfect results without screenshot comparison.
+
+Use Playwright for visual validation whenever available.
+"""
