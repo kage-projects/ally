@@ -1,0 +1,304 @@
+[
+  {
+    "version": 1,
+    "eventId": "evt-heartbeat-001",
+    "type": "heartbeat",
+    "at": 1794022200000,
+    "payload": {
+      "step": "address",
+      "inputModality": "touch"
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-summary-baseline-001",
+    "type": "summary",
+    "at": 1794022201000,
+    "payload": {
+      "summary": {
+        "windowMs": 10000,
+        "viewport": { "w": 412, "h": 915, "dpr": 2.6 },
+        "inputModality": "touch",
+        "counts": {
+          "taps": 12,
+          "missTap": 1,
+          "rageClick": 0,
+          "hesitation": 0,
+          "backtrack": 0,
+          "errorLoop": 0,
+          "zoomEvent": 0,
+          "scrollThrash": 0,
+          "slowTargeting": 0
+        },
+        "timings": {
+          "avgTargetSize": 42,
+          "avgTimeToTarget": 1.7,
+          "stepDurations": [9.8, 13.2]
+        },
+        "context": {
+          "step": "address",
+          "priorPreset": null,
+          "undoCount": 0
+        }
+      },
+      "profile": { "motor": 0.25, "visual": 0, "cognitive": 0 },
+      "preset": null,
+      "confidence": 0.25
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-summary-tremor-001",
+    "type": "summary",
+    "at": 1794022211000,
+    "payload": {
+      "summary": {
+        "windowMs": 10000,
+        "viewport": { "w": 412, "h": 915, "dpr": 2.6 },
+        "inputModality": "touch",
+        "counts": {
+          "taps": 17,
+          "missTap": 3,
+          "rageClick": 1,
+          "hesitation": 0,
+          "backtrack": 0,
+          "errorLoop": 0,
+          "zoomEvent": 0,
+          "scrollThrash": 0,
+          "slowTargeting": 0
+        },
+        "timings": {
+          "avgTargetSize": 42,
+          "avgTimeToTarget": 1.8,
+          "stepDurations": [9.8, 23.6]
+        },
+        "context": {
+          "step": "address",
+          "priorPreset": null,
+          "undoCount": 0
+        }
+      },
+      "profile": { "motor": 0.85, "visual": 0, "cognitive": 0 },
+      "preset": "motor",
+      "confidence": 0.85
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-decision-motor-001",
+    "type": "decision",
+    "at": 1794022211003,
+    "payload": {
+      "id": "decision-motor-001",
+      "source": "rule",
+      "preset": "motor",
+      "latencyMs": 3,
+      "confidence": 0.85,
+      "previousPlan": null,
+      "plan": {
+        "profile": { "motor": 0.85, "visual": 0, "cognitive": 0 },
+        "tokens": {
+          "targetMinSize": 56,
+          "spacingScale": 1.5,
+          "fontScale": 1,
+          "contrast": "normal",
+          "density": "spacious"
+        },
+        "layout": {
+          "stepMode": "default",
+          "hideNonEssential": [],
+          "primaryActionSticky": true,
+          "confirmDestructive": true
+        },
+        "assist": {
+          "inlineHints": false,
+          "voiceOffer": false
+        },
+        "confidence": 0.85,
+        "explanation": "Three near-target misses and a rage click suggest motor friction. Ally enlarged interactive targets, increased spacing, and kept the primary action visible.",
+        "ttlSeconds": 120
+      },
+      "explanation": "Three near-target misses and a rage click suggest motor friction. Ally enlarged interactive targets, increased spacing, and kept the primary action visible.",
+      "guardrails": {
+        "schemaValid": true,
+        "policyClamped": false,
+        "lockedComponentsPreserved": true
+      }
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-applied-motor-001",
+    "type": "applied",
+    "at": 1794022211010,
+    "payload": {
+      "decisionId": "decision-motor-001"
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-summary-after-motor-001",
+    "type": "summary",
+    "at": 1794022221000,
+    "payload": {
+      "summary": {
+        "windowMs": 10000,
+        "viewport": { "w": 412, "h": 915, "dpr": 2.6 },
+        "inputModality": "touch",
+        "counts": {
+          "taps": 20,
+          "missTap": 1,
+          "rageClick": 0,
+          "hesitation": 0,
+          "backtrack": 0,
+          "errorLoop": 0,
+          "zoomEvent": 0,
+          "scrollThrash": 0,
+          "slowTargeting": 0
+        },
+        "timings": {
+          "avgTargetSize": 56,
+          "avgTimeToTarget": 0.8,
+          "stepDurations": [9.8, 34.1]
+        },
+        "context": {
+          "step": "address",
+          "priorPreset": "motor",
+          "undoCount": 0
+        }
+      },
+      "profile": { "motor": 0.25, "visual": 0, "cognitive": 0 },
+      "preset": null,
+      "confidence": 0.25
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-keep-motor-001",
+    "type": "keep",
+    "at": 1794022222000,
+    "payload": {
+      "decisionId": "decision-motor-001"
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-summary-combined-001",
+    "type": "summary",
+    "at": 1794022231000,
+    "payload": {
+      "summary": {
+        "windowMs": 10000,
+        "viewport": { "w": 412, "h": 915, "dpr": 2.6 },
+        "inputModality": "touch",
+        "counts": {
+          "taps": 14,
+          "missTap": 2,
+          "rageClick": 0,
+          "hesitation": 0,
+          "backtrack": 0,
+          "errorLoop": 2,
+          "zoomEvent": 1,
+          "scrollThrash": 0,
+          "slowTargeting": 1
+        },
+        "timings": {
+          "avgTargetSize": 42,
+          "avgTimeToTarget": 1.6,
+          "stepDurations": [9.8, 43.7]
+        },
+        "context": {
+          "step": "address",
+          "priorPreset": "motor",
+          "undoCount": 0
+        }
+      },
+      "profile": { "motor": 0.65, "visual": 0.6, "cognitive": 0.2 },
+      "preset": "combined",
+      "confidence": 0.05
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-decision-combined-001",
+    "type": "decision",
+    "at": 1794022231742,
+    "payload": {
+      "id": "decision-combined-001",
+      "source": "llm",
+      "preset": "combined",
+      "latencyMs": 742,
+      "confidence": 0.82,
+      "previousPlan": {
+        "profile": { "motor": 0.85, "visual": 0, "cognitive": 0 },
+        "tokens": {
+          "targetMinSize": 56,
+          "spacingScale": 1.5,
+          "fontScale": 1,
+          "contrast": "normal",
+          "density": "spacious"
+        },
+        "layout": {
+          "stepMode": "default",
+          "hideNonEssential": [],
+          "primaryActionSticky": true,
+          "confirmDestructive": true
+        },
+        "assist": {
+          "inlineHints": false,
+          "voiceOffer": false
+        },
+        "confidence": 0.85,
+        "explanation": "Three near-target misses and a rage click suggest motor friction. Ally enlarged interactive targets, increased spacing, and kept the primary action visible.",
+        "ttlSeconds": 120
+      },
+      "plan": {
+        "profile": { "motor": 0.65, "visual": 0.6, "cognitive": 0.2 },
+        "tokens": {
+          "targetMinSize": 56,
+          "spacingScale": 1.5,
+          "fontScale": 1.25,
+          "contrast": "high",
+          "density": "comfortable"
+        },
+        "layout": {
+          "stepMode": "default",
+          "hideNonEssential": ["promoBanner", "recommendations"],
+          "primaryActionSticky": true,
+          "confirmDestructive": true
+        },
+        "assist": {
+          "inlineHints": true,
+          "voiceOffer": false
+        },
+        "confidence": 0.82,
+        "explanation": "Repeated near-target misses, zooming, and repeated form errors suggest combined motor and visual friction. Ally kept larger targets, increased text size and contrast, and removed non-essential distractions.",
+        "ttlSeconds": 120
+      },
+      "explanation": "Repeated near-target misses, zooming, and repeated form errors suggest combined motor and visual friction. Ally kept larger targets, increased text size and contrast, and removed non-essential distractions.",
+      "guardrails": {
+        "schemaValid": true,
+        "policyClamped": false,
+        "lockedComponentsPreserved": true
+      }
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-applied-combined-001",
+    "type": "applied",
+    "at": 1794022231750,
+    "payload": {
+      "decisionId": "decision-combined-001"
+    }
+  },
+  {
+    "version": 1,
+    "eventId": "evt-undo-combined-001",
+    "type": "undo",
+    "at": 1794022237000,
+    "payload": {
+      "decisionId": "decision-combined-001"
+    }
+  }
+]

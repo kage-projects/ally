@@ -11,7 +11,7 @@
 | Route | `/dashboard` |
 | Owner | Dashboard developer |
 | Branch | `feature/dashboard` |
-| Status | Planning complete → waiting for app scaffold and event contract |
+| Status | Phase 0 mock-first contract ready → waiting for `apps/demo` scaffold |
 | Target | Hackathon MVP, projector 1080p, live two-window demo |
 
 ---
@@ -656,6 +656,17 @@ Dashboard hanya mengimpor tipe tersebut.
 type AllyBusEvent =
   | {
       version: 1;
+      eventId: string;
+      type: "heartbeat";
+      at: number;
+      payload: {
+        step: string;
+        inputModality: "touch" | "mouse" | "keyboard" | "mixed";
+      };
+    }
+  | {
+      version: 1;
+      eventId: string;
       type: "summary";
       at: number;
       payload: {
@@ -667,6 +678,7 @@ type AllyBusEvent =
     }
   | {
       version: 1;
+      eventId: string;
       type: "decision";
       at: number;
       payload: {
@@ -678,34 +690,44 @@ type AllyBusEvent =
         previousPlan: AdaptationPlan | null;
         plan: AdaptationPlan;
         explanation: string;
+        guardrails: {
+          schemaValid: boolean;
+          policyClamped: boolean;
+          lockedComponentsPreserved: boolean;
+        };
       };
     }
   | {
       version: 1;
+      eventId: string;
       type: "applied";
       at: number;
       payload: { decisionId: string };
     }
   | {
       version: 1;
+      eventId: string;
       type: "keep";
       at: number;
       payload: { decisionId: string };
     }
   | {
       version: 1;
+      eventId: string;
       type: "undo";
       at: number;
       payload: { decisionId: string };
     }
   | {
       version: 1;
+      eventId: string;
       type: "reset";
       at: number;
+      payload: Record<string, never>;
     };
 ```
 
-Current build plan menyebut `summary`, `decision`, `applied`, dan `undo`. Event `keep` perlu disepakati karena decision log harus menunjukkan keep/undo status.
+Current build plan menyebut `summary`, `decision`, `applied`, dan `undo`. Mock contract v1 menambahkan explicit `keep`, optional `heartbeat`, unique `eventId`, dan explicit guardrail results agar dashboard tidak mengarang status validasi.
 
 ### 8.3 Event validation
 
@@ -714,6 +736,25 @@ Current build plan menyebut `summary`, `decision`, `applied`, dan `undo`. Event 
 - Jangan membuat dashboard crash karena payload rusak.
 - Log warning hanya di development.
 - Event tidak boleh membawa PII atau form values.
+
+### 8.4 Mock-first fixture
+
+Dashboard development tidak perlu menunggu SDK selesai. Provisional contract dan
+fixture tersedia di:
+
+```text
+mocks/dashboard/contracts.ts
+mocks/dashboard/ally-events.v1.json
+mocks/dashboard/eval-results.mock.json
+mocks/dashboard/README.md
+```
+
+Contract memakai `version: 1`, event `keep` eksplisit, dan optional `heartbeat`.
+Jika contract SDK final berbeda, buat adapter kecil atau increment version; jangan
+mengubah dashboard reducer secara ad hoc di banyak komponen.
+
+Evaluation fixture wajib menampilkan label mock selama `isMock === true` dan harus
+diganti dengan hasil nyata dari `eval/results.json` sebelum submission.
 
 ---
 
@@ -821,12 +862,14 @@ packages/ally-react/src/bus.ts
 
 - [ ] Confirm siapa yang membuat scaffold `apps/demo`.
 - [ ] Confirm Next.js/Tailwind versions yang sudah terpasang.
-- [ ] Confirm siapa yang install/configure Arc UI.
-- [ ] Sepakati final shape `AllyBusEvent` dengan SDK developer.
-- [ ] Tambahkan event `keep` atau sepakati cara status keep dikirim.
-- [ ] Sepakati source evaluation results (`eval/results.json` atau API route).
-- [ ] Sepakati apakah SDK mengirim heartbeat.
-- [ ] Pastikan `/dashboard` tidak dibungkus `AllyProvider`.
+- [x] Tetapkan ownership Arc UI: dashboard owns components; checkout owns scaffold/global layout.
+- [x] Tetapkan provisional `AllyBusEvent` v1 untuk mock-first development.
+- [x] Tambahkan event `keep` secara eksplisit.
+- [x] Tetapkan source evaluation final: `eval/results.json`.
+- [x] Tetapkan `heartbeat` sebagai optional; fallback menggunakan `lastEventAt`.
+- [x] Tetapkan `/dashboard` tidak dibungkus `AllyProvider`.
+- [x] Tambahkan fixture Tremor → Rule → Applied → Keep dan Combined → LLM → Undo.
+- [x] Tambahkan mock evaluation dengan guard `isMock: true`.
 
 ### Phase 1 — Static dashboard shell
 
@@ -1164,14 +1207,14 @@ Track decisions that need team confirmation:
 
 | Decision | Owner | Status | Final answer |
 |---|---|---|---|
-| Final `AllyBusEvent` shape | SDK + Dashboard | Pending | |
-| Add explicit `keep` event | SDK | Pending | |
-| Add heartbeat event | SDK | Optional | |
-| Arc UI installation owner | Checkout + Dashboard | Pending | |
-| Evaluation JSON schema/path | Eval + Dashboard | Pending | |
-| Physical HP sync required? | Team lead | Pending | Default: two laptop windows |
-| Dashboard language | Team lead | Proposed | English |
-| Recharts before freeze? | Dashboard | Proposed | Only after P0 stable |
+| Final `AllyBusEvent` shape | SDK + Dashboard | Provisional locked | Use mock contract v1; SDK may adopt or provide adapter |
+| Add explicit `keep` event | SDK | Decided | Yes |
+| Add heartbeat event | SDK | Decided | Optional; dashboard derives status from `lastEventAt` if absent |
+| Arc UI installation owner | Checkout + Dashboard | Decided | Dashboard owns components; checkout owns scaffold/global layout |
+| Evaluation JSON schema/path | Eval + Dashboard | Decided | Final source `eval/results.json`; current fixture is mock only |
+| Physical HP sync required? | Team lead | Decided for MVP | Use two same-origin laptop windows for live dashboard |
+| Dashboard language | Team lead | Decided for MVP | English |
+| Recharts before freeze? | Dashboard | Decided | Only after P0 is stable |
 
 ---
 
@@ -1181,6 +1224,7 @@ Update this table while implementing:
 
 | Date/time | Phase | Work completed | Blocker | Next action |
 |---|---|---|---|---|
+| 2026-11-07 | Phase 0 | Provisional contract v1, event fixtures, mock evaluation, ownership decisions, and integration rules added | Waiting only for `apps/demo` scaffold | Merge latest scaffold, then build static dashboard shell |
 | 2026-11-07 | Planning | Dashboard plan, architecture, preview, event proposal, tests, and DoD documented | Waiting for app scaffold/event contract | Sync with checkout and SDK developers |
 | | | | | |
 | | | | | |
