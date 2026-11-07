@@ -40,7 +40,7 @@ export type DashboardDecision = {
 
 export type MetricSnapshot = {
   misTapRate: number | null;
-  avgTimeToTarget: number;
+  avgTimeToTarget: number | null;
   errorLoops: number;
 };
 
@@ -73,4 +73,5 @@ export type DashboardState = DashboardViewModel & {
   beforeWindows: FrictionSummary[];
   afterWindows: FrictionSummary[];
   firstAppliedAt: number | null;
+  adaptationChangedAt: number | null;
 };

@@ -10,7 +10,9 @@ export function BusSimulator({ events }: { events: AllyBusEvent[] }) {
   const timer = useRef<number | null>(null);
   const runId = useRef("");
   const cursor = useRef(0);
-  const lastAt = useRef(0);
+  const timelineStart = useRef(0);
+  const fixtureStart = events[0]?.at ?? 0;
+  const fixtureDuration = (events.at(-1)?.at ?? fixtureStart) - fixtureStart;
   const [available, setAvailable] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -20,6 +22,7 @@ export function BusSimulator({ events }: { events: AllyBusEvent[] }) {
     try {
       channel.current = new BroadcastChannel(ALLY_CHANNEL_NAME);
       runId.current = crypto.randomUUID();
+      timelineStart.current = Date.now() - fixtureDuration;
       setAvailable(true);
       setStatus("Ready. Open the dashboard in another tab on this origin.");
     } catch {
@@ -30,7 +33,7 @@ export function BusSimulator({ events }: { events: AllyBusEvent[] }) {
       channel.current?.close();
       channel.current = null;
     };
-  }, []);
+  }, [fixtureDuration]);
 
   function stop() {
     if (timer.current !== null) window.clearInterval(timer.current);
@@ -43,12 +46,12 @@ export function BusSimulator({ events }: { events: AllyBusEvent[] }) {
     runId.current = crypto.randomUUID();
     cursor.current = 0;
     setIndex(0);
-    lastAt.current = Date.now();
+    timelineStart.current = Date.now() - fixtureDuration;
     channel.current?.postMessage({
       version: 1,
       eventId: `${runId.current}:reset`,
       type: "reset",
-      at: lastAt.current,
+      at: timelineStart.current,
       payload: {},
     } satisfies AllyBusEvent);
     setStatus("Reset sent. The dashboard remains subscribed.");
@@ -59,8 +62,8 @@ export function BusSimulator({ events }: { events: AllyBusEvent[] }) {
     if (!fixture || !channel.current) return;
     const event = structuredClone(fixture);
     event.eventId = `${runId.current}:${fixture.eventId}`;
-    event.at = Math.max(Date.now(), lastAt.current + 1);
-    lastAt.current = event.at;
+    // Preserve the summary windows while replaying faster than producer time.
+    event.at = timelineStart.current + fixture.at - fixtureStart;
     if (event.type === "decision") event.payload.id = `${runId.current}:${event.payload.id}`;
     if (event.type === "applied" || event.type === "keep" || event.type === "undo") {
       event.payload.decisionId = `${runId.current}:${event.payload.decisionId}`;

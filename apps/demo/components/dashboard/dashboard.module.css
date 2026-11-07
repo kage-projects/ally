@@ -18,7 +18,7 @@
   min-height: 100dvh;
   color: var(--dashboard-text);
   background: var(--dashboard-bg);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -101,7 +101,7 @@
 .subtitle {
   margin-top: 3px;
   color: var(--dashboard-muted);
-  font-size: 0.8125rem;
+  font-size: 1rem;
 }
 
 .headerMeta {
@@ -111,12 +111,14 @@
   justify-content: end;
   column-gap: 28px;
   row-gap: 12px;
+  min-width: 0;
 }
 
 .statusRow {
   gap: 12px;
+  flex-wrap: wrap;
   color: var(--dashboard-muted);
-  font-size: 0.8125rem;
+  font-size: 1rem;
 }
 
 .statusPill {
@@ -168,7 +170,7 @@
 .arcButton,
 .restoreButton {
   display: inline-flex;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 12px;
@@ -177,7 +179,7 @@
   padding: 8px 16px;
   color: var(--dashboard-text);
   background: transparent;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 650;
   white-space: nowrap;
   cursor: pointer;
@@ -185,6 +187,7 @@
 }
 
 .page .arcButton {
+  min-height: 44px;
   border-color: transparent;
   color: var(--dashboard-muted);
 }
@@ -207,7 +210,7 @@
   gap: 12px;
   padding: 12px 32px;
   border-bottom: 1px solid var(--dashboard-border);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .workspaceLabel {
@@ -235,7 +238,7 @@
 .eyebrow,
 .detailLabel {
   color: var(--dashboard-muted);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -251,7 +254,7 @@
 .adaptationCopy {
   margin-top: 4px;
   color: var(--dashboard-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .chipRow {
@@ -269,7 +272,7 @@
 
 .tokenValue > span {
   color: var(--dashboard-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .tokenValue > strong {
@@ -321,7 +324,7 @@
 .panelHint {
   margin-top: 4px;
   color: var(--dashboard-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   line-height: 1.6;
 }
 
@@ -356,12 +359,12 @@
 .signalLabel,
 .profileLabel {
   color: var(--dashboard-copy);
-  font-size: 0.8125rem;
+  font-size: 1rem;
 }
 
 .signalValue,
 .profileValue {
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 550;
   font-variant-numeric: tabular-nums;
 }
@@ -415,12 +418,12 @@
 
 .contextLabel {
   color: var(--dashboard-muted);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
 }
 
 .contextValue {
   margin-top: 3px;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -428,7 +431,7 @@
   flex: none;
   padding-top: 3px;
   color: var(--dashboard-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .page .streamTabs {
@@ -449,7 +452,7 @@
   flex: 1;
   min-height: 48px;
   border-radius: 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -483,7 +486,7 @@
   border: 1px solid #34383d;
   border-radius: 50%;
   color: #e1e5e9;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 650;
 }
 
@@ -497,7 +500,7 @@
 }
 
 .decisionTitle {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 650;
   letter-spacing: -0.015em;
 }
@@ -510,7 +513,7 @@
   row-gap: 2px;
   margin-top: 4px;
   color: var(--dashboard-muted);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -534,7 +537,7 @@
   align-items: center;
   gap: 5px;
   padding-top: 2px;
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
 }
 
 .statusKept {
@@ -552,7 +555,7 @@
 .decisionExplanation {
   margin-top: 14px;
   color: #c9cdd2;
-  font-size: 0.875rem;
+  font-size: 1rem;
   line-height: 1.75;
 }
 
@@ -570,7 +573,7 @@
   gap: 16px;
   padding: 7px 0;
   border-bottom: 1px solid #1e2023;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .diffItem dt {
@@ -592,7 +595,7 @@
 
 .guardrailItem {
   color: var(--dashboard-muted);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
 }
 
 .guardrailItem strong {
@@ -610,7 +613,7 @@
   padding: 6px 0;
   color: var(--dashboard-accent);
   background: transparent;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
@@ -624,7 +627,7 @@
   justify-items: center;
   padding: 40px 24px 48px;
   color: var(--dashboard-copy);
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .streamEndMark {
@@ -636,7 +639,7 @@
 .streamEnd p {
   margin-top: 4px;
   color: var(--dashboard-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .metricRow {
@@ -655,12 +658,12 @@
 
 .metricName {
   color: var(--dashboard-copy);
-  font-size: 0.8125rem;
+  font-size: 1rem;
 }
 
 .metricImprovement {
   color: var(--dashboard-success);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -683,11 +686,11 @@
 
 .metricValue small {
   color: var(--dashboard-muted);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
 }
 
 .metricValue strong {
-  font-size: 1.625rem;
+  font-size: 1.75rem;
   font-weight: 500;
   letter-spacing: -0.045em;
   line-height: 1.3;
@@ -714,7 +717,7 @@
 
 .evaluationName {
   color: var(--dashboard-copy);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .evaluationNumbers {
@@ -723,7 +726,7 @@
   grid-template-columns: 48px 48px;
   gap: 12px;
   text-align: right;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -739,7 +742,7 @@
 .evaluationColumnLabels {
   padding: 12px 0 4px;
   color: var(--dashboard-muted);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
 }
 
 .evaluationColumnLabels .evaluationNumbers {
@@ -752,13 +755,13 @@
   gap: 8px;
   margin-bottom: 10px;
   color: var(--dashboard-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   line-height: 1.65;
 }
 
 .mockBadge {
   color: var(--dashboard-warning);
-  font-size: 0.625rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.09em;
 }
@@ -792,14 +795,14 @@
   max-width: 42ch;
   margin: 10px auto 24px;
   color: var(--dashboard-muted);
-  font-size: 0.875rem;
+  font-size: 1rem;
   line-height: 1.75;
 }
 
 .emptyHint {
   margin-top: 18px;
   color: var(--dashboard-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .simulatorBody {
@@ -825,13 +828,13 @@
 
 .simulatorStatus {
   margin-top: 24px;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .simulatorEvents {
   margin-top: 24px;
   color: var(--dashboard-muted);
-  font-size: 0.8125rem;
+  font-size: 1rem;
 }
 
 .simulatorEvents [data-sent="true"] {
@@ -853,7 +856,7 @@
   padding: 20px 32px;
   border-top: 1px solid var(--dashboard-border);
   color: var(--dashboard-muted);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
 }
 
 .footerBrand {
@@ -861,6 +864,210 @@
   font-size: 1.25rem;
   font-weight: 650;
   letter-spacing: -0.08em;
+}
+
+.contextPill,
+.contextValue,
+.decisionExplanation,
+.panelHint,
+.evaluationName,
+.mockNotice,
+.simulatorStatus {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.metricImprovement[data-trend="worse"] {
+  color: var(--dashboard-danger);
+}
+
+.metricImprovement[data-trend="neutral"],
+.metricImprovement[data-trend="unknown"] {
+  color: var(--dashboard-muted);
+}
+
+.sourceTag[data-source="fallback"] {
+  color: var(--dashboard-warning);
+}
+
+.decisionDialog {
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(85dvh, 900px);
+  margin: auto;
+  border: 1px solid #606873;
+  border-radius: 0;
+  padding: 0;
+  color: var(--dashboard-text);
+  background: var(--dashboard-bg);
+  overflow: auto;
+}
+
+.decisionDialog::backdrop {
+  background: rgba(0, 0, 0, 0.76);
+}
+
+.dialogHeading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.dialogHeading h2 {
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.dialogBody {
+  padding: 0 24px 24px;
+}
+
+.dialogClose {
+  flex: none;
+  min-height: 44px;
+  border: 1px solid #606873;
+  padding: 8px 14px;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dialogClose:hover {
+  background: var(--surface-muted);
+}
+
+.dialogMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-block: 16px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.decisionDialog .diffItem {
+  font-size: 1rem;
+}
+
+.decisionDialog .guardrailList {
+  display: grid;
+}
+
+.decisionDialog .guardrailItem {
+  font-size: 0.875rem;
+}
+
+.evaluationGrid .evaluationRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.evaluationGrid .evaluationNumbers {
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  text-align: left;
+  font-size: 1rem;
+}
+
+.evaluationNumbers > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.evaluationColumnLabels {
+  display: grid;
+  gap: 8px;
+}
+
+.evaluationActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.evaluationMeta,
+.evaluationUnavailable {
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.evaluationUnavailable {
+  padding-bottom: 12px;
+}
+
+.waitingGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr);
+}
+
+.waitingEvaluation {
+  min-width: 0;
+  border-left: 1px solid var(--dashboard-border);
+}
+
+.contentArea {
+  min-width: 0;
+}
+
+.contentArea:focus-visible {
+  outline: 2px solid var(--dashboard-accent);
+  outline-offset: -2px;
+}
+
+.evaluationMeta {
+  display: grid;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.detailToggle:disabled {
+  color: var(--dashboard-muted);
+  cursor: progress;
+}
+
+.panelHeader > div:first-child {
+  min-width: 0;
+}
+
+.panelHeader > .detailToggle {
+  flex: none;
+  max-width: 110px;
+  margin-top: 0;
+  text-align: right;
+}
+
+.signalLabel,
+.profileLabel,
+.signalValue,
+.profileValue,
+.contextValue,
+.metricName,
+.evaluationName,
+.decisionExplanation,
+.diffItem {
+  font-size: 1rem;
+}
+
+.dialogMeta > div {
+  min-width: 0;
+}
+
+.dialogMeta dt {
+  font-size: 0.875rem;
+}
+
+.dialogMeta dd {
+  color: var(--dashboard-text);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
 }
 
 @media (min-width: 1101px) {
@@ -907,6 +1114,14 @@
 }
 
 @media (max-width: 720px) {
+  .waitingGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .waitingEvaluation {
+    border-top: 1px solid var(--dashboard-border);
+    border-left: 0;
+  }
   .shell {
     border-inline: 0;
   }
@@ -932,7 +1147,7 @@
   .statusRow {
     flex-wrap: wrap;
     gap: 8px;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
 
   .contextPill {
@@ -941,7 +1156,7 @@
 
   .workspaceBar {
     padding-inline: 20px;
-    font-size: 0.6875rem;
+    font-size: 0.875rem;
   }
 
   .adaptationBanner {
@@ -960,11 +1175,11 @@
   }
 
   .tokenValue > span {
-    font-size: 0.625rem;
+    font-size: 0.875rem;
   }
 
   .tokenValue > strong {
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
 
   .grid {

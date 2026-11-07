@@ -21,7 +21,7 @@ function receive(state: DashboardState, event: AllyBusEvent, receivedAt = 100_00
 }
 
 function summaryEvent(index: number): Extract<AllyBusEvent, { type: "summary" }> {
-  return { ...summary, eventId: `summary-${index}`, at: 1000 + index };
+  return { ...summary, eventId: `summary-${index}`, at: 1000 + index * 10_000 };
 }
 
 test("accepts every v1 fixture, including optional heartbeat", () => {
@@ -157,7 +157,7 @@ test("freezes baseline windows, bounds after windows and handles zero-tap metric
   zeroState = receive(zeroState, decision);
   zeroState = receive(zeroState, { version: 1, eventId: "apply-zero", type: "applied", at: zero.at + 1, payload: { decisionId: decision.payload.id } });
   assert.equal(zeroState.comparison.before?.misTapRate, null);
-  assert.equal(zeroState.comparison.before?.avgTimeToTarget, 0);
+  assert.equal(zeroState.comparison.before?.avgTimeToTarget, null);
 });
 
 test("can undo the active adaptation even after its log entry is pruned", () => {

@@ -2,6 +2,8 @@
 
 import type { AllyBusEvent, EvaluationResults } from "@/lib/dashboard/types";
 import { useAllyBus } from "@/lib/dashboard/use-ally-bus";
+import type { EvaluationEvidence } from "@/lib/dashboard/evaluation";
+import { useEvaluation } from "@/lib/dashboard/use-evaluation";
 
 import { ActiveAdaptationBanner } from "./active-adaptation-banner";
 import { DashboardEmptyState } from "./dashboard-empty-state";
@@ -15,14 +17,17 @@ import styles from "./dashboard.module.css";
 
 type DashboardClientProps = {
   demoEvents: AllyBusEvent[];
-  evaluation: EvaluationResults;
+  initialEvaluation: EvaluationEvidence;
+  demoEvaluation: EvaluationResults;
 };
 
 export function DashboardClient({
   demoEvents,
-  evaluation,
+  initialEvaluation,
+  demoEvaluation,
 }: DashboardClientProps) {
   const { dashboard, connectionStatus, secondsSinceEvent, reset, loadDemo } = useAllyBus();
+  const { evidence, refreshing, refreshError, refresh } = useEvaluation(initialEvaluation);
   const hasData = dashboard.currentSummary !== null || dashboard.decisions.length > 0;
   const streamLabel = dashboard.mode === "demo" ? "Demo · Sample session"
     : connectionStatus === "waiting" ? "Listening · Same-origin events"
@@ -32,8 +37,8 @@ export function DashboardClient({
 
   return (
     <div className={styles.page}>
+      <a className={styles.skipLink} href="#dashboard-content">Skip to dashboard content</a>
       <main className={styles.shell}>
-        <a className={styles.skipLink} href="#decision-stream">Skip to decisions</a>
         <DashboardHeader
           hasData={hasData}
           onReset={reset}
@@ -54,32 +59,45 @@ export function DashboardClient({
           </span>
         </div>
 
-        {hasData ? (
-          <>
-            <ActiveAdaptationBanner decision={dashboard.activeDecision} />
+        <div id="dashboard-content" className={styles.contentArea} tabIndex={-1}>
+          {hasData ? (
+            <>
+              <ActiveAdaptationBanner decision={dashboard.activeDecision} />
 
-            <div className={styles.grid}>
-              <div className={`${styles.column} ${styles.columnLeft}`}>
-                <LiveSignalsPanel summary={dashboard.currentSummary} />
-                <ProfileGauge profile={dashboard.profile} />
+              <div className={styles.grid}>
+                <div className={`${styles.column} ${styles.columnLeft}`}>
+                  <LiveSignalsPanel summary={dashboard.currentSummary} />
+                  <ProfileGauge profile={dashboard.profile} />
+                </div>
+
+                <div className={`${styles.column} ${styles.columnCenter}`}>
+                  <DecisionStream decisions={dashboard.decisions} />
+                </div>
+
+                <div className={`${styles.column} ${styles.columnRight}`}>
+                  <SessionImpactPanel comparison={dashboard.comparison} />
+                  <EvaluationPanel
+                    evidence={evidence}
+                    demoResults={dashboard.mode === "demo" ? demoEvaluation : undefined}
+                    onRefresh={refresh}
+                    refreshing={refreshing}
+                    refreshError={refreshError}
+                  />
+                </div>
               </div>
-
-              <div className={`${styles.column} ${styles.columnCenter}`}>
-                <DecisionStream decisions={dashboard.decisions} />
-              </div>
-
-              <div className={`${styles.column} ${styles.columnRight}`}>
-                <SessionImpactPanel comparison={dashboard.comparison} />
-                <EvaluationPanel evaluation={evaluation} />
+            </>
+          ) : (
+            <div className={styles.waitingGrid}>
+              <DashboardEmptyState
+                connectionStatus={connectionStatus}
+                onRestore={() => loadDemo(demoEvents)}
+              />
+              <div className={styles.waitingEvaluation}>
+                <EvaluationPanel evidence={evidence} onRefresh={refresh} refreshing={refreshing} refreshError={refreshError} />
               </div>
             </div>
-          </>
-        ) : (
-          <DashboardEmptyState
-            connectionStatus={connectionStatus}
-            onRestore={() => loadDemo(demoEvents)}
-          />
-        )}
+          )}
+        </div>
 
         <footer className={styles.footer}>
           <span className={styles.footerBrand}>ally.</span>

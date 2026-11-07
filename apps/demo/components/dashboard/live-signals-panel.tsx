@@ -30,7 +30,9 @@ export function LiveSignalsPanel({ summary }: LiveSignalsPanelProps) {
           <h2 className={styles.sectionHeading} id="live-signals-title">
             Signals
           </h2>
-          <p className={styles.panelHint}>Interaction counts · 10s window</p>
+          <p className={styles.panelHint}>
+            {summary ? `Interaction counts · ${summary.windowMs / 1000}s window` : "Waiting for an interaction window"}
+          </p>
         </div>
       </div>
 

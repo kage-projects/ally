@@ -68,9 +68,9 @@ export function DashboardHeader({
           <a className={styles.button} href="/dashboard/simulator" target="_blank" rel="noreferrer">
             Event simulator <span aria-hidden="true">↗</span>
           </a>
-          {hasData ? <a className={styles.button} href="#evaluation-evidence">
+          <a className={styles.button} href="#evaluation-evidence">
             Evaluation <span aria-hidden="true">↗</span>
-          </a> : null}
+          </a>
           <Button
             className={styles.arcButton}
             onClick={hasData ? onReset : onRestore}

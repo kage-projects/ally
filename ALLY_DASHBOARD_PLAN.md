@@ -924,15 +924,15 @@ feat(dashboard): subscribe to live Ally events
 
 ### Phase 3 — Decision stream
 
-- [ ] Render source badge `RULE`, `LLM`, atau `FALLBACK`.
-- [ ] Render preset dan confidence.
-- [ ] Render latency.
-- [ ] Generate human-readable token/layout diff.
-- [ ] Render explanation.
-- [ ] Update status on applied/keep/undo.
-- [ ] Add Rule/LLM filter.
-- [ ] Add decision detail dialog/drawer.
-- [ ] Limit log ke 100 entries.
+- [x] Render source badge `RULE`, `LLM`, atau `FALLBACK`.
+- [x] Render preset dan confidence.
+- [x] Render latency.
+- [x] Generate human-readable token/layout diff.
+- [x] Render explanation.
+- [x] Update status on applied/keep/undo.
+- [x] Add Rule/LLM filter.
+- [x] Add decision detail dialog/drawer.
+- [x] Limit log ke 100 entries.
 
 Suggested commit:
 
@@ -942,16 +942,16 @@ feat(dashboard): add adaptation decision stream
 
 ### Phase 4 — Before/after live metrics
 
-- [ ] Collect baseline summary windows.
-- [ ] Freeze before group ketika event `applied` diterima.
-- [ ] Collect after windows.
-- [ ] Calculate mis-tap rate.
-- [ ] Calculate average time-to-target.
-- [ ] Calculate error loops.
-- [ ] Calculate improvement percentage.
-- [ ] Handle zero taps.
-- [ ] Display sample/window count.
-- [ ] Display collecting state jika data belum cukup.
+- [x] Collect baseline summary windows.
+- [x] Freeze before group ketika event `applied` diterima.
+- [x] Collect after windows.
+- [x] Calculate mis-tap rate.
+- [x] Calculate average time-to-target.
+- [x] Calculate error loops.
+- [x] Calculate improvement percentage.
+- [x] Handle zero taps.
+- [x] Display sample/window count.
+- [x] Display collecting state jika data belum cukup.
 
 Suggested commit:
 
@@ -961,13 +961,19 @@ feat(dashboard): add live before and after metrics
 
 ### Phase 5 — Evaluation evidence
 
-- [ ] Define `EvalResults` schema bersama eval developer.
-- [ ] Read real results from `eval/results.json` or API.
-- [ ] Render Ally OFF vs Ally ON.
-- [ ] Display N/session count.
-- [ ] Display mean ± standard deviation jika tersedia.
-- [ ] Ensure no mock number remains before submission.
-- [ ] Add `View full results` if `results.md` is exposed/documented.
+- [x] Validate the shared `EvaluationResults` v1 contract at runtime.
+- [x] Load `eval/results.json` through a validated no-store API when measured output is available.
+- [x] Render Ally OFF vs Ally ON.
+- [x] Display N/session count.
+- [x] Display mean ± standard deviation jika tersedia.
+- [x] Keep mock numbers out of live mode; samples appear only in explicit demo mode.
+- [x] Add `View full results` only when valid measured JSON and an actual `results.md` exist.
+- [ ] Produce the measured `eval/results.json` with the checkout evaluation harness before submission.
+
+Integration is ready; actual checkout/evaluation producers are not present in this
+repository. Missing/invalid/unreadable results show an explicit unavailable state.
+The browser refreshes evidence every 15 seconds or on demand. Fixed evaluation
+files are included in Next.js output tracing when present at build time.
 
 Suggested commit:
 
@@ -980,15 +986,20 @@ feat(dashboard): display evaluation evidence
 - [ ] Test at 1920×1080.
 - [ ] Test at 1366×768.
 - [ ] Test narrower/tablet layout.
-- [ ] Body text minimal 16px.
-- [ ] Keyboard focus visible.
+- [x] Primary body/data text minimal 16px; secondary metadata 14px and outcome values 28px.
+- [x] Implement visible keyboard focus and a persistent skip-link target.
 - [ ] Dialog/drawer keyboard accessible.
-- [ ] Color contrast checked.
-- [ ] Respect `prefers-reduced-motion`.
-- [ ] Disable continuous/chart animation.
+- [x] Color contrast checked for text and action affordances.
+- [x] Respect `prefers-reduced-motion`.
+- [x] Disable continuous/chart animation.
 - [ ] Console clean.
-- [ ] Production build passes.
+- [x] Production build passes.
 - [ ] Demo rehearsal with checkout and dashboard side-by-side.
+
+Fresh screenshots at target widths, native-dialog keyboard interaction, and
+browser-console verification remain open because the browser access host is
+unavailable. Static responsive, wrapping, focus, contrast, dialog lifecycle, and
+polling cleanup checks passed. Checkout rehearsal also needs the real SDK.
 
 Suggested commit:
 
@@ -1002,25 +1013,25 @@ style(dashboard): polish projector layout and accessibility
 
 ### P0 — Must have
 
-- [ ] `/dashboard` opens without error.
-- [ ] Subscribe to `BroadcastChannel("ally")`.
-- [ ] All signal counters are visible.
-- [ ] Motor/visual/cognitive profile is visible.
-- [ ] Decision log shows source, preset, latency, diff, explanation, and status.
-- [ ] Before/after live metrics work.
-- [ ] Undo updates decision status.
+- [x] `/dashboard` opens without error.
+- [x] Subscribe to `BroadcastChannel("ally")`.
+- [x] All signal counters are rendered from validated live summaries.
+- [x] Motor/visual/cognitive profile is rendered from validated live summaries.
+- [x] Decision log shows source, preset, latency, diff, explanation, and status.
+- [x] Before/after live metrics work with bounded, clean adaptation windows.
+- [x] Undo updates decision status.
 - [ ] Dashboard is readable at 1080p.
-- [ ] Empty/waiting state exists.
-- [ ] Privacy footer exists.
-- [ ] Dashboard does not adapt with checkout tokens.
+- [x] Empty/waiting state exists.
+- [x] Privacy footer exists.
+- [x] Dashboard is outside the checkout provider and uses its own style tokens.
 
 ### P1 — Add after P0 is stable
 
-- [ ] Active adaptation banner.
-- [ ] Rule/LLM filter.
-- [ ] Decision detail drawer.
-- [ ] Evaluation results.
-- [ ] Heartbeat-based checkout status.
+- [x] Active adaptation banner.
+- [x] Rule/LLM/Fallback filter.
+- [x] Decision detail dialog.
+- [x] Validated evaluation adapter and panel; actual measured run is pending.
+- [x] Heartbeat context and honest receive-time status; no peer-count claim.
 - [ ] Open checkout button/QR.
 
 ### P2 — Only if safe
@@ -1234,6 +1245,7 @@ Update this table while implementing:
 
 | Date/time | Phase | Work completed | Blocker | Next action |
 |---|---|---|---|---|
+| 2026-11-07 | Phases 3–6 | Three parallel subagents completed decision dialogs/full diffs, honest weighted/normalized metrics, measured-evidence integration, and static QA; 37 tests, typecheck, lint, and production build pass; UI remains a flat grid | Actual checkout/eval output absent; fresh browser width/keyboard/console QA blocked by unavailable browser host | Run real checkout evaluation, load results, and finish browser/rehearsal gates |
 | 2026-11-07 | Phase 2 | Validated v1 bus listener, bounded reducer, receive-time connection status, explicit demo/live isolation, and synthetic event sender implemented; 15 tests, typecheck, lint, and production build pass. Playwright verified two same-origin tabs, 11-event replay, Kept/Undone, Idle, reset, live replacement of demo data, unavailable-channel fallback, and tablet overflow | None for Phase 2; checkout SDK integration still uses provisional contract | Continue Phase 3 decision stream refinements |
 | 2026-11-07 | Phase 1 | Next.js workspace scaffold, responsive dashboard shell, Arc UI primitives, mock adapter, reset/empty state, metrics, and decision filters completed | Must reconcile shared scaffold when checkout branch becomes available | Start Phase 2 live `BroadcastChannel` adapter |
 | 2026-11-07 | Phase 0 | Provisional contract v1, event fixtures, mock evaluation, ownership decisions, and integration rules added | Resolved by minimal dashboard-owned scaffold | Build static dashboard shell |

@@ -28,6 +28,7 @@ export function createDashboardState(): DashboardState {
     beforeWindows: [],
     afterWindows: [],
     firstAppliedAt: null,
+    adaptationChangedAt: null,
   };
 }
 
@@ -38,8 +39,9 @@ function metrics(windows: FrictionSummary[]): MetricSnapshot | null {
     misTapRate: taps > 0 ? windows.reduce((total, window) => total + window.counts.missTap, 0) / taps : null,
     avgTimeToTarget: taps > 0
       ? windows.reduce((total, window) => total + window.timings.avgTimeToTarget * window.counts.taps, 0) / taps
-      : 0,
-    errorLoops: windows.reduce((total, window) => total + window.counts.errorLoop, 0),
+      : null,
+    errorLoops: windows.reduce((total, window) => total + window.counts.errorLoop, 0)
+      / windows.reduce((total, window) => total + window.windowMs, 0) * 10_000,
   };
 }
 
@@ -62,7 +64,8 @@ function applyEvent(state: DashboardState, event: AllyBusEvent): DashboardState 
       next.currentContext = { step: summary.context.step, inputModality: summary.inputModality };
       if (state.firstAppliedAt === null) {
         next.beforeWindows = [...state.beforeWindows, summary].slice(-COMPARISON_WINDOW_LIMIT);
-      } else if (event.at > state.firstAppliedAt) {
+      } else if (state.activeDecision !== null && state.adaptationChangedAt !== null &&
+        event.at - summary.windowMs >= state.adaptationChangedAt) {
         next.afterWindows = [...state.afterWindows, summary].slice(-COMPARISON_WINDOW_LIMIT);
       }
       next.comparison = {
@@ -96,6 +99,7 @@ function applyEvent(state: DashboardState, event: AllyBusEvent): DashboardState 
       next.decisions = state.decisions.map((item) => item.id === decision.id ? updated : item);
       if (event.type === "applied") {
         next.activeDecision = updated;
+        next.adaptationChangedAt = event.at;
         if (state.firstAppliedAt === null) {
           next.firstAppliedAt = event.at;
           next.comparison = { ...state.comparison, before: metrics(state.beforeWindows) };
@@ -103,6 +107,7 @@ function applyEvent(state: DashboardState, event: AllyBusEvent): DashboardState 
       } else if (state.activeDecision?.id === decision.id) {
         next.activeDecision = event.type === "keep" ? updated
           : next.decisions.find((item) => item.status === "applied" || item.status === "kept") ?? null;
+        if (event.type === "undo") next.adaptationChangedAt = event.at;
       }
       break;
     }

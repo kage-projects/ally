@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:dashboard": "tsc -p tsconfig.dashboard-tests.json && node --test .test-output/apps/demo/tests/dashboard.test.js"
+    "test:dashboard": "tsc -p tsconfig.dashboard-tests.json && node --test .test-output/apps/demo/tests/*.test.js"
   },
   "dependencies": {
     "motion": "^14.9.1",

@@ -1,6 +1,6 @@
 import {
   formatDuration,
-  formatImprovement,
+  describeMetricChange,
   formatPercent,
 } from "@/lib/dashboard/formatters";
 import type { SessionComparison } from "@/lib/dashboard/types";
@@ -22,7 +22,7 @@ export function SessionImpactPanel({ comparison }: SessionImpactPanelProps) {
             Session impact
           </h2>
           <p className={styles.panelHint}>
-            {comparison.beforeWindowCount} before · {comparison.afterWindowCount} after
+            {comparison.beforeWindowCount} baseline windows · {comparison.afterWindowCount} adapted windows
           </p>
         </div>
       </div>
@@ -45,8 +45,8 @@ export function SessionImpactPanel({ comparison }: SessionImpactPanelProps) {
             <MetricRow
               after={after.errorLoops}
               before={before.errorLoops}
-              format={(value) => (value === null ? "—" : value.toFixed(0))}
-              label="Error loops"
+              format={(value) => (value === null ? "—" : value.toFixed(1))}
+              label="Error loops / 10s"
             />
           </div>
         ) : (
@@ -55,12 +55,16 @@ export function SessionImpactPanel({ comparison }: SessionImpactPanelProps) {
               <div className={styles.emptyIcon} aria-hidden="true">↗</div>
               <h3 className={styles.emptyTitle}>Collecting outcome data</h3>
               <p className={styles.emptyCopy}>
-                Metrics appear after Ally receives at least one summary before and
-                after an applied adaptation.
+                Metrics need a baseline and a full window recorded while an
+                adaptation is active. Windows spanning a UI change are excluded.
               </p>
             </div>
           </div>
         )}
+        <p className={styles.panelHint}>
+          Session observations, not evaluation results. Tap rates are weighted by
+          taps; error loops are normalized per 10 seconds.
+        </p>
       </div>
     </section>
   );
@@ -77,19 +81,13 @@ function MetricRow({
   after: number | null;
   format: (value: number | null) => string;
 }) {
-  const improvement = formatImprovement(before, after);
-  const improvementLabel =
-    before !== null && after !== null && before === after
-      ? "No change"
-      : improvement === null
-        ? "No baseline"
-        : `↓ ${Math.max(0, improvement).toFixed(0)}%`;
+  const change = describeMetricChange(before, after);
 
   return (
     <div className={styles.metricRow}>
       <div className={styles.metricHeader}>
         <span className={styles.metricName}>{label}</span>
-        <span className={styles.metricImprovement}>{improvementLabel}</span>
+        <span className={styles.metricImprovement} data-trend={change.trend}>{change.label}</span>
       </div>
       <div className={styles.metricValues}>
         <span className={styles.metricValue}>
