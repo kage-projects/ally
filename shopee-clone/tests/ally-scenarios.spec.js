@@ -52,8 +52,7 @@ for(const [name,path,selector,property] of screens) {
     const locked=await page.locator('[data-ally-slot]').allTextContents();
     await zoomTwice(page);
     await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','applied',{timeout:2000});
-    const after=await target.evaluate((element,property)=>getComputedStyle(element)[property],property);
-    expect(parseFloat(after)).toBeGreaterThan(parseFloat(before));
+    await expect.poll(async()=>parseFloat(await target.evaluate((element,property)=>getComputedStyle(element)[property],property))).toBeGreaterThan(parseFloat(before));
     await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-contrast','high');
     expect(await page.locator('[data-ally-slot]').allTextContents()).toEqual(locked);
     expect(calls).toBe(0);
@@ -65,7 +64,7 @@ for(const [name,path,selector,property] of screens) {
     await page.screenshot({path:`screenshots/actual/ally-cases/${name}-${page.viewportSize().width}.png`});
     await page.getByRole('button',{name:'Undo',exact:true}).tap();
     await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','observing');
-    expect(await target.evaluate((element,property)=>getComputedStyle(element)[property],property)).toBe(before);
+    await expect.poll(()=>target.evaluate((element,property)=>getComputedStyle(element)[property],property)).toBe(before);
   });
 }
 
@@ -89,11 +88,11 @@ test('three actual missed pointer clicks enlarge cart quantity controls without 
   // input preserves real misses while the viewport remains mobile-sized.
   for(let i=0;i<3;i++)await page.mouse.click(before.x+before.width+3,before.y+before.height/2);
   await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','applied',{timeout:2000});
-  expect((await target.boundingBox()).height).toBeGreaterThanOrEqual(44);
+  await expect.poll(async()=>(await target.boundingBox()).height).toBeGreaterThanOrEqual(44);
   expect(await page.getByLabel('Jumlah kiip',{exact:true}).textContent()).toBe(quantity);
   expect(await page.locator('[data-ally-slot]').allTextContents()).toEqual(locked);
   await page.getByRole('button',{name:'Undo',exact:true}).tap();
-  expect((await target.boundingBox()).height).toBeCloseTo(before.height,0);
+  await expect.poll(async()=>(await target.boundingBox()).height).toBeCloseTo(before.height,0);
 });
 
 test('invalid voucher attempts show local guidance even when AI fails, without exposing the code or selecting a voucher',async({page})=>{

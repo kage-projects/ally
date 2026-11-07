@@ -11,8 +11,17 @@ async function zoomTwice(page) {
   await client.detach();
 }
 
-test('SDK highlights real changes, closes help on Keep and reobserves without losing the kept baseline',async({page})=>{
+test('SDK animates real changes, closes help on Keep and reobserves without losing the kept baseline',async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.addInitScript(()=>{
+    window.allyAnimations=[];
+    const animate=Element.prototype.animate;
+    Element.prototype.animate=function(keyframes,options){
+      const animation=animate.call(this,keyframes,options);
+      window.allyAnimations.push({element:this,keyframes,options});
+      return animation;
+    };
+  });
   await page.route('**/api/ally/status',route=>route.fulfill({json:{aiEnabled:false,keyConfigured:false,model:'local-rules'}}));
   await page.goto('/cart?ally=1');
   const root=page.locator('[data-ally-root]'),target=page.getByRole('button',{name:'Tambah kiip',exact:true});
@@ -23,8 +32,12 @@ test('SDK highlights real changes, closes help on Keep and reobserves without lo
   await expect(root).toHaveAttribute('data-ally-status','applied');
   await expect(target).toHaveAttribute('data-ally-highlighted','');
   await expect(page.locator('[data-ally-ui] [data-ally-highlighted]')).toHaveCount(0);
+  await expect.poll(async()=>(await target.boundingBox()).height).toBe(56);
   const keptHeight=(await target.boundingBox()).height;
-  expect(keptHeight).toBe(56);
+  const transition=await target.evaluate(element=>window.allyAnimations.find(entry=>entry.element===element));
+  expect(transition.options).toEqual({duration:240,easing:'ease-out'});
+  expect(transition.keyframes[0].opacity).toBe(.82);
+  expect(transition.keyframes[1].opacity).toBe(1);
   await page.screenshot({path:`screenshots/actual/ally-sdk-update/motor-highlight-${page.viewportSize().width}.png`});
   await expect(page.locator('[data-ally-highlighted]')).toHaveCount(0,{timeout:5500});
   await page.getByRole('button',{name:'Keep',exact:true}).tap();
@@ -39,11 +52,14 @@ test('SDK highlights real changes, closes help on Keep and reobserves without lo
   expect(Date.now()-restart).toBeLessThan(3000);
   await expect(root).toHaveAttribute('data-ally-contrast','high');
   await expect(target).toHaveAttribute('data-ally-highlighted','');
+  await expect.poll(async()=>(await target.boundingBox()).height).toBe(48);
   await page.screenshot({path:`screenshots/actual/ally-sdk-update/fresh-visual-${page.viewportSize().width}.png`});
+  const animationsBeforeUndo=await target.evaluate(element=>window.allyAnimations.filter(entry=>entry.element===element).length);
   await page.getByRole('button',{name:'Undo',exact:true}).tap();
   await expect(root).toHaveAttribute('data-ally-status','observing');
   await expect(page.locator('[data-ally-highlighted]')).toHaveCount(0);
-  expect((await target.boundingBox()).height).toBe(keptHeight);
+  await expect.poll(async()=>(await target.boundingBox()).height).toBe(keptHeight);
+  expect(await target.evaluate(element=>window.allyAnimations.filter(entry=>entry.element===element).length)).toBeGreaterThan(animationsBeforeUndo);
   expect(await page.getByLabel('Jumlah kiip',{exact:true}).textContent()).toBe(quantity);
   expect(await page.locator('[data-ally-slot]').allTextContents()).toEqual(protectedText);
   await page.locator('.ally-demo-trigger').tap();

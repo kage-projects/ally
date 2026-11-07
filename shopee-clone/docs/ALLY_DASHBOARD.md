@@ -6,6 +6,22 @@ its synthetic demo/evaluation fixtures are unchanged.
 
 ## Run
 
+For the live-only Shopee dashboard, run **`npm.cmd run dashboard:dev` inside
+`shopee-clone`**. It prepares the sibling dashboard source in the host's writable
+cache and starts Next on port 3000, removing demo controls, mock fixture props
+and the simulator entry point. The sibling source is outside this workspace's
+write permission and is not modified. The older root `pnpm dev` command still
+runs that original app, including its demo controls; replace it with this
+host command for the live-only dashboard.
+
+Run Shopee in a separate terminal with `npm.cmd run dev -- --host 127.0.0.1
+--port 5173 --strictPort`. Open `http://127.0.0.1:5173/dashboard` first, then
+Shopee with `?ally=0` or `?ally=1` in another tab. Direct dashboard access on
+port 3000 redirects to this shared origin. Restart an already-running Shopee
+server after this change so it sends the dashboard proxy header.
+
+Testing was explicitly skipped for this live-only change at the user's request.
+
 In the repository root (the parent of `shopee-clone`), install the dashboard's
 workspace dependencies and start Next:
 

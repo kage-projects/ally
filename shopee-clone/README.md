@@ -18,6 +18,17 @@ npm.cmd run dev -- --host 127.0.0.1
 - Address demo: http://127.0.0.1:5173/address/edit?ally=1
 - Live analytics: http://127.0.0.1:5173/dashboard (start the sibling dashboard first)
 
+Start the live-only dashboard from this folder in a separate terminal:
+
+```powershell
+npm.cmd run dashboard:dev
+```
+
+This serves the prepared dashboard on port 3000 with demo loading and the
+simulator removed. Direct access redirects through Shopee's port 5173 so both
+tabs share the event channel. Use this command in place of the root dashboard
+`pnpm dev` for the live-only version. Restart Shopee after updating its proxy.
+
 See [dashboard setup and demo steps](docs/ALLY_DASHBOARD.md). Open the dashboard
 before interacting with Shopee, in the same browser and on the same port 5173.
 
@@ -112,7 +123,7 @@ Firebase accounts/history, or public deployment.
 
 ## SDK artifact
 
-`vendor/ally-react-0.1.0-shopee.6.tgz` is a runtime JavaScript snapshot built from
+`vendor/ally-react-0.1.1-shopee.7.tgz` is a runtime JavaScript snapshot built from
 the supplied sibling `../sdk`. Host patches in `scripts/ally-patches.mjs`:
 instead of always
 aborting at 2 seconds, it respects `policy.llm.timeoutMs`, with a 2-second minimum
@@ -126,8 +137,10 @@ dimension and must meet the merchant apply threshold. SDK schema validation,
 stale-response cancellation and Undo remain.
 The snapshot also exposes live observation callbacks, epoch timestamps, ephemeral
 decision/transaction correlation and measured rule/planner latency for the
-dashboard bridge. It includes the upstream four-second change highlight and
-post-Keep observation lifecycle. Modal controls follow the SDK's help visibility;
+dashboard bridge. It includes the upstream 240ms transition on Apply and Undo,
+four-second change highlight and post-Keep observation lifecycle. Transitions
+respect reduced motion; Undo restores the baseline without highlighting it.
+Modal controls follow the SDK's help visibility;
 retained appearance follows the effective root attributes even after Undo.
 An `observationOnly` host option forwards actual sensor windows and rule scores
 before returning without applying a candidate or starting AI. Switching modes
@@ -139,7 +152,7 @@ To rebuild after an SDK change:
 
 ```powershell
 npm.cmd run sdk:build
-npm.cmd install ./vendor/ally-react-0.1.0-shopee.6.tgz
+npm.cmd install ./vendor/ally-react-0.1.1-shopee.7.tgz
 ```
 
 Restart Vite after replacing the SDK artifact so dependency optimization uses

@@ -118,7 +118,7 @@ test.describe('live dashboard integration',()=>{
     await expect(banner).toContainText('Visual Support');
     await page.getByRole('button',{name:'Undo',exact:true}).tap();
     await expect(banner).toContainText('Motor Support');await expect(banner).toContainText('Kept by user');
-    expect((await target.boundingBox()).height).toBe(56);
+    await expect.poll(async()=>(await target.boundingBox()).height).toBe(56);
     await dashboard.close();
   });
 });

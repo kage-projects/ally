@@ -235,3 +235,42 @@ sibling SDK source remains unchanged. Reference mode remains the default.
 - Captures are in `screenshots/actual/ally-observation/`. SDK, dashboard and
   shared-contract source remain unchanged; installed package integrity matches
   the updated dependency lock.
+
+### Live-only dashboard — implemented; automated testing skipped
+
+- Added `npm run dashboard:dev` to prepare the existing dashboard inside the
+  host workspace and start it on port 3000. The original sibling directory is
+  outside the writable workspace and is not changed.
+- Removed demo-loading actions, synthetic fixture props and simulator access
+  from the prepared application. Empty state now links to the actual Shopee
+  flow; evaluation continues to use measured evidence only.
+- Direct port-3000 dashboard access redirects to the Shopee origin. The host
+  proxy identifies forwarded requests to prevent redirect loops. Restarted
+  Shopee to load the new proxy configuration.
+- Automated testing was explicitly skipped at the user's request. Operational
+  HTTP checks returned 200 for `5173/dashboard`, with no "Load demo session"
+  and a live Shopee link; `3000/dashboard` returns 307 to that shared origin.
+  End-to-end browser delivery was not retested for this change.
+
+### SDK 0.1.1 synchronization — installed
+
+- Rebuilt and installed `0.1.1-shopee.7` from upstream SDK `0.1.1`, including
+  the component animation change `68b0f15`. Dependency, npm lock integrity,
+  build script and README now point to the new artifact. Sibling SDK source
+  and host patches remain unchanged.
+- Apply and Undo now include the upstream 240ms style/fade transition. Existing
+  browser assertions wait for final styles instead of assuming immediate Undo;
+  the SDK regression check also verifies animation timing and preserved Keep
+  baselines.
+- Completed before testing was stopped: SDK packaging, production Vite build,
+  26 unit checks and the two focused SDK mobile checks. The build used Vite's
+  API with `configFile: false` and the imported existing config because the
+  CLI config bundler encountered a Windows sandbox directory access denial.
+  Installed runtime, upstream source SHA-256 and npm lock integrity match.
+- All 27 reference-mode captures are byte-identical to their prior captures;
+  reference comparison scores are unchanged, with no overflow, broken images
+  or browser errors. Captures remain in `screenshots/actual/`.
+- The initial full browser run exposed old immediate-Undo assertions; those
+  assertions were updated. The subsequent full run was stopped at the user's
+  request to skip further testing. The complete suite after these test changes
+  remains unverified; no additional testing or live AI requests were performed.

@@ -42,7 +42,7 @@ await esbuild.build({entryPoints:{index:'ally:index.ts',core:'ally:core.ts'},out
 }}]});
 await copyFile(resolve(sdk,'src/styles.css'),resolve(output,'dist/styles.css'));
 await copyFile(resolve(sdk,'README.md'),resolve(output,'README.md'));
-const version=`${manifest.version}-shopee.6`;
+const version=`${manifest.version}-shopee.7`;
 await writeFile(resolve(output,'package.json'),JSON.stringify({name:manifest.name,version,private:true,type:'module',allySource:{version:manifest.version,sha256:sourceHash},files:['dist','README.md'],sideEffects:['./dist/styles.css'],exports:{'.':'./dist/index.js','./core':'./dist/core.js','./styles.css':'./dist/styles.css'},dependencies:manifest.dependencies,peerDependencies:manifest.peerDependencies},null,2)+'\n');
 const result=spawnSync(process.platform==='win32'?'npm.cmd':'npm',['pack','--ignore-scripts','--cache',resolve(root,'.cache/npm'),'--pack-destination',resolve(root,'vendor')],{cwd:output,stdio:'inherit',shell:process.platform==='win32',windowsHide:true});
 if(result.error||result.status!==0)throw new Error('SDK packaging failed');
