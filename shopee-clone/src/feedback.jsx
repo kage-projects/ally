@@ -1,3 +1,4 @@
+import { AllyDialogControls } from './AllyAssistance';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 const Context=createContext(null);
@@ -16,7 +17,7 @@ export function FeedbackProvider({children}) {
   useEffect(()=>{const cancel=()=>close();window.addEventListener('popstate',cancel);return()=>{window.removeEventListener('popstate',cancel);clearTimeout(timer.current)}},[]);
   return <Context.Provider value={{show,close,notify,confirm}}>{children}
     <dialog className="mobile-dialog" ref={ref} aria-labelledby="dialog-title" onCancel={event=>{event.preventDefault();close()}} onClick={event=>{if(event.target===ref.current)close()}}>
-      {dialog&&<><h2 id="dialog-title">{dialog.title}</h2><div className="dialog-body">{dialog.body}</div><div className="dialog-actions">{(dialog.actions.length?dialog.actions:[{label:'Tutup',run:()=>close()}]).map((action,index)=><button key={index} type="button" className={action.primary?'primary-btn':'outline-btn'} onClick={action.run}>{action.label}</button>)}</div></>}
+      {dialog&&<><h2 id="dialog-title">{dialog.title}</h2><div className="dialog-body">{dialog.body}</div><AllyDialogControls/><div className="dialog-actions">{(dialog.actions.length?dialog.actions:[{label:'Tutup',run:()=>close()}]).map((action,index)=><button key={index} type="button" className={action.primary?'primary-btn':'outline-btn'} onClick={action.run}>{action.label}</button>)}</div></>}
     </dialog>
     {toast&&<div className="mobile-toast" role="status">{toast}</div>}
   </Context.Provider>;

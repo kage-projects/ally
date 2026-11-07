@@ -36,6 +36,21 @@ Positions below use screenshot pixels and are measured or rounded to approximate
 
 ## Components and source assets
 
+The twelve supplied mobile references were re-inspected as a contact sheet for
+the Ally expansion. Existing widths, card density, section order and default
+screen geometry remain the reference baseline. No new commerce section is added.
+Opt-in plans now reuse bounded SDK tokens across those same screens: targets
+44–56px, font scale 1–1.2, spacing 1–1.2, and optional high contrast. Contextual
+guidance is rendered only for an applied/kept plan with inlineHints enabled.
+Native form dialogs receive SDK Keep/Undo/Why controls inside their modal layer.
+The demo panel lists the scenarios; it remains absent in reference mode.
+Transient explanations use two compact lines above the SDK controls, leaving
+the top search/form fields readable. Why provides the full explanation.
+Adaptive quantity buttons center the plus/minus glyphs and count vertically.
+Glyphs scale from 20px at a 48px target to 24px at a 56px target, with a 2.25
+stroke. These are opt-in adaptation choices; default icon attributes remain
+12px in cart rows and 15px in the quantity dialog.
+
 The homepage components remain in `src/main.jsx`: Header, WalletBar, Categories, MediaPanel, BottomNav, and Home. App selects the current route using the browser History API. New screens share the status bar, toolbar, rows, badges, footer, and switches in `src/mobile-ui.jsx`. `src/commerce.jsx` holds local selection and form state. Search is editable; the services row scrolls horizontally. Backend interactions are outside this slicing scope.
 
 Images and custom service/navigation/wallet icons are extracted from `home.jpeg` into local PNG assets. Run `npm run assets:extract` to reproduce the crops using Chromium's decoder. Text and layout use React/CSS. The source product crop contains part of a translation popup visible in the original screenshot; the missing part is not reconstructed as an app feature.

@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { useAlly } from '@ally/react';
+import { AllyHint } from './AllyAssistance';
 import { MapPin, CircleHelp, TicketPercent, Coins, Truck, ChevronRight, Wallet } from 'lucide-react';
 import { AppLink, navigate } from './navigation';
 import { PageHeader, ActionFooter, Row, MallTag, Tag, Toggle, art } from './mobile-ui';
@@ -21,7 +22,7 @@ export default function Checkout() {
       const order=placeDemoOrder();if(order){ui.notify('Pesanan simulasi tersimpan.');navigate(`/orders/${order.id}`)}
     }
   }
-  return <div className="app flow-page checkout-page"><PageHeader title="Checkout" back="/cart"/><main>
+  return <div className="app flow-page checkout-page"><PageHeader title="Checkout" back="/cart"/><main><AllyHint context="checkout"/>
     <AppLink to="/addresses" className="checkout-address"><MapPin size={17}/><div>{address?<><div>{address.name} <small>{address.phone}</small></div><p>{address.street}<br/>{address.region}</p></>:<div>Pilih atau tambahkan alamat pengiriman</div>}</div><ChevronRight size={15}/></AppLink>
     {!checkoutItems.length&&<div className="empty-state"><h2>Belum ada barang untuk checkout</h2><AppLink to="/cart" className="outline-btn orange">Pilih barang</AppLink></div>}
     {checkoutItems.map((item,index)=><section className="checkout-shop" key={item.id}><div className="checkout-shop-heading">{item.mall?<MallTag/>:<span className="star-tag">Star+</span>}<span>{item.shop}</span></div><div className="checkout-product"><img src={art(item.image)} alt={item.title}/><div><div className="truncate">{item.title}</div><small>{item.variant}</small><p><em data-ally-slot="price">{rupiah(Math.max(0,item.price*item.qty-(index===0?quote.discount:0)))}</em> <small className="orange">▣</small> {item.originalPrice&&<del>{rupiah(item.originalPrice*item.qty)}</del>}<span>×{item.qty}</span></p></div></div>

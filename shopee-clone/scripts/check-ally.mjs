@@ -22,7 +22,8 @@ if(process.argv.includes('--browser')) {
   const browser=await chromium.launch({channel:existsSync(chromium.executablePath())?undefined:'chrome'});
   try {
     const page=await browser.newPage({viewport:{width:360,height:800},deviceScaleFactor:2,isMobile:true,hasTouch:true});
-    let pageErrors=0;page.on('pageerror',()=>pageErrors++);
+    let pageErrors=0,plannerStarted=null;page.on('pageerror',()=>pageErrors++);
+    page.on('request',request=>{if(request.url().endsWith('/api/ally/plan')&&plannerStarted===null)plannerStarted=performance.now()});
     await page.goto(`${process.env.ALLY_BASE_URL||'http://127.0.0.1:5173'}/address/edit?ally=1`);
     await page.locator('[data-ally-status="observing"]').waitFor();
     await page.getByLabel('Full Name',{exact:true}).fill('');
@@ -31,12 +32,16 @@ if(process.argv.includes('--browser')) {
     await mkdir('screenshots/actual',{recursive:true});
     await page.screenshot({path:'screenshots/actual/ally-live-before-360.png'});
     const planned=page.waitForResponse(response=>response.url().endsWith('/api/ally/plan'),{timeout:30000});
-    for(let i=0;i<5;i++)await page.getByRole('button',{name:'Submit',exact:true}).click();
+    const triggeredAt=performance.now();
+    for(let i=0;i<4;i++)await page.getByRole('button',{name:'Submit',exact:true}).tap();
     const response=await planned;
     if(response.status()!==200)throw new Error(`Planner returned HTTP ${response.status()}`);
     const reply=await response.json();
     if(!PlannerResponseSchema.safeParse(reply).success||reply.source!=='llm')throw new Error('Invalid planner reply');
-    await page.getByRole('heading',{name:'Edit Address',exact:true}).click();
+    await page.locator('.ally-demo-waiting').waitFor();
+    const readyMs=Math.round(performance.now()-triggeredAt);
+    await page.screenshot({path:'screenshots/actual/ally-live-pending-360.png'});
+    await page.getByRole('button',{name:'Selesai mengisi, terapkan',exact:true}).tap();
     await page.locator('[data-ally-status="applied"]').waitFor();
     const after=await page.locator('#address-phone').evaluate(element=>getComputedStyle(element).fontSize);
     await page.screenshot({path:'screenshots/actual/ally-live-applied-360.png'});
@@ -47,7 +52,7 @@ if(process.argv.includes('--browser')) {
     const restored=await page.locator('#address-phone').evaluate(element=>getComputedStyle(element).fontSize);
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
     if(pageErrors||overflow||before!==restored)throw new Error('Mobile integrity or Undo failed');
-    console.log(JSON.stringify({valid:true,source:reply.source,latencyMs:reply.latencyMs,fontBefore:before,fontApplied:after,fontRestored:restored,pageErrors,overflow}));
+    console.log(JSON.stringify({valid:true,source:reply.source,triggerMs:Math.round(plannerStarted-triggeredAt),readyMs,latencyMs:reply.latencyMs,fontBefore:before,fontApplied:after,fontRestored:restored,pageErrors,overflow}));
   }finally{await browser.close()}
   process.exit(0);
 }

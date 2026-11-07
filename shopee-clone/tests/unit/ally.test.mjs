@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import { mkdtemp,writeFile,rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { DEFAULT_POLICY,scoreProfile,createPresetPlan,PlannerResponseSchema } from '@ally/react/core';
+import { DEFAULT_POLICY,scoreProfile,createPresetPlan,PlannerResponseSchema,decideRule } from '@ally/react/core';
 import { createHostPolicy,allyPhase } from '../../shared/ally-policy.mjs';
 import { planAdaptation,intersectPolicy } from '../../server/planner.mjs';
 import { createApiHandler,createAppHandler } from '../../server/app.mjs';
@@ -27,8 +27,38 @@ test('checkout options share one phase; only a new local order is confirmation',
   for(const route of ['/checkout','/vouchers','/payment','/shipping','/addresses','/address/edit?index=0'])assert.equal(allyPhase(route),'checkout');
   assert.equal(allyPhase('/cart?ally=1'),'cart');
   assert.equal(allyPhase('/orders/demo-123'),'confirmation');
-  assert.equal(allyPhase('/orders/1'),null);
-  assert.equal(allyPhase('/profile'),null);
+  assert.equal(allyPhase('/orders/1'),'orders');
+  assert.equal(allyPhase('/purchases?tab=4'),'orders');
+  assert.equal(allyPhase('/delivery'),'orders');
+  assert.equal(allyPhase('/profile'),'browse');
+  assert.equal(allyPhase('/?ally=1'),'browse');
+  assert.equal(allyPhase('/unknown'),null);
+});
+
+test('combined evidence produces guarded local help while AI refinement remains optional',()=>{
+  const summary=combined().summary;
+  for(const ai of [false,true]) {
+    const policy=createHostPolicy({ai});
+    policy.limits={targetMinSize:[44,44],spacingScale:[1,1.05],fontScale:[1,1.05]};
+    const decision=decideRule(summary,policy),plan=decision.candidate?.plan;
+    assert.equal(decision.kind,'combined');assert.equal(decision.requestPlanner,ai);
+    assert(plan);assert.equal(plan.tokens.targetMinSize,44);
+    assert.equal(plan.tokens.fontScale,1.05);assert.equal(plan.tokens.spacingScale,1.05);
+    assert.deepEqual(plan.profile,scoreProfile(summary));assert.equal(plan.assist.inlineHints,true);
+    assert(plan.confidence>=policy.thresholds.apply);
+    assert.equal(plan.assist.voiceOffer,false);assert.equal(plan.layout.confirmDestructive,true);
+    assert.equal(plan.layout.primaryActionSticky,false);assert.equal(plan.layout.stepMode,'default');
+    assert.deepEqual(plan.layout.hideNonEssential,[]);
+    policy.thresholds.apply=.95;
+    assert.equal(decideRule(summary,policy).candidate,null);
+    assert.equal(decideRule(summary,policy).requestPlanner,ai);
+  }
+  assert.equal(decideRule(input({errorLoop:5}).summary,createHostPolicy()).candidate,null);
+  assert.equal(DEFAULT_POLICY.thresholds.apply,.6);
+  for(const counts of [{},{errorLoop:1},{zoomEvent:1},{missTap:1}]) {
+    const decision=decideRule(input(counts).summary,createHostPolicy({ai:true}));
+    assert.equal(decision.candidate,null);assert.equal(decision.requestPlanner,false);
+  }
 });
 
 test('server intersects permissions without trusting browser model, hide list or locks',()=>{

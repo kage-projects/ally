@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAlly } from '@ally/react';
+import { AllyHint } from './AllyAssistance';
 import { AppLink, navigate } from './navigation';
 import { art } from './mobile-ui';
 import { catalog, rupiah } from './commerce-model.mjs';
@@ -12,12 +14,12 @@ export function MediaPreview({images}) {
 function ProductResult({item}) {
   const {addToCart}=useCommerce(),ui=useFeedback();
   const available=catalog.some(product=>product.id===item.id);
-  return <div className="dialog-product"><img src={art(item.image)} alt=""/><div><p>{item.title}</p><p>{rupiah(item.price)}</p><button onClick={()=>{if(available){addToCart(item.id);ui.notify('Barang ditambahkan ke keranjang.')}navigate('/cart')}}>{available?'Tambah ke keranjang':'Lihat keranjang'}</button></div></div>;
+  return <div className="dialog-product"><img src={art(item.image)} alt=""/><div><p>{item.title}</p><p data-ally-slot="price">{rupiah(item.price)}</p><button onClick={()=>{if(available){addToCart(item.id);ui.notify('Barang ditambahkan ke keranjang.')}navigate('/cart')}}>{available?'Tambah ke keranjang':'Lihat keranjang'}</button></div></div>;
 }
 export function ProductSearch({initial=''}) {
-  const [query,setQuery]=useState(initial),[submitted,setSubmitted]=useState(initial);
+  const [query,setQuery]=useState(initial),[submitted,setSubmitted]=useState(initial),ally=useAlly();
   const results=catalog.filter(item=>`${item.title} ${item.shop}`.toLowerCase().includes(submitted.trim().toLowerCase()));
-  return <><form className="dialog-search" onSubmit={event=>{event.preventDefault();setSubmitted(query)}}><input aria-label="Cari produk tersedia" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Cari nama produk atau toko"/><button className="outline-btn orange">Cari</button></form>{results.length?results.map(item=><ProductResult key={item.id} item={item}/>):<p role="status">Tidak ada produk yang cocok. Coba nama seperti UGREEN atau Garnier.</p>}</>;
+  return <><AllyHint context="browse"/><form className="dialog-search" onSubmit={event=>{event.preventDefault();setSubmitted(query);if(!catalog.some(item=>`${item.title} ${item.shop}`.toLowerCase().includes(query.trim().toLowerCase())))ally.reportError({field:'search',category:'unavailable'})}}><input aria-label="Cari produk tersedia" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Cari nama produk atau toko"/><button className="outline-btn orange">Cari</button></form>{results.length?results.map(item=><ProductResult key={item.id} item={item}/>):<p role="status">Tidak ada produk yang cocok. Coba nama seperti UGREEN atau Garnier.</p>}</>;
 }
 export function Notifications(){const {orders}=useCommerce();return <div>{orders.map(order=><AppLink className="notification-preview" key={order.id} to={`/orders/${order.id}`}><strong>{order.demo?'Pesanan simulasi':order.shop}</strong><span>{order.title}</span><small>{order.status}</small></AppLink>)}</div>}
 export function serviceInfo(ui,title,detail='') {
