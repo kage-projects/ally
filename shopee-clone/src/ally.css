@@ -1,0 +1,32 @@
+/* Reference mode consumes no Ally sizing tokens. Changes apply only to an active plan. */
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) :is(.checkout-page,.cart-page,.edit-address-page) .primary-btn{min-height:var(--ally-target);height:auto;font-size:calc(14px * var(--ally-font));padding-block:calc(10px * var(--ally-space))}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-checkout{height:auto;min-height:56px;flex-wrap:wrap;row-gap:6px}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-checkout .primary-btn{min-width:125px}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-item{height:auto;min-height:134px}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-variant-line{height:auto;flex-wrap:wrap;gap:6px}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-shop{height:auto;min-height:198px;padding-bottom:10px}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .quantity{height:auto;width:auto;min-height:var(--ally-target)}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .quantity button{min-width:var(--ally-target);min-height:var(--ally-target)}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .quantity>span{min-width:24px}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-fields label{height:auto;min-height:56px;padding-block:calc(8px * var(--ally-space))}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-fields :is(input,textarea){min-height:var(--ally-target);font-size:calc(13px * var(--ally-font));line-height:1.5}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .checkout-message{min-height:var(--ally-target);height:auto}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .checkout-message input{min-height:var(--ally-target);font-size:calc(12px * var(--ally-font))}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .edit-address-page main{padding-bottom:160px}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"])[data-ally-contrast="high"] :is(.checkout-page,.cart-page,.edit-address-page) :is(.muted,small,.protection p,.address-fields input,.address-fields textarea){color:#333}
+[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"])[data-ally-inline-hints="true"] .field-error{font-weight:500;font-size:13px;line-height:1.5}
+[data-ally-root] .ally-controls{position:fixed;z-index:140;left:50%;bottom:100px;transform:translateX(-50%);width:calc(100% - 20px);max-width:370px;border:1px solid #ddd;border-radius:10px;background:#fff;box-shadow:0 3px 18px #0003;color:#222;max-height:45dvh;overflow:auto}
+[data-ally-root]:has(.cart-page) .ally-controls{bottom:174px}
+[data-ally-root]:has(.edit-address-page) .ally-controls{bottom:116px}
+[data-ally-root] .ally-controls button{background:#fff;border:1px solid #ccc;border-radius:6px;padding:8px 16px;color:#333;flex:1}
+[data-ally-root] .ally-toast{position:fixed;z-index:139;top:92px;left:50%;transform:translateX(-50%);background:#fff6df;color:#333;border:1px solid #e5c57b;border-radius:8px;padding:10px 12px;width:calc(100% - 24px);max-width:366px;box-shadow:0 3px 16px #0002}
+[data-ally-root] .ally-toast:empty{display:none}
+.ally-demo-tools{position:fixed;z-index:150;right:8px;top:4px;font:12px/1.45 Roboto,Arial,sans-serif;color:#222}
+.ally-demo-trigger{min-height:30px;border-radius:20px;padding:4px 10px;border:1px solid #d7d7d7;background:#fff;color:#333;box-shadow:0 1px 5px #0002}
+.ally-demo-panel{position:absolute;top:36px;right:0;width:min(344px,calc(100vw - 16px));max-height:calc(100dvh - 55px);overflow:auto;padding:14px;background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 5px 25px #0003;font-size:13px}
+.ally-demo-panel header,.ally-enable,.ally-demo-buttons{display:flex;align-items:center;gap:8px}
+.ally-demo-panel header{justify-content:space-between;font-size:15px}
+.ally-demo-panel button{min-height:36px;padding:6px 10px;border:1px solid #ccc;background:#fff;border-radius:6px;color:#333}
+.ally-demo-panel p{margin:10px 0}.ally-enable{margin:12px 0}.ally-enable input{appearance:auto;width:18px;height:18px}
+.ally-demo-help{color:#555}.ally-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.ally-metrics div{padding:6px;border:1px solid #eee;border-radius:5px}.ally-metrics dt{font-size:11px;color:#666}.ally-metrics dd{margin:2px 0 0;font-weight:700}
+.ally-decisions{border-top:1px solid #eee;padding-top:10px}.ally-decisions p{margin:4px 0;font-size:12px}.ally-demo-buttons{margin:12px 0;flex-wrap:wrap}.ally-demo-panel small{color:#666;display:block}.ally-demo-panel a{color:#d84325;text-decoration:underline}

@@ -7,10 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "visual:check": "node scripts/visual-check.mjs",
-    "test": "playwright test",
-    "assets:extract": "node scripts/extract-reference-assets.mjs && node scripts/extract-mobile-assets.mjs"
+    "test": "npm run test:unit && playwright test",
+    "test:unit": "node --test tests/unit/*.test.mjs",
+    "assets:extract": "node scripts/extract-reference-assets.mjs && node scripts/extract-mobile-assets.mjs",
+    "start": "node --env-file-if-exists=.env.local server/index.mjs",
+    "sdk:build": "node scripts/build-ally.mjs"
   },
   "dependencies": {
+    "@ally/react": "file:vendor/ally-react-0.1.0-shopee.1.tgz",
     "lucide-react": "0.469.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"

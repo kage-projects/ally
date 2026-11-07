@@ -59,6 +59,7 @@ try {
         const header=document.createElement('canvas');header.width=720;header.height=245;
         const context=header.getContext('2d');context.drawImage(image,0,0,720,245,0,0,720,245);
         const pixels=context.getImageData(0,0,720,245);
+        const mask=new Uint8Array(720*245);
         const regions=[[45,16,154,42],[510,15,166,43],[100,88,130,43],[100,134,290,32],[483,90,57,56],[568,80,73,72],[648,83,64,69],[228,91,84,33],[22,174,677,57],[22,90,69,69]];
         for(let r=0;r<regions.length;r++){
           const [left,top,width,height]=regions[r];
@@ -66,11 +67,20 @@ try {
             const index=(y*720+x)*4;
             const avatar=r===9&&Math.hypot(x-56.5,y-124.5)<35;
             const full=r===7||r===8||avatar;
-            if(full||(pixels.data[index+1]>185&&pixels.data[index+2]>165)){
-              const sample=((y%146)*146+x%146)*4;
-              for(let c=0;c<3;c++)pixels.data[index+c]=pattern.data[sample+c];
+            if(full||(pixels.data[index+1]>165&&pixels.data[index+2]>135)){
+              // Include JPEG antialiasing around strokes, otherwise the old
+              // text remains as a faint outline behind the live controls.
+              for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+                const mx=x+dx,my=y+dy;
+                if(mx>=0&&mx<720&&my>=0&&my<245)mask[my*720+mx]=1;
+              }
             }
           }
+        }
+        for(let y=0;y<245;y++)for(let x=0;x<720;x++){
+          if(!mask[y*720+x])continue;
+          const index=(y*720+x)*4,sample=((y%146)*146+x%146)*4;
+          for(let c=0;c<3;c++)pixels.data[index+c]=pattern.data[sample+c];
         }
         context.putImageData(pixels,0,0);
         results.push(['profile-pattern',header.toDataURL('image/png').split(',')[1]]);

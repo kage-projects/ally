@@ -113,16 +113,16 @@ grid. Only visible recommendation cards are included.
 | Screen | Route | Mean absolute RGB error, 0–255 |
 | --- | --- | --- |
 | Home | `/` | Per-section values above |
-| Profile | `/profile` | Header 8.46; other sections 6.17–13.16 |
+| Profile | `/profile` | Header 8.02; other sections 6.17–13.16 |
 | Shopping cart | `/cart` | 10.15 |
-| Checkout | `/checkout` | 9.86 |
+| Checkout | `/checkout` | 9.87 |
 | Vouchers | `/vouchers` | 9.95 |
-| Shipping | `/shipping` | 5.07 |
+| Shipping | `/shipping` | 4.88 |
 | Payment | `/payment` | 6.85 |
 | Address selection | `/addresses` | 13.80 |
 | Edit address | `/address/edit` | 9.30 |
 | Purchases | `/purchases` | 10.84 |
-| Order details | `/orders/1` | 13.45 |
+| Order details | `/orders/1` | 13.48 |
 | Delivery tracking | `/delivery` | 8.04 |
 
 The five largest additional discrepancy groups were corrected in repeated comparisons:
@@ -142,12 +142,77 @@ not represented as pixel-perfect completion.
 The implementation is a frontend replica with reference fixture data and
 in-memory choices. It does not submit real orders, activate credit products,
 perform bank transfers, provide live map pinning, or implement unreferenced
-support/verification screens. Checkout prices mirror the reference fixture;
-they are not a production pricing engine. Refresh resets local demo selections.
-No backend, additional UI dependencies, desktop/tablet layouts, or publication
+support/verification screens. Checkout calculates quantities, selected products,
+shipping, eligible vouchers, protection and coins from the local fixtures. The
+initial reference quote remains Rp156.200. Confirming an explicitly labelled
+simulation creates a local To Pay order; it does not represent payment success.
+Refresh resets local demo selections and orders.
+The later hackathon authorization adds the Ally SDK and a planner backend only.
+Commerce remains a local simulation; no desktop/tablet layouts or publication
 were introduced.
 
 Run `npm run assets:extract` to regenerate both homepage and remaining-screen
 assets. For one task's visual QA, use e.g. `npm run visual:check -- profile cart`;
 without arguments all twelve screens are captured. Keep the development server
 running on port 5173, or supply `VISUAL_BASE_URL`.
+
+## Interaction and visual follow-up
+
+Native buttons and dialogs now connect visible controls while preserving the
+initial screenshot layout. New overlays cover local catalog search, artwork
+previews, clipboard fallback, confirmations and service-availability messages.
+Search and repeat-purchase actions add only products present in the local catalog.
+Order details use the selected order; unknown historical shipment/address data is
+shown as unavailable rather than copied from a different order.
+
+Cart edit/delete, empty states, checkout draft persistence, voucher errors and
+minimums, address validation/quick-fill, rating and local return requests are
+implemented. Checkout does not fall back to a phantom product after explicit
+cart selection becomes empty. The selected UGREEN product now uses its own
+Rp275.000 price instead of the original KiiP fixture price. Nine unit tests cover
+calculation/validation boundaries; sixteen browser tests cover the mobile flows.
+
+Profile header artwork was cleaned with a dilated source-text mask, status and
+settings offsets were aligned, and wallet button content keeps its original
+top alignment. Profile header RGB error is now 8.02 and wallet error 8.15.
+Shipping selection hit areas and cart footer spacing were corrected without
+changing the source hierarchy. All 27 captures remain mobile-only, with twelve
+matching-dimension comparisons. The 390px viewport has no separate supplied
+reference and is checked for layout integrity.
+
+## Ally hackathon integration
+
+The supplied Ally SDK is installed as a local runtime tarball. Reference mode is
+the default and consumes no Ally sizing tokens. Start the adaptive demo with
+`/cart?ally=1` or `/address/edit?ally=1`. The provider remains mounted across
+navigation; voucher, shipping, payment and address routes share the checkout
+phase. Only new local orders enter confirmation. Validation reports allowlisted
+field/category labels, without user input values.
+
+Active plans can enlarge supported controls and form text, adjust spacing and
+contrast, and strengthen inline error hints. Token consumers are gated by
+`data-ally-status="applied"` or `"kept"`. Source prices, totals, legal text and
+payment controls are marked as protected; policy permits no section hiding.
+Keep/Undo/Why controls sit above the fixed mobile footer. The opt-in diagnostic
+pill and panel are absent from reference mode. Empty SDK toasts are hidden.
+
+The host-specific runtime package `0.1.0-shopee.1` changes only the transport
+deadline to respect the policy's bounded timeout. The original fixed 2 seconds
+was shorter than observed real planner responses. This host allows 15 seconds;
+the backend stops one second earlier. Source in the sibling SDK remains unchanged.
+
+A Node backend exposes `/api/ally/plan` in Vite development and through the
+standalone production server. It validates the contract, recomputes evidence,
+intersects policies, calls OpenAI with structured output, and guards returned
+plans. Keys remain server-side. Request size, origin, concurrency and rate limits
+are enforced. AI calls are evidence-gated; unavailable AI may produce no plan.
+No Firebase, remote user history, or commerce backend is part of this integration.
+
+Validation includes sixteen unit/HTTP tests and eighteen mobile browser tests.
+The SDK browser test observes actual repeated form validation failures, handles
+a planner response delayed beyond two seconds, waits until input focus is released,
+then verifies application, Keep, Why and Undo at both phone viewports. OpenAI is
+mocked in routine automated tests; explicit live smoke checks are separate.
+All 27 reference captures retain the previous comparison scores and zero runtime
+errors, broken images or horizontal overflow. Adaptive screenshots are supplemental
+and are not compared against the unadapted Shopee references.
