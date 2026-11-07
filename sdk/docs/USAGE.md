@@ -84,9 +84,11 @@ SDK menulis token pada wrapper `data-ally-root`. CSS host harus memakainya agar 
 
 Tandai elemen terlindungi dengan `data-ally-slot="price"`, `"legalText"`, `"totalAmount"`, atau `"payButton"`. Gunakan `primaryAction` hanya untuk CTA terpisah dari `payButton`. Section yang boleh disembunyikan memakai `data-ally-optional="promoBanner"`, `"recommendations"`, `"voucherCarousel"`, atau `"socialProof"`. Jangan letakkan slot terlindungi di dalam section opsional.
 
+SDK otomatis membandingkan ukuran dan gaya tombol, tautan, input, serta elemen slot sebelum/sesudah penyesuaian. Elemen yang benar-benar berubah mendapat sorotan selama empat detik; kontrol Ally tidak ikut disorot. Gunakan CSS variable `--ally-highlight-color` bila perlu mengganti warna. Pengukuran ini hanya sementara di browser dan tidak dikirim ke planner.
+
 ## Feedback, preferensi, dan AI
 
-Provider menampilkan Keep, Undo, dan Why setelah perubahan diterapkan. `useAlly()` juga menyediakan `plan`, `profile`, `summary`, `explanation`, `status`, `plannerStatus`, `outcome`, `keep()`, `undo()`, dan `resetPreferences()`. Diam atau hilangnya toast tidak dihitung sebagai Keep. `outcome` adalah perbandingan observasi, bukan bukti sebab-akibat.
+Provider menampilkan Keep, Undo, dan Why setelah perubahan diterapkan. Keep langsung menutup dialog, toast, serta sorotan sambil mempertahankan perubahan. SDK memulai pengamatan baru; bukti kesalahan baru yang cukup dapat memunculkan bantuan lagi tanpa cooldown tambahan setelah Keep. Bukti lama tidak dipakai ulang untuk membuka dialog yang sama. Pengumpulan bukti, waktu respons planner, dan penundaan selama input masih fokus tetap berlaku. `useAlly()` menyediakan `plan`, `profile`, `summary`, `explanation`, `status`, `plannerStatus`, `outcome`, `keep()`, `undo()`, dan `resetPreferences()`. Diam atau hilangnya toast tidak dihitung sebagai Keep. `outcome` adalah perbandingan observasi, bukan bukti sebab-akibat.
 
 Default `persistence: 'memory'` berlaku selama sesi. Untuk menyimpan preferensi pada browser yang sama, pilih `persistence: 'local'`, jelaskan penyimpanan ini kepada pengguna, dan tampilkan tombol reset. Record berlaku maksimal tujuh hari; pilihan lama tetap harus lolos policy dan evidence saat ini.
 

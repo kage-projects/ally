@@ -59,7 +59,7 @@ export function AllyProvider({ children, policy, config, onDecision }: AllyProvi
   useEffect(() => { runtimeRef.current?.setPolicy(policy); }, [policyKey]);
   useEffect(() => { runtimeRef.current?.setEnabled(config.enabled !== false); }, [config.enabled]);
   useEffect(() => { runtimeRef.current?.setDecisionCallback(onDecision); }, [onDecision]);
-  useEffect(() => { if (!view.plan) setWhyOpen(false); }, [view.plan]);
+  useEffect(() => { if (!view.helpVisible) setWhyOpen(false); }, [view.helpVisible]);
 
   const context = useMemo<AllyContextValue>(() => ({
     plan: view.plan,
@@ -80,7 +80,7 @@ export function AllyProvider({ children, policy, config, onDecision }: AllyProvi
     <div ref={rootRef} data-ally-root="" data-ally-status={view.status}>
       {children}
       <Toast visible={view.toastVisible} explanation={view.explanation} />
-      {view.plan && <div className="ally-controls" data-ally-ui="" aria-label="Kontrol Ally">
+      {view.plan && view.helpVisible && <div className="ally-controls" data-ally-ui="" aria-label="Kontrol Ally">
         {view.status !== 'kept' && <button type="button" onClick={() => context.keep()}>Keep</button>}
         <button type="button" onClick={() => context.undo()}>Undo</button>
         <button type="button" aria-expanded={whyOpen} aria-controls={whyId}

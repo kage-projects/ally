@@ -1,6 +1,7 @@
 import { createApplier, captureScope } from './applier.js';
 import type { ApplyResult, ScopeSnapshot } from './applier.js';
 import { guardPlan } from './guard.js';
+import { createHighlighter } from './highlight.js';
 import { PlannerClient } from './engine-client.js';
 import { buildDecisionInput } from './planner-contract.js';
 import { createPreferenceStorage } from './preference-storage.js';
@@ -25,6 +26,7 @@ export interface RuntimeView {
   status: AllyStatus;
   plannerStatus: PlannerStatus;
   toastVisible: boolean;
+  helpVisible: boolean;
   outcome: OutcomeObservation | null;
 }
 
@@ -63,7 +65,7 @@ interface ActiveDecision {
 export function initialRuntimeView(policy: unknown, enabled = true): RuntimeView {
   return { plan: null, profile: null, summary: null, explanation: null,
     status: enabled && AllyPolicySchema.safeParse(policy).success ? 'observing' : 'disabled',
-    plannerStatus: 'idle', toastVisible: false, outcome: null };
+    plannerStatus: 'idle', toastVisible: false, helpVisible: false, outcome: null };
 }
 
 export class AllyRuntime {
@@ -72,6 +74,7 @@ export class AllyRuntime {
   private onUpdate: (view: RuntimeView) => void;
   private onDecision?: (event: AllyDecisionEvent) => void;
   private readonly applier: ReturnType<typeof createApplier>;
+  private readonly highlighter: ReturnType<typeof createHighlighter>;
   private readonly planner = new PlannerClient();
   private preferences: PreferenceStore | null = null;
   private decisionCounter = 0;
@@ -97,6 +100,8 @@ export class AllyRuntime {
   private undoBoost = 0;
   private undoCount = 0;
   private rejected = new Map<string, number>();
+  private latestWindowId = -1;
+  private keptWindowId = -1;
 
   private preferenceContext(preset: Preset, modality: FrictionSummary['inputModality']): PreferenceContext | null {
     if (!this.policy || preset === null) return null;
@@ -122,6 +127,7 @@ export class AllyRuntime {
     this.view = initialRuntimeView(policy, this.enabled);
     this.step = config.steps[0] ?? 'unknown';
     this.applier = createApplier(scope, (result) => this.correctActive(result));
+    this.highlighter = createHighlighter(scope);
     if (!parsed.success) console.error('Ally integration: invalid policy');
   }
 
@@ -173,7 +179,7 @@ export class AllyRuntime {
     preset: Preset,
     reasonCodes: string[],
   ) {
-    if (this.plannerBusy || !this.alive || !this.enabled || !this.policy || this.active?.kept) return;
+    if (this.plannerBusy || !this.alive || !this.enabled || !this.policy) return;
     let input;
     try {
       const context = this.preferenceContext(preset, snapshot.summary.inputModality);
@@ -193,7 +199,7 @@ export class AllyRuntime {
     void this.planner.plan(this.config.endpoint ?? '/api/ally/plan', input, snapshot.windowId)
       .then((outcome) => {
         if (serial !== this.plannerSerial || epoch !== this.epoch ||
-            !this.alive || !this.enabled || !this.policy || this.active?.kept) return;
+            !this.alive || !this.enabled || !this.policy) return;
         this.plannerBusy = false;
         if (outcome.kind === 'skipped') {
           this.view.plannerStatus = previousStatus;
@@ -204,7 +210,7 @@ export class AllyRuntime {
           if (outcome.kind === 'plan') {
             this.acceptCandidate({ plan: outcome.plan, source: outcome.source,
               preset, reasonCodes, contextEpoch: epoch,
-              modality: snapshot.summary.inputModality });
+              modality: snapshot.summary.inputModality, beforeWindow: snapshot });
           }
         }
         this.publish();
@@ -317,6 +323,7 @@ export class AllyRuntime {
     this.scope.removeEventListener('compositionstart', this.onCompositionStart);
     this.scope.removeEventListener('compositionend', this.onCompositionEnd);
     this.applier.destroy();
+    this.highlighter.clear();
   }
 
   setDecisionCallback(callback?: (event: AllyDecisionEvent) => void) {
@@ -329,6 +336,7 @@ export class AllyRuntime {
   ingest(snapshot: SensorSnapshot) {
     if (!this.alive || !this.enabled || !this.policy || snapshot.source !== 'live') return;
     if (snapshot.summary.context.step !== this.step) return;
+    this.latestWindowId = snapshot.windowId;
     if (this.active?.beforeWindow && snapshot.reason === 'window' &&
         snapshot.windowId > this.active.beforeWindow.windowId) {
       this.view.outcome = compareOutcomeWindows(this.active.beforeWindow, snapshot);
@@ -343,7 +351,7 @@ export class AllyRuntime {
     this.view.summary = snapshot.summary;
     this.view.profile = decision.profile;
     this.publish();
-    if (this.active?.kept) return;
+    if (this.active?.kept && snapshot.windowId <= this.keptWindowId) return;
     const context = this.preferenceContext(decision.preset, snapshot.summary.inputModality);
     const preferred = decision.kind === 'none' || !context
       ? null : this.preferences?.preferred(context) ?? null;
@@ -373,13 +381,15 @@ export class AllyRuntime {
   acceptCandidate(request: CandidateRequest): boolean {
     if (!this.alive || !this.enabled || !this.policy ||
         (request.contextEpoch !== undefined && request.contextEpoch !== this.epoch)) return false;
-    if (this.active?.kept) return false;
+    const afterKeep = this.active?.kept === true;
+    // A kept appearance stays active, but only new observations may reopen help.
+    if (afterKeep && (!request.beforeWindow || request.beforeWindow.windowId <= this.keptWindowId)) return false;
     let plan: AdaptationPlan;
     try { plan = guardPlan(request.plan, this.policy).plan; }
     catch { return false; }
     const signature = this.signature(plan);
-    if (this.active?.signature === signature || (this.rejected.get(signature) ?? 0) > Date.now()) return false;
-    if (Date.now() - this.lastAppliedAt < 10000 && request.source !== 'llm') return false;
+    if ((!afterKeep && this.active?.signature === signature) || (this.rejected.get(signature) ?? 0) > Date.now()) return false;
+    if (!afterKeep && Date.now() - this.lastAppliedAt < 10000 && request.source !== 'llm') return false;
     const expiresAt = Date.now() + plan.ttlSeconds * 1000;
     const pending: PendingCandidate = { request, plan, epoch: this.epoch,
       expiresAt, signature, deferred: false };
@@ -416,6 +426,7 @@ export class AllyRuntime {
     this.clearPending();
     this.clearTtl();
     if (!this.active || this.active.kept) this.baseline = captureScope(this.scope);
+    const beforeStyles = this.highlighter.capture();
     const result = this.applier.apply(pending.plan, this.policy);
     this.active = {
       decisionId: ++this.decisionCounter,
@@ -432,6 +443,7 @@ export class AllyRuntime {
     this.view.explanation = result.plan.explanation;
     this.view.outcome = { status: 'unknown', reason: 'missing-window' };
     this.view.status = transitionStatus(this.view.status, 'apply');
+    this.view.helpVisible = true;
     this.showToast();
     this.ttlTimer = setTimeout(() => {
       this.ttlTimer = null;
@@ -443,6 +455,7 @@ export class AllyRuntime {
       } else this.restoreTransaction('expired');
     }, Math.max(0, pending.expiresAt - Date.now()));
     this.publish();
+    this.highlighter.show(beforeStyles);
     this.log('applied', this.active);
     return true;
   }
@@ -460,6 +473,8 @@ export class AllyRuntime {
     this.clearPending();
     this.clearTtl();
     this.clearToast();
+    this.highlighter.clear();
+    this.view.helpVisible = false;
     const previous = this.active;
     if (previous) {
       this.applier.restore(this.baseline ?? this.applier.initial);
@@ -479,7 +494,14 @@ export class AllyRuntime {
     this.cancelPlanner(true);
     this.clearPending();
     this.clearTtl();
+    this.clearToast();
+    this.highlighter.clear();
+    this.view.helpVisible = false;
     this.active.kept = true;
+    this.keptWindowId = this.latestWindowId;
+    this.sensor?.beginObservation();
+    this.planner.reset();
+    this.lastAppliedAt = Number.NEGATIVE_INFINITY;
     if (this.active.context) this.preferences?.recordFeedback(this.active.decisionId,
       this.active.context, this.active.result.plan, 'kept');
     this.view.status = transitionStatus('applied', 'keep');
@@ -566,6 +588,8 @@ export class AllyRuntime {
       this.baseline = null;
       this.view.plan = null;
       this.view.explanation = null;
+      this.view.helpVisible = false;
+      this.highlighter.clear();
       this.view.status = 'disabled';
       console.error('Ally integration: invalid policy');
     } else {
@@ -583,10 +607,12 @@ export class AllyRuntime {
           this.active.context = null;
         } catch {
           this.applier.restore(this.applier.initial);
+          this.highlighter.clear();
           this.active = null;
           this.baseline = null;
           this.view.plan = null;
           this.view.explanation = null;
+          this.view.helpVisible = false;
           this.view.status = 'observing';
         }
       }
@@ -610,6 +636,8 @@ export class AllyRuntime {
       this.baseline = null;
       this.view.plan = null;
       this.view.explanation = null;
+      this.view.helpVisible = false;
+      this.highlighter.clear();
       this.view.status = transitionStatus(this.view.status, 'disable');
     } else if (this.policy) {
       this.view.status = transitionStatus(this.view.status, 'enable');

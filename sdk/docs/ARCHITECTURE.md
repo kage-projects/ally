@@ -8,6 +8,8 @@ Ally mengamati friksi interaksi di aplikasi React web, menghitung profil serta p
 
 Alur utama: interaksi → agregat anonim → gate evidence → rule/preset atau planner → validasi dan guard → cek konteks/fokus → penerapan → feedback → preferensi lokal dan pengukuran hasil.
 
+Lihat [alur SDK dengan OpenAI](OPENAI_WORKFLOW.md) untuk contoh data pada setiap batas sistem, bentuk request/response model, serta penjelasan otonomi terbatas Ally.
+
 ## Topologi dan kepemilikan
 
 ~~~text
@@ -82,6 +84,8 @@ Provider membuat satu wrapper data-ally-root. Host menggunakan --ally-target, --
 6. Preference store memilih record yang cocok pada step/modality/preset/policy. Keep bukan bukti bahwa seluruh token secara individual bermanfaat; feedback berlaku untuk plan efektif secara utuh. Pengukuran sebelum/sesudah disimpan terpisah dan bernilai unknown bila sampel kurang.
 
 Status UI: disabled → observing → pending bila menunggu blur → applied → kept atau kembali observing melalui Undo/TTL. plannerStatus idle/loading/fallback berjalan terpisah, sehingga UI dapat sudah applied sambil planner loading.
+
+Keep langsung menutup dialog dan toast, mempertahankan plan, lalu memulai observasi baru tanpa cooldown tambahan. Status kept tetap menerima bukti friksi baru; snapshot dari sebelum Keep tidak membuka bantuan lagi. Penerapan baru hanya menyorot elemen interaktif/slot yang ukuran atau gayanya benar-benar berubah, berdasarkan perbandingan lokal setelah React commit. Sorotan berakhir setelah empat detik atau saat Keep/Undo, disable, dan unmount.
 
 ## Batas kepercayaan, data, dan kegagalan
 
