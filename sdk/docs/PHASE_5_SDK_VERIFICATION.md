@@ -16,7 +16,7 @@ Build package → typecheck → unit sensor/rule/guard → render fixture React/
 ## Langkah implementasi
 
 1. Buat sdk/test/fixtures/consumer.tsx dengan form tiga step minimal, tombol token-aware, marker data-ally-slot dan data-ally-optional. Fixture ini hanya untuk test, tidak dikemas sebagai aplikasi dan tidak memiliki route server.
-2. Jalankan skrip `pnpm -C sdk build`, `typecheck`, `test`, dan `test:contract`. `test` memakai Vitest/jsdom, fake timers, dan mock fetch. `test:contract` menjalankan SSR contract serta mengekstrak tarball package ke consumer sementara. Consumer memakai package output, bukan import `src/` langsung.
+2. Jalankan skrip `pnpm -C sdk build`, `typecheck`, `test`, dan `test:contract`. `test` memakai Vitest/jsdom, fake timers, dan mock fetch. `test:contract` menjalankan SSR contract serta memasang tarball package secara offline ke consumer sementara dengan `--ignore-workspace`. Consumer memakai package output, bukan import `src/` langsung.
 3. Uji pipeline: no-op tanpa friksi, tiga miss→motor, combined→request, invalid plan/guard, target opsional berisi totalAmount, focus/IME menunda apply, Keep/Undo/TTL, timeout, response stale, reset preferensi, Strict Mode mount/cleanup. Uji properti CSS dan atribut DOM yang dihasilkan; jangan mengklaim hasil visual nyata dari jsdom.
 4. Untuk miss-tap, stub rectangle dan dispatch pointer event pada node fixture. Uji jalur sensor nyata secara programatik selain sensor.inject; keduanya berlabel terpisah. Mock window/visualViewport bila tersedia, dan tandai dukungan yang tidak diuji.
 5. Pastikan payload tidak memuat sentinel value/text dari form. Periksa bundle output agar tidak memuat OPENAI_API_KEY. Tidak ada API key yang disimpan dalam file, log, atau fixture.
@@ -34,7 +34,7 @@ Fase selesai ketika build/typecheck/test/test:contract lulus, consumer fixture m
 
 `test:contract` menguji SSR dan consumer baru dari `sdk/test-results/ally-react-0.1.0.tgz`. Skrip memeriksa ekspor React/core, import core tanpa DOM, marker fixture, stylesheet, deklarasi tipe, allowlist isi tarball, sentinel value/text yang tidak ada dalam payload, dan ketiadaan string `OPENAI_API_KEY` dalam output `dist/`. Uji jsdom fixture juga mengirim event DOM dan mock request untuk memeriksa payload tanpa sentinel. Detail mesin ada di `sdk/test-results/package-contract.json`; hasil mock di `sdk/test-results/ai-mock.json`. File `test-results/` dibuat oleh skrip dan tidak dikomit.
 
-Package manager offline tidak memiliki semua arsip dependency. Consumer mengekstrak **tarball** ke `node_modules/@ally/react` yang baru dan menautkan React, zod, serta alat tipe dari instalasi SDK lokal. Ini memverifikasi artefak paket dan import dari direktori consumer terpisah, tetapi belum memverifikasi install registry yang bersih. jsdom/SSR tidak memverifikasi layout browser nyata. Pengujian visual, host app, endpoint/model nyata, dan dampak pengguna tetap milik gate integrasi host.
+Setelah store pnpm aktif diisi, consumer baru berhasil memasang **tarball** dan dependency secara offline melalui pnpm, tanpa tautan ke instalasi SDK. `--ignore-workspace` diperlukan karena direktori consumer berada di bawah `sdk/`; tanpa itu pnpm memakai lockfile induk. Pengujian harus memakai store yang sudah diisi pada lingkungan yang sama. Publikasi dan instalasi registry bersih belum diuji. jsdom/SSR tidak memverifikasi layout browser nyata. Pengujian visual, host app, endpoint/model nyata, dan dampak pengguna tetap milik gate integrasi host.
 
 ## Checklist bukti — 4/4 (100%)
 

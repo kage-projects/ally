@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.18.0",
-  "files": ["dist", "README.md"],
+  "files": ["dist", "README.md", "docs/USAGE.md", "docs/HOST_PLANNER_HANDOFF.md"],
   "sideEffects": ["./dist/styles.css"],
   "exports": {
     ".": {

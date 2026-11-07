@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
@@ -32,10 +32,12 @@ const packOutput = runPnpm(['pack', '--out', tarball, '--json'], sdkDir);
 const packed = JSON.parse(packOutput);
 const paths = new Set(packed.files.map((file) => file.path));
 for (const required of ['dist/index.js', 'dist/index.d.ts', 'dist/core.js',
-  'dist/core.d.ts', 'dist/styles.css', 'README.md', 'package.json']) {
+  'dist/core.d.ts', 'dist/styles.css', 'README.md', 'docs/USAGE.md',
+  'docs/HOST_PLANNER_HANDOFF.md', 'package.json']) {
   assert(paths.has(required), `tarball missing ${required}`);
 }
-assert([...paths].every((path) => ['dist/', 'README.md', 'package.json']
+assert([...paths].every((path) => ['dist/', 'README.md', 'docs/USAGE.md',
+  'docs/HOST_PLANNER_HANDOFF.md', 'package.json']
   .some((allowed) => path === allowed || path.startsWith(allowed))),
   'tarball contains source, tests, or unrelated files');
 assert.equal(manifest.peerDependencies.react, '^19.0.0');
@@ -57,22 +59,11 @@ try {
     name: 'ally-tarball-consumer', private: true, type: 'module',
     dependencies: { '@ally/react': `file:../ally-react-${manifest.version}.tgz`,
       react: '19.3.1', 'react-dom': '19.3.1' },
+    devDependencies: { typescript: '5.9.3', '@types/react': '19.3.0',
+      '@types/react-dom': '19.3.0' },
   }, null, 2));
   const nodeModules = join(consumerDir, 'node_modules');
-  const allyPackage = join(nodeModules, '@ally', 'react');
-  await mkdir(allyPackage, { recursive: true });
-  const extract = spawnSync('tar', ['-xzf', tarball, '-C', allyPackage,
-    '--strip-components=1'], { cwd: sdkDir, encoding: 'utf8', windowsHide: true });
-  if (extract.error || extract.status !== 0) {
-    throw new Error(`tarball extraction failed: ${extract.stderr || extract.error}`);
-  }
-  for (const packageName of ['react', 'react-dom', 'zod', 'typescript',
-    '@types/react', '@types/react-dom']) {
-    const source = await realpath(join(sdkDir, 'node_modules', packageName));
-    const target = join(nodeModules, packageName);
-    await mkdir(dirname(target), { recursive: true });
-    await symlink(source, target, process.platform === 'win32' ? 'junction' : 'dir');
-  }
+  runPnpm(['install', '--offline', '--ignore-scripts', '--ignore-workspace'], consumerDir);
   const fixtureSource = await readFile(join(sdkDir, 'test', 'fixtures', 'consumer.tsx'), 'utf8');
   await writeFile(join(consumerDir, 'fixture.tsx'), fixtureSource);
   await writeFile(join(consumerDir, 'fixture.mjs'), ts.transpileModule(fixtureSource, {
@@ -136,12 +127,12 @@ console.log('fresh tarball consumer: SSR, React peer, core, payload passed');
   assert(consumerCheck.stdout.includes('fresh tarball consumer:'));
   const report = {
     package: `${manifest.name}@${manifest.version}`,
-    mode: 'offline-tarball-consumer',
-    commands: { pack: 0, tarballExtract: 0, typecheck: 0, consumer: 0 },
+    mode: 'offline-pnpm-install-consumer',
+    commands: { pack: 0, offlineInstall: 0, typecheck: 0, consumer: 0 },
     checks: ['dist exports', 'React peer', 'core import without DOM', 'SSR fixture',
       'CSS export', 'TypeScript declarations', 'anonymous payload', 'bundle key scan'],
     tarball,
-    limitations: ['The tarball was unpacked into a fresh consumer; pinned peer and type packages were linked from the local SDK install because the offline store lacks their archives',
+    limitations: ['The fresh consumer installed from a local tarball and the pnpm store; publishing to and installing from a registry was not tested',
       'jsdom and SSR scripts do not prove visual browser compatibility',
       'mock requests do not prove model quality or user impact'],
   };

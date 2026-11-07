@@ -2,6 +2,8 @@
 
 Ally observes interaction friction inside a React subtree and applies reversible UI tokens. It runs local rules first and can ask a host-owned planner endpoint for ambiguous cases. This package contains the SDK and script fixtures only; the host app and server route are separate.
 
+For a complete React integration walkthrough, see the [usage guide](docs/USAGE.md). The [planner handoff](docs/HOST_PLANNER_HANDOFF.md) defines the host server contract. Both documents are included in the package tarball.
+
 ## Install and mount
 
 The package targets React 19 and ESM. Install the generated tarball with React as a peer, then import its stylesheet once in the host entry. The package is currently private, so registry publishing is a separate release decision.
@@ -82,4 +84,4 @@ From the repository root:
 - `pnpm -C sdk test:ai:mock` — run seven synthetic planner fixtures.
 - `pnpm -C sdk test:ai` — evaluate a real host endpoint when `ALLY_AI_ENDPOINT` is set.
 
-Generated reports and the tarball are written to `sdk/test-results/`. The offline package test extracts the tarball into a fresh consumer and links installed React, zod, and TypeScript dependencies from the SDK workspace because their archives are absent from the offline package store. The consumer imports package output, not SDK source. jsdom and SSR verify logic and contracts, not visual browser compatibility. Mock fixtures do not measure real model quality or user impact.
+Generated reports and the tarball are written to `sdk/test-results/`. The package test installs the tarball and its dependencies into a fresh consumer with `pnpm install --offline --ignore-workspace`; it does not link dependencies from the SDK workspace. It uses package output, not SDK source. The required packages must already be in pnpm's active store (run `pnpm fetch` with network access first). Registry publication and installation, visual browser compatibility, real model quality, and user impact remain untested.
