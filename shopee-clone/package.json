@@ -14,7 +14,7 @@
     "sdk:build": "node scripts/build-ally.mjs"
   },
   "dependencies": {
-    "@ally/react": "file:vendor/ally-react-0.1.0-shopee.1.tgz",
+    "@ally/react": "file:vendor/ally-react-0.1.0-shopee.2.tgz",
     "lucide-react": "0.469.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"

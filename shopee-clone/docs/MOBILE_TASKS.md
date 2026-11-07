@@ -77,3 +77,49 @@ Ally SDK and planner backend below; commerce actions still remain local.
 - Live browser smoke passed against OpenAI: valid `source: llm` plan in about
   3 seconds, form text changed from 13.5px to 14.3px, Keep succeeded, and Undo
   restored 13.5px; zero page errors or horizontal overflow.
+
+### Ally usability follow-up
+
+- Reproduced a lost opt-in: navigating from `/address/edit?ally=1` to
+  `/addresses` dropped the query parameter, and reloading disabled Ally.
+- Internal links and programmatic navigation now preserve explicit `ally=1`
+  and `ally=0`; mode selection also follows browser history. Plain routes
+  continue to use reference mode by default.
+- Added an opt-in-only pending prompt, "Selesai mengisi, terapkan", so users
+  can leave a focused field when an adaptation is ready. The SDK's focus and
+  composition guards remain in control; no interaction counters are simulated.
+- Regression tests cover opt-in navigation/reload and applying a pending plan
+  through touch input at both required mobile sizes. Production build, all 16
+  unit tests and all 20 Playwright tests pass. Visual validation produced 27
+  captures across all 12 reference screens with no page errors, broken images
+  or horizontal overflow.
+- Re-tested the real browser/SDK/backend/OpenAI flow using touch input and the
+  pending prompt: valid `source: llm` response in 2.8 seconds, form text
+  13.5px → 14.3px, Keep succeeded, and Undo restored 13.5px. The pending and
+  applied screenshots were visually inspected at 360px; automated interaction
+  checks also pass at 390px.
+
+### Faster Ally trigger
+
+- Updated the host SDK snapshot to `0.1.0-shopee.2`. Five genuine repeated
+  validation errors emit an early snapshot, without waiting for the regular
+  10-second window or depending on the motor fast-event latch. Existing rule
+  thresholds, server evidence gates, focus/composition guards and Undo remain
+  unchanged. The sibling SDK source was not modified.
+- The address demo now needs four Submit attempts with two invalid fields.
+  The demo pill immediately shows "Memproses…" once the planner is called.
+- Browser regression checks require a planner request within two seconds of
+  the repeated attempts, reject a single validation failure as insufficient,
+  and exercise a 2.5-second mock response plus Keep/Why/Undo at both mobile sizes.
+  Production build, all 16 unit tests, all 20 browser tests and the 27 reference
+  captures pass with no page errors, broken images or horizontal overflow.
+- A browser timing check at 360px/390px sent the request in 224ms/232ms from
+  the first Submit tap; the pending prompt appeared in 3.23s/3.17s with an
+  explicitly mocked 2.5-second response. Processing-pill screenshots at both
+  mobile sizes were visually inspected. These timings are not live AI latency.
+- A fresh live smoke could not reach OpenAI in the current execution sandbox:
+  the network call returned `EACCES`. Live latency for this snapshot is
+  unverified; the earlier live results above belong to the previous snapshot.
+- Confirmed the demo pill is visible immediately on `/cart?ally=1` and
+  `/address/edit?ally=1`. It is hidden on plain `/` by design. Homepage demo
+  mode (`/?ally=1`) shows the pill but does not activate shopping adaptations.

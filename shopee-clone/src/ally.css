@@ -23,6 +23,10 @@
 [data-ally-root] .ally-toast:empty{display:none}
 .ally-demo-tools{position:fixed;z-index:150;right:8px;top:4px;font:12px/1.45 Roboto,Arial,sans-serif;color:#222}
 .ally-demo-trigger{min-height:30px;border-radius:20px;padding:4px 10px;border:1px solid #d7d7d7;background:#fff;color:#333;box-shadow:0 1px 5px #0002}
+.ally-demo-waiting{padding:12px;background:#fff6df;border:1px solid #e5c57b;border-radius:8px;font-size:13px}
+.ally-demo-tools>.ally-demo-waiting{position:absolute;top:36px;right:0;width:min(300px,calc(100vw - 16px));box-shadow:0 3px 16px #0002}
+.ally-demo-waiting p{margin:0 0 8px}
+.ally-demo-waiting button{min-height:44px;width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;background:#fff;color:#222}
 .ally-demo-panel{position:absolute;top:36px;right:0;width:min(344px,calc(100vw - 16px));max-height:calc(100dvh - 55px);overflow:auto;padding:14px;background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 5px 25px #0003;font-size:13px}
 .ally-demo-panel header,.ally-enable,.ally-demo-buttons{display:flex;align-items:center;gap:8px}
 .ally-demo-panel header{justify-content:space-between;font-size:15px}
