@@ -1,6 +1,6 @@
 # Arsitektur Proyek Ally SDK — React Web MVP
 
-Status: Fase 0–3 (core, sensor, applier, provider, planner HTTP) sudah berjalan; preferensi dan verifikasi final masih rancangan. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
+Status: Fase 0–5 package SDK selesai dan lolos verifikasi berbasis skrip. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
 
 ## Tujuan dan batas sistem
 
@@ -19,6 +19,8 @@ Repo ini: sdk/                   package @ally/react
 │  ├─ src/applier.ts, runtime.ts transaksi DOM dan lifecycle
 │  ├─ src/engine-client.ts       request, timeout, cache planner
 │  ├─ src/planner-contract.ts    payload dan response schema
+│  ├─ src/preferences.ts         rekam feedback, konteks, reuse, outcome
+│  ├─ src/preference-storage.ts  adapter memori/localStorage
 │  ├─ src/provider.tsx           integrasi React dan context hook
 │  ├─ src/state.ts, ui/          status, Toast, Why
 │  ├─ src/styles.css            default token/selector slot host
@@ -66,7 +68,7 @@ SDK bertanggung jawab atas sensor, interpretasi, penerapan, feedback, preferensi
 
 ## Kontrak integrasi host
 
-Provider menerima policy, config, children, dan onDecision opsional. Config v1 mencakup enabled, endpoint same-origin, persistence, storageKey, urutan steps, allowedFields, serta errorCategories. useAlly menyediakan plan, profile, summary, explanation, status UI, plannerStatus, keep(), undo(), resetPreferences(), reportStep(), dan reportError(). Host melaporkan step dan kategori error yang sudah didaftarkan, tanpa value atau teks pesan.
+Provider menerima policy, config, children, dan onDecision opsional. Config v1 mencakup enabled, endpoint same-origin, persistence, storageKey, urutan steps, allowedFields, serta errorCategories. useAlly menyediakan plan, profile, summary, outcome, explanation, status UI, plannerStatus, keep(), undo(), resetPreferences(), reportStep(), dan reportError(). Host melaporkan step dan kategori error yang sudah didaftarkan, tanpa value atau teks pesan.
 
 Provider membuat satu wrapper data-ally-root. Host menggunakan --ally-target, --ally-space, --ally-font, dan data attributes untuk gaya komponen. Elemen terlindungi ditandai data-ally-slot dengan salah satu nilai price, legalText, totalAmount, atau payButton; primaryAction adalah slot sticky terpisah. Konten opsional ditandai data-ally-optional dengan salah satu nilai promoBanner, recommendations, voucherCarousel, atau socialProof. Root hanya menulis nama hide yang lolos policy dan pemeriksaan DOM ke data-ally-hide. Jika slot opsional memuat slot terlindungi, hapus nama hide terkait dari plan efektif dan atribut root; cek lagi saat step atau target berubah. Host harus menjaga payButton tidak berpindah/disembunyikan.
 
@@ -77,7 +79,7 @@ Provider membuat satu wrapper data-ally-root. Host menggunakan --ally-target, --
 3. Core menghitung skor. Jika strength<0.6 dan tidak ada dua dimensi >=0.5, hasilnya no-op. Single preset yang memenuhi confidence>=policy.thresholds.apply boleh diterapkan segera. Combined atau ambigu yang lolos gate dapat meminta planner; UI lama tetap aktif selama menunggu.
 4. Setiap kandidat melewati schema dan guard. Applier memeriksa contextEpoch, expiry, dan apakah pengguna sedang mengisi input atau memakai IME. Kandidat ditunda hingga blur bila fokus belum aman. Snapshot token/atribut dibuat sebelum satu transaksi ditulis.
 5. Toast menjelaskan perubahan. Keep menghentikan TTL dan mengirim feedback positif eksplisit; hilangnya toast tidak dianggap Keep. Undo mengembalikan baseline transaksi, mengirim feedback negatif, menaikkan threshold sesi, dan membatalkan request pending. TTL plan yang belum di-Keep mengembalikan baseline dengan aman.
-6. Fase preferensi memilih record yang cocok pada step/modality/preset/policy. Keep bukan bukti bahwa seluruh token secara individual bermanfaat; feedback berlaku untuk plan efektif secara utuh. Pengukuran sebelum/sesudah disimpan terpisah dan bernilai unknown bila sampel kurang.
+6. Preference store memilih record yang cocok pada step/modality/preset/policy. Keep bukan bukti bahwa seluruh token secara individual bermanfaat; feedback berlaku untuk plan efektif secara utuh. Pengukuran sebelum/sesudah disimpan terpisah dan bernilai unknown bila sampel kurang.
 
 Status UI: disabled → observing → pending bila menunggu blur → applied → kept atau kembali observing melalui Undo/TTL. plannerStatus idle/loading/fallback berjalan terpisah, sehingga UI dapat sudah applied sambil planner loading.
 
@@ -91,7 +93,7 @@ Structured Outputs membatasi bentuk jawaban, sedangkan schema runtime, guard, po
 
 ## Build, verifikasi, dan observabilitas
 
-Tahap pembangunan SDK: Fase 0 kontrak/guard; Fase 1 sensor/rule; Fase 2 provider/applier; Fase 3 client planner/kontrak HTTP; Fase 4 preferensi; Fase 5 skrip verifikasi dan handoff. Mock planner dapat disiapkan setelah kontrak. Evaluasi AI nyata menunggu endpoint rekan; ini status terpisah dari kelulusan SDK. Skrip pnpm build, typecheck, test, dan test:contract sudah tersedia.
+Tahap pembangunan SDK: Fase 0 kontrak/guard; Fase 1 sensor/rule; Fase 2 provider/applier; Fase 3 client planner/kontrak HTTP; Fase 4 preferensi; Fase 5 skrip verifikasi dan handoff. Seluruh gate SDK selesai. Evaluasi AI nyata menunggu endpoint rekan; ini status terpisah dari kelulusan SDK. Skrip pnpm build, typecheck, test, test:contract, test:package, dan test:ai:mock tersedia.
 
 Verifikasi SDK memakai skrip pnpm -C sdk build, typecheck, test, dan test:contract. Vitest/jsdom dengan fake timers menguji schema/rule/guard, sensor, scope, fokus, Keep/Undo/TTL, dan slot terkunci. Mock HTTP menguji 200/204/400/429/5xx, timeout, payload, cache, dan respons stale. Consumer fixture yang memasang tarball memeriksa export, tipe, React peer, dan import core tanpa DOM. jsdom memakai stub geometri; hasilnya tidak membuktikan rendering atau kompatibilitas browser nyata. Skrip test:ai opsional dapat menguji endpoint rekan dengan tujuh fixture × tiga run, tetapi kualitas model dinyatakan unknown sampai endpoint nyata tersedia.
 
@@ -101,4 +103,4 @@ Log keputusan hanya berisi timestamp, source, reason codes, jenis preset, koreks
 
 ## Keputusan yang masih memerlukan bukti implementasi
 
-Versi model, kompatibilitas browser, latency model nyata, dan penurunan friksi belum dapat dipastikan dari pengujian SDK. Mock planner Fase 3 menghasilkan routing 21/21, semantik sintetis 15/15, dan pelanggaran schema/policy 0/21; endpoint rekan belum diuji. [Checklist implementasi](IMPLEMENTATION_PHASES.md) kini 16/24; artefak dan bukti Fase 4–5 belum tersedia.
+Versi model, kompatibilitas browser, latensi model nyata, dan penurunan friksi belum dapat dipastikan dari pengujian SDK. Mock planner menghasilkan routing 21/21, semantik sintetis 15/15, dan pelanggaran schema/policy 0/21; endpoint rekan belum diuji. Consumer tarball menggunakan dependency lokal tertaut dalam lingkungan offline, sehingga instalasi registry bersih juga belum dibuktikan. [Checklist implementasi](IMPLEMENTATION_PHASES.md) kini 24/24 untuk lingkup SDK; bukti Fase 4–5 ada pada dokumen masing-masing.

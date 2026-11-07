@@ -29,11 +29,13 @@ Aksi Keep/Undo → identifikasi plan efektif → upsert feedback → batasi/expi
 
 Uji Keep→request berikutnya memuat ringkasan relevan, Undo menggantikan feedback sebelumnya, history beda step tidak bocor, policy berubah mengabaikan record lama, reset membersihkan cache, storage denial tidak merusak UI, dan expiry membuang record. Tampilkan contoh payload sintetis dalam README, tanpa menyebut model telah dilatih.
 
-## Checklist bukti — 0/4 (0%)
+## Checklist bukti — 4/4 (100%)
 
-- [ ] 4A — Schema record, expiry, cap, adapter storage dan memory fallback teruji.
-- [ ] 4B — Keep/Undo/dismiss deduplikasi dan reset menghasilkan feedback yang benar.
-- [ ] 4C — Seleksi konteks, reuse berguard, payload AI terbatas dan invalidasi cache bekerja.
-- [ ] 4D — Observasi hasil mencatat rate/sampel/unknown; skenario personalisasi dapat diulang dengan skrip.
+- [x] 4A — `preferences.ts` menyimpan record v1, expiry 7 hari, maksimum 20; `preference-storage.ts` memakai memori secara default dan menangani storage korup/ditolak.
+- [x] 4B — Runtime mencatat hanya Keep/Undo eksplisit dari plan efektif; Keep→Undo pada keputusan sama mengoreksi hitungan. Timeout netral. Reset menghapus record, membatalkan request/pending, dan mempertahankan tampilan aktif.
+- [x] 4C — Reuse mensyaratkan friksi terkini dan konteks step/modality/preset/policy yang cocok, lalu melewati guard. Planner menerima maksimum tiga ringkasan allowlist; reset membersihkan cache. Pergantian mode persistence membersihkan adapter lama dan baru.
+- [x] 4D — Outcome membandingkan missTap/taps dari dua window lengkap, berturut, berdurasi setara, masing-masing minimal lima tap; kasus overlap atau sampel kurang bernilai unknown.
 
 Setiap item bernilai 25% fase; bukti bukan sekadar adanya entry localStorage.
+
+Verifikasi skrip: `pnpm -C sdk typecheck` dan `pnpm -C sdk test` lulus pada 2026-11-07 (69 tes). Skenario utama ada di `sdk/test/preferences.test.ts`, `sdk/test/runtime-preferences.test.ts`, dan `sdk/test/provider.test.tsx`, termasuk regresi agar feedback plan lama tidak dikaitkan ke step atau policy baru serta outcome dibatalkan saat policy berubah. Outcome adalah observasi, bukan bukti kausal atau pelatihan ulang model.

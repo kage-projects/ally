@@ -16,7 +16,7 @@ Build package → typecheck → unit sensor/rule/guard → render fixture React/
 ## Langkah implementasi
 
 1. Buat sdk/test/fixtures/consumer.tsx dengan form tiga step minimal, tombol token-aware, marker data-ally-slot dan data-ally-optional. Fixture ini hanya untuk test, tidak dikemas sebagai aplikasi dan tidak memiliki route server.
-2. Jalankan skrip pnpm -C sdk build, typecheck, test, dan test:contract. test memakai Vitest/jsdom dan fake timers; test:contract menguji fetch dengan mock handler serta memasang tarball package ke consumer fixture sementara. Gunakan package output, bukan import src langsung, pada contract test.
+2. Jalankan skrip `pnpm -C sdk build`, `typecheck`, `test`, dan `test:contract`. `test` memakai Vitest/jsdom, fake timers, dan mock fetch. `test:contract` menjalankan SSR contract serta mengekstrak tarball package ke consumer sementara. Consumer memakai package output, bukan import `src/` langsung.
 3. Uji pipeline: no-op tanpa friksi, tiga miss→motor, combined→request, invalid plan/guard, target opsional berisi totalAmount, focus/IME menunda apply, Keep/Undo/TTL, timeout, response stale, reset preferensi, Strict Mode mount/cleanup. Uji properti CSS dan atribut DOM yang dihasilkan; jangan mengklaim hasil visual nyata dari jsdom.
 4. Untuk miss-tap, stub rectangle dan dispatch pointer event pada node fixture. Uji jalur sensor nyata secara programatik selain sensor.inject; keduanya berlabel terpisah. Mock window/visualViewport bila tersedia, dan tandai dukungan yang tidak diuji.
 5. Pastikan payload tidak memuat sentinel value/text dari form. Periksa bundle output agar tidak memuat OPENAI_API_KEY. Tidak ada API key yang disimpan dalam file, log, atau fixture.
@@ -28,11 +28,19 @@ Build package → typecheck → unit sensor/rule/guard → render fixture React/
 
 Fase selesai ketika build/typecheck/test/test:contract lulus, consumer fixture memakai package hasil build, dan tidak ada pelanggaran payload atau slot terkunci. Hasil model nyata boleh tetap unknown jika endpoint host belum tersedia; labeli secara eksplisit. Jangan menyebut SDK teruji pada browser nyata atau efektif bagi pengguna hanya dari skrip.
 
-## Checklist bukti — 0/4 (0%)
+## Hasil verifikasi SDK — 2026-11-07
 
-- [ ] 5A — Build, typecheck, unit/DOM script, dan consumer tarball lulus.
-- [ ] 5B — Mock HTTP, race, fallback, serta guard dan slot terlindungi lulus.
-- [ ] 5C — Pemeriksaan payload/bundle dan laporan hasil skrip lengkap, dengan batas klaim jelas.
-- [ ] 5D — README, contoh integrasi, fixture, dan kontrak endpoint siap diserahkan ke rekan host.
+`pnpm -C sdk build`, `typecheck`, `test`, `test:contract`, dan `test:ai:mock` masing-masing exit code 0. Vitest: 11 file dan 69 kasus lulus. Evaluator sintetis: routing 21/21, semantik 15/15, pelanggaran schema/policy 0. `test:ai` exit code 0 tetapi **melewati evaluasi live** karena `ALLY_AI_ENDPOINT` belum disetel; angka tersebut bukan bukti kualitas model.
+
+`test:contract` menguji SSR dan consumer baru dari `sdk/test-results/ally-react-0.1.0.tgz`. Skrip memeriksa ekspor React/core, import core tanpa DOM, marker fixture, stylesheet, deklarasi tipe, allowlist isi tarball, sentinel value/text yang tidak ada dalam payload, dan ketiadaan string `OPENAI_API_KEY` dalam output `dist/`. Uji jsdom fixture juga mengirim event DOM dan mock request untuk memeriksa payload tanpa sentinel. Detail mesin ada di `sdk/test-results/package-contract.json`; hasil mock di `sdk/test-results/ai-mock.json`. File `test-results/` dibuat oleh skrip dan tidak dikomit.
+
+Package manager offline tidak memiliki semua arsip dependency. Consumer mengekstrak **tarball** ke `node_modules/@ally/react` yang baru dan menautkan React, zod, serta alat tipe dari instalasi SDK lokal. Ini memverifikasi artefak paket dan import dari direktori consumer terpisah, tetapi belum memverifikasi install registry yang bersih. jsdom/SSR tidak memverifikasi layout browser nyata. Pengujian visual, host app, endpoint/model nyata, dan dampak pengguna tetap milik gate integrasi host.
+
+## Checklist bukti — 4/4 (100%)
+
+- [x] 5A — Build, typecheck, 69 unit/DOM test, dan consumer tarball lulus (exit 0).
+- [x] 5B — Mock HTTP, race, fallback, guard, dan slot terlindungi lulus dalam `sdk/test/` (exit 0).
+- [x] 5C — Pemeriksaan sentinel payload, scan bundle, dan laporan skrip lengkap dalam `sdk/test-results/` (exit 0).
+- [x] 5D — `sdk/README.md`, fixture, dan kontrak endpoint siap diserahkan ke rekan host.
 
 Setiap item bernilai 25% fase; sertakan path hasil dan exit code skrip ketika dicentang.

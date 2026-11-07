@@ -3,6 +3,12 @@ import type { ApplyResult, ScopeSnapshot } from './applier.js';
 import { guardPlan } from './guard.js';
 import { PlannerClient } from './engine-client.js';
 import { buildDecisionInput } from './planner-contract.js';
+import { createPreferenceStorage } from './preference-storage.js';
+import {
+  PreferenceContextSchema, PreferenceStore, compareOutcomeWindows,
+  planFromPreference, policyFingerprint,
+} from './preferences.js';
+import type { OutcomeObservation, PreferenceContext } from './preferences.js';
 import { decideRule } from './rules.js';
 import { AllyPolicySchema } from './schema.js';
 import type { AdaptationPlan, AllyPolicy, FrictionSummary, Preset, Profile } from './schema.js';
@@ -19,6 +25,7 @@ export interface RuntimeView {
   status: AllyStatus;
   plannerStatus: PlannerStatus;
   toastVisible: boolean;
+  outcome: OutcomeObservation | null;
 }
 
 export interface CandidateRequest {
@@ -27,6 +34,8 @@ export interface CandidateRequest {
   preset: Preset;
   reasonCodes: string[];
   contextEpoch?: number;
+  modality?: FrictionSummary['inputModality'];
+  beforeWindow?: SensorSnapshot | null;
 }
 
 interface PendingCandidate {
@@ -35,9 +44,13 @@ interface PendingCandidate {
   epoch: number;
   expiresAt: number;
   signature: string;
+  deferred: boolean;
 }
 
 interface ActiveDecision {
+  decisionId: number;
+  context: PreferenceContext | null;
+  beforeWindow: SensorSnapshot | null;
   requested: AdaptationPlan;
   result: ApplyResult;
   source: DecisionSource;
@@ -50,7 +63,7 @@ interface ActiveDecision {
 export function initialRuntimeView(policy: unknown, enabled = true): RuntimeView {
   return { plan: null, profile: null, summary: null, explanation: null,
     status: enabled && AllyPolicySchema.safeParse(policy).success ? 'observing' : 'disabled',
-    plannerStatus: 'idle', toastVisible: false };
+    plannerStatus: 'idle', toastVisible: false, outcome: null };
 }
 
 export class AllyRuntime {
@@ -60,6 +73,8 @@ export class AllyRuntime {
   private onDecision?: (event: AllyDecisionEvent) => void;
   private readonly applier: ReturnType<typeof createApplier>;
   private readonly planner = new PlannerClient();
+  private preferences: PreferenceStore | null = null;
+  private decisionCounter = 0;
   private plannerBusy = false;
   private plannerSerial = 0;
   private sensor: Sensor | null = null;
@@ -82,6 +97,13 @@ export class AllyRuntime {
   private undoBoost = 0;
   private undoCount = 0;
   private rejected = new Map<string, number>();
+
+  private preferenceContext(preset: Preset, modality: FrictionSummary['inputModality']): PreferenceContext | null {
+    if (!this.policy || preset === null) return null;
+    const parsed = PreferenceContextSchema.safeParse({ step: this.step,
+      modality, preset, policyFingerprint: policyFingerprint(this.policy) });
+    return parsed.success ? parsed.data : null;
+  }
 
   constructor(
     scope: HTMLElement,
@@ -154,7 +176,9 @@ export class AllyRuntime {
     if (this.plannerBusy || !this.alive || !this.enabled || !this.policy || this.active?.kept) return;
     let input;
     try {
-      input = buildDecisionInput(snapshot.summary, profile, policy, [], this.config.steps);
+      const context = this.preferenceContext(preset, snapshot.summary.inputModality);
+      const preferences = context ? this.preferences?.summaries(context, 3) ?? [] : [];
+      input = buildDecisionInput(snapshot.summary, profile, policy, preferences, this.config.steps);
     } catch {
       this.view.plannerStatus = 'fallback';
       this.publish();
@@ -179,7 +203,8 @@ export class AllyRuntime {
           this.view.plannerStatus = 'idle';
           if (outcome.kind === 'plan') {
             this.acceptCandidate({ plan: outcome.plan, source: outcome.source,
-              preset, reasonCodes, contextEpoch: epoch });
+              preset, reasonCodes, contextEpoch: epoch,
+              modality: snapshot.summary.inputModality });
           }
         }
         this.publish();
@@ -261,6 +286,14 @@ export class AllyRuntime {
   start() {
     if (this.alive) return;
     this.alive = true;
+    this.preferences = new PreferenceStore(createPreferenceStorage(
+      this.config.persistence ?? 'memory', this.config.storageKey ?? 'ally:pref:v1',
+      () => {
+        try { return this.scope.ownerDocument.defaultView?.localStorage ?? null; }
+        catch { return null; }
+      },
+    ));
+    this.preferences.load();
     this.scope.addEventListener('focusout', this.onBlur);
     this.scope.addEventListener('compositionstart', this.onCompositionStart);
     this.scope.addEventListener('compositionend', this.onCompositionEnd);
@@ -296,6 +329,11 @@ export class AllyRuntime {
   ingest(snapshot: SensorSnapshot) {
     if (!this.alive || !this.enabled || !this.policy || snapshot.source !== 'live') return;
     if (snapshot.summary.context.step !== this.step) return;
+    if (this.active?.beforeWindow && snapshot.reason === 'window' &&
+        snapshot.windowId > this.active.beforeWindow.windowId) {
+      this.view.outcome = compareOutcomeWindows(this.active.beforeWindow, snapshot);
+      this.active.beforeWindow = null;
+    }
     const effectivePolicy: AllyPolicy = {
       ...this.policy,
       thresholds: { ...this.policy.thresholds,
@@ -306,10 +344,27 @@ export class AllyRuntime {
     this.view.profile = decision.profile;
     this.publish();
     if (this.active?.kept) return;
-    if (decision.candidate) {
+    const context = this.preferenceContext(decision.preset, snapshot.summary.inputModality);
+    const preferred = decision.kind === 'none' || !context
+      ? null : this.preferences?.preferred(context) ?? null;
+    let reused = false;
+    if (preferred) {
+      try {
+        const plan = planFromPreference(preferred, decision.profile, decision.confidence,
+          decision.reasonCodes, this.policy);
+        reused = this.acceptCandidate({ plan, source: 'rule', preset: decision.preset,
+          reasonCodes: [...decision.reasonCodes, 'preference_reuse'],
+          modality: snapshot.summary.inputModality,
+          beforeWindow: snapshot });
+      } catch { /* The current policy and rule remain authoritative. */ }
+    }
+    if (!reused && decision.candidate) {
       this.acceptCandidate({ plan: decision.candidate.plan, source: 'rule',
-        preset: decision.preset, reasonCodes: decision.reasonCodes });
-    } else if (decision.requestPlanner) {
+        preset: decision.preset, reasonCodes: decision.reasonCodes,
+        modality: snapshot.summary.inputModality,
+        beforeWindow: snapshot });
+    }
+    if (!reused && decision.requestPlanner) {
       this.startPlanner(snapshot, decision.profile, effectivePolicy,
         decision.preset, decision.reasonCodes);
     }
@@ -326,8 +381,10 @@ export class AllyRuntime {
     if (this.active?.signature === signature || (this.rejected.get(signature) ?? 0) > Date.now()) return false;
     if (Date.now() - this.lastAppliedAt < 10000 && request.source !== 'llm') return false;
     const expiresAt = Date.now() + plan.ttlSeconds * 1000;
-    const pending: PendingCandidate = { request, plan, epoch: this.epoch, expiresAt, signature };
+    const pending: PendingCandidate = { request, plan, epoch: this.epoch,
+      expiresAt, signature, deferred: false };
     if (this.unsafeFocus(plan)) {
+      pending.deferred = true;
       this.clearPending();
       this.pending = pending;
       this.view.status = transitionStatus(this.view.status, 'defer');
@@ -361,6 +418,10 @@ export class AllyRuntime {
     if (!this.active || this.active.kept) this.baseline = captureScope(this.scope);
     const result = this.applier.apply(pending.plan, this.policy);
     this.active = {
+      decisionId: ++this.decisionCounter,
+      context: this.preferenceContext(pending.request.preset,
+        pending.request.modality ?? this.view.summary?.inputModality ?? 'mouse'),
+      beforeWindow: pending.deferred ? null : pending.request.beforeWindow ?? null,
       requested: pending.plan, result, source: pending.request.source,
       preset: pending.request.preset, reasonCodes: pending.request.reasonCodes,
       signature: pending.signature, kept: false,
@@ -369,6 +430,7 @@ export class AllyRuntime {
     this.lastAppliedAt = Date.now();
     this.view.plan = result.plan;
     this.view.explanation = result.plan.explanation;
+    this.view.outcome = { status: 'unknown', reason: 'missing-window' };
     this.view.status = transitionStatus(this.view.status, 'apply');
     this.showToast();
     this.ttlTimer = setTimeout(() => {
@@ -418,6 +480,8 @@ export class AllyRuntime {
     this.clearPending();
     this.clearTtl();
     this.active.kept = true;
+    if (this.active.context) this.preferences?.recordFeedback(this.active.decisionId,
+      this.active.context, this.active.result.plan, 'kept');
     this.view.status = transitionStatus('applied', 'keep');
     this.publish();
     this.log('kept', this.active);
@@ -428,6 +492,8 @@ export class AllyRuntime {
     this.epoch++;
     this.cancelPlanner(true);
     if (this.active) {
+      if (this.active.context) this.preferences?.recordFeedback(this.active.decisionId,
+        this.active.context, this.active.result.plan, 'undone');
       this.rejected.set(this.active.signature, Date.now() + 60000);
       this.undoBoost = Math.min(1, this.undoBoost + 0.15);
       this.undoCount++;
@@ -438,6 +504,7 @@ export class AllyRuntime {
 
   reportStep(step: string) {
     if (!this.alive || !this.config.steps.includes(step) || step === this.step) return;
+    this.view.outcome = this.active ? { status: 'unknown', reason: 'context' } : null;
     this.sensor?.reportStep(step);
     this.step = step;
     this.epoch++;
@@ -453,6 +520,10 @@ export class AllyRuntime {
       }
       this.baseline = captureScope(this.scope);
       this.active.kept = false;
+      this.active.decisionId = ++this.decisionCounter;
+      // The visible plan predates this step; feedback on it must not teach the new step.
+      this.active.context = null;
+      this.active.beforeWindow = null;
       this.view.status = 'applied';
       this.ttlTimer = setTimeout(() => this.restoreTransaction('expired'),
         this.active.result.plan.ttlSeconds * 1000);
@@ -471,6 +542,8 @@ export class AllyRuntime {
     this.clearPending();
     this.undoBoost = 0;
     this.rejected.clear();
+    this.preferences?.reset();
+    this.view.outcome = null;
     this.publish();
   }
 
@@ -480,6 +553,8 @@ export class AllyRuntime {
     this.epoch++;
     this.cancelPlanner(true);
     this.clearPending();
+    this.view.outcome = this.active ? { status: 'unknown', reason: 'context' } : null;
+    if (this.active) this.active.beforeWindow = null;
     if (!parsed.success) {
       this.policy = null;
       this.sensor?.stop();
@@ -503,6 +578,9 @@ export class AllyRuntime {
           this.active.result = result;
           this.view.plan = result.plan;
           this.view.explanation = result.plan.explanation;
+          // The active choice was made under the previous policy. A fresh
+          // decision under this policy is needed before recording feedback.
+          this.active.context = null;
         } catch {
           this.applier.restore(this.applier.initial);
           this.active = null;

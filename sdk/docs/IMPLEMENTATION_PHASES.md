@@ -1,6 +1,6 @@
 # Rencana Implementasi SDK Ally — Analisis dan Indeks Fase
 
-Status: Fase 0–3 package sdk selesai; Fase 4–5 belum diimplementasikan. Lingkup kerja ini hanya package sdk dan pengujian berbasis skrip. Aplikasi React host serta endpoint OpenAI dibangun rekan tim. Mulai dari [arsitektur proyek](ARCHITECTURE.md) dan [kontrak bersama](CONTRACTS.md).
+Status: Fase 0–5 package SDK selesai dan diverifikasi dengan skrip. Lingkup kerja ini hanya package SDK; aplikasi React host serta endpoint OpenAI dibangun rekan tim. Mulai dari [arsitektur proyek](ARCHITECTURE.md) dan [kontrak bersama](CONTRACTS.md).
 
 ## Temuan analisis dan keputusan perbaikan
 
@@ -49,9 +49,9 @@ Masing-masing dokumen fase mempunyai empat deliverable bernomor, total 24. Satu 
 - [x] Fase 1: 4/4 deliverable — **100%**.
 - [x] Fase 2: 4/4 deliverable — **100%**.
 - [x] Fase 3: 4/4 deliverable — **100%**.
-- [ ] Fase 4: 0/4 deliverable — **0%**.
-- [ ] Fase 5: 0/4 deliverable — **0%**.
+- [x] Fase 4: 4/4 deliverable — **100%**.
+- [x] Fase 5: 4/4 deliverable — **100%**.
 
-**Total implementasi: 16/24 = 66,67%.** Bukti Fase 0 berada di [dokumen fondasi](PHASE_0_FOUNDATION.md), Fase 1 di [dokumen sensor/rule](PHASE_1_SENSORS_RULES.md), Fase 2 di [dokumen adaptasi React](PHASE_2_REACT_ADAPTATION.md), dan Fase 3 di [dokumen planner](PHASE_3_AI_PLANNER.md). Riset dan dokumen perencanaan tidak dihitung sebagai kode. Saat menandai item berikutnya, tambahkan path artefak, perintah/skenario verifikasi, hasil, dan tanggal pada dokumen fase; kemudian sinkronkan angka di indeks ini.
+**Total implementasi SDK: 24/24 = 100%.** Bukti per fase berada di [fondasi](PHASE_0_FOUNDATION.md), [sensor/rule](PHASE_1_SENSORS_RULES.md), [adaptasi React](PHASE_2_REACT_ADAPTATION.md), [planner](PHASE_3_AI_PLANNER.md), [preferensi](PHASE_4_PREFERENCES.md), dan [verifikasi SDK](PHASE_5_SDK_VERIFICATION.md). Angka ini hanya mencakup deliverable package dan skrip; endpoint OpenAI nyata, browser host, dan dampak pengguna belum diverifikasi.
 
 Referensi proyek: [PRD](../../ALLY_PRD.md), [build plan](../../ALLY_BUILD_PLAN.md), [riset SDK](SDK_IMPLEMENTATION_RESEARCH.md). Referensi teknis yang digunakan pada analisis ditautkan di fase terkait.

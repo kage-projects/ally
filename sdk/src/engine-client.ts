@@ -99,7 +99,7 @@ export function plannerCacheKey(input: DecisionInput): string {
     Math.floor(summary.viewport.h / 100), Math.floor(summary.viewport.dpr * 2)];
   return JSON.stringify([input.schemaVersion, summary.context.step, summary.inputModality,
     summary.context.priorPreset, summary.context.undoCount,
-    signalBucket, viewportBucket, input.policy, input.preferences]);
+    signalBucket, input.profile, viewportBucket, input.policy, input.preferences]);
 }
 
 interface CacheEntry { plan: AdaptationPlan; latencyMs: number; expiresAt: number }
@@ -119,6 +119,11 @@ export class PlannerClient {
     if (cached) {
       if (cached.expiresAt > Date.now()) {
         try {
+          if (Object.keys(input.profile).some((name) =>
+            Math.abs(cached.plan.profile[name as keyof typeof input.profile] -
+              input.profile[name as keyof typeof input.profile]) > 1e-9)) {
+            throw new Error('Cached profile no longer matches the summary');
+          }
           const guarded = guardPlan(cached.plan, input.policy);
           return { kind: 'plan', source: 'cache', plan: guarded.plan,
             corrections: guarded.corrections, latencyMs: cached.latencyMs };

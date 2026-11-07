@@ -129,6 +129,8 @@ describe('per-provider planner cache', () => {
     expect(plannerCacheKey(input)).not.toBe(plannerCacheKey({ ...input,
       summary: { ...summary, counts: { ...summary.counts, zoomEvent: 3 } } }));
     expect(plannerCacheKey(input)).not.toBe(plannerCacheKey({ ...input,
+      profile: { ...input.profile, visual: 0.9 } }));
+    expect(plannerCacheKey(input)).not.toBe(plannerCacheKey({ ...input,
       preferences: [{ step: 'cart', modality: 'touch', preset: 'motor',
         choice: { tokens: responsePlan.tokens, layout: responsePlan.layout,
           assist: responsePlan.assist }, keptCount: 1, undoneCount: 0, ageBucket: 'recent' }] }));

@@ -1,12 +1,12 @@
 # Handoff Endpoint Planner untuk Host React
 
-SDK Fase 3 mengirim agregat interaksi ke endpoint milik aplikasi host. Aplikasi dan route server tidak berada dalam repo SDK ini. API key OpenAI hanya boleh ada di server host.
+SDK mengirim agregat interaksi ke endpoint milik aplikasi host. Aplikasi dan route server tidak berada dalam repo SDK ini. API key OpenAI hanya boleh ada di server host.
 
 ## Mengaktifkan dari aplikasi host
 
-Berikan `policy.llm.enabled: true` dan `config.endpoint: '/api/ally/plan'` pada `AllyProvider`. Endpoint harus berupa path same-origin yang diawali `/`, tanpa query, fragment, atau backslash. SDK melakukan `POST` JSON dengan kredensial same-origin, batas body 16 KB, timeout 2 detik, dan tanpa retry otomatis pada window yang sama. Preferensi dikirim sebagai `[]` sampai Fase 4.
+Berikan `policy.llm.enabled: true` dan `config.endpoint: '/api/ally/plan'` pada `AllyProvider`. Endpoint harus berupa path same-origin yang diawali `/`, tanpa query, fragment, atau backslash. SDK melakukan `POST` JSON dengan kredensial same-origin, batas body 16 KB, timeout 2 detik, dan tanpa retry otomatis pada window yang sama. Jika tidak ada riwayat Keep/Undo yang cocok, preferensi dikirim sebagai `[]`.
 
-SDK hanya memanggil endpoint setelah evidence gate lolos dan rule lokal belum cukup: preset `combined` atau confidence di bawah `policy.thresholds.llm`. Plan rule yang sudah aktif tetap terlihat saat planner loading atau gagal. Status planner tersedia melalui `useAlly().plannerStatus` (`idle`, `loading`, `fallback`).
+SDK hanya memanggil endpoint setelah evidence gate lolos dan rule lokal belum cukup: preset `combined` atau confidence di bawah `policy.thresholds.llm`. Jika ada preferensi yang cocok dengan step, modality, preset, dan policy saat ini, SDK mengirim paling banyak tiga ringkasan tervalidasi berisi pilihan token/flag, jumlah Keep/Undo, serta bucket usia. Plan rule yang sudah aktif tetap terlihat saat planner loading atau gagal. Status planner tersedia melalui `useAlly().plannerStatus` (`idle`, `loading`, `fallback`).
 
 ## Kontrak route server
 

@@ -38,6 +38,7 @@ beforeEach(() => {
   (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
   container = document.createElement('div');
   document.body.append(container);
+  window.localStorage.clear();
   root = createRoot(container);
   events = [];
 });
@@ -45,6 +46,7 @@ beforeEach(() => {
 afterEach(() => {
   act(() => root.unmount());
   container.remove();
+  window.localStorage.clear();
   vi.restoreAllMocks();
   vi.useRealTimers();
 });
@@ -110,5 +112,18 @@ describe('AllyProvider integration', () => {
 
   it('throws a useful error when useAlly is outside the provider', () => {
     expect(() => renderToStaticMarkup(createElement(HostFixture))).toThrow(/inside AllyProvider/);
+  });
+
+  it('clears device preference storage when persistence mode changes', () => {
+    const render = (persistence: 'memory' | 'local') =>
+      root.render(<AllyProvider policy={DEFAULT_POLICY}
+        config={{ steps: ['cart'], persistence }}><HostFixture /></AllyProvider>);
+    act(() => render('local'));
+    window.localStorage.setItem('ally:pref:v1', 'stale-local-choice');
+    act(() => render('memory'));
+    expect(window.localStorage.getItem('ally:pref:v1')).toBeNull();
+    window.localStorage.setItem('ally:pref:v1', 'stale-local-choice');
+    act(() => render('local'));
+    expect(window.localStorage.getItem('ally:pref:v1')).toBeNull();
   });
 });

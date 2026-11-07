@@ -1,48 +1,85 @@
 # @ally/react — React web SDK
 
-This folder is the React web SDK package. It implements strict data contracts,
-a pure policy guard, scoped interaction sensor, local rules and presets, and a
-React provider that applies reversible UI tokens. The provider observes DOM
-interactions and exposes Keep, Undo, and Why. Ambiguous evidence can request
-a guarded plan from the host's same-origin endpoint. Preference persistence
-is planned for Phase 4.
+Ally observes interaction friction inside a React subtree and applies reversible UI tokens. It runs local rules first and can ask a host-owned planner endpoint for ambiguous cases. This package contains the SDK and script fixtures only; the host app and server route are separate.
 
-Run from the repository root:
+## Install and mount
 
-- `pnpm -C sdk install` — install pinned dependencies.
-- `pnpm -C sdk build` — build ESM, types, and CSS.
-- `pnpm -C sdk typecheck` — check TypeScript.
-- `pnpm -C sdk test` — run core, sensor, runtime, and React jsdom tests.
-- `pnpm -C sdk test:contract` — import the built React and core entry points
-  from a minimal server-rendered consumer fixture.
-- `pnpm -C sdk test:ai:mock` — run the synthetic seven-fixture planner harness.
-- `pnpm -C sdk test:ai` — evaluate the host endpoint when `ALLY_AI_ENDPOINT`
-  is set; otherwise report that live quality is unverified.
+The package targets React 19 and ESM. Install the generated tarball with React as a peer, then import its stylesheet once in the host entry. The package is currently private, so registry publishing is a separate release decision.
 
-The host wraps its React subtree in `AllyProvider`, gives it a merchant policy
-and step names, and imports `@ally/react/styles.css`. Interactive components
-read `--ally-target`, `--ally-space`, and `--ally-font`. Mark protected
-content with `data-ally-slot="totalAmount"` or another supported slot, and
-optional content with `data-ally-optional="promoBanner"` or another allowed
-name. Mark a sticky CTA with `data-ally-slot="primaryAction"` and keep it
-separate from `data-ally-slot="payButton"`. Host styles should use
-`min-height: var(--ally-target)` and `min-width: var(--ally-target)` for
-interactive targets, and `font-size: calc(1rem * var(--ally-font))` for scalable
-text. The SDK owns `--ally-*` and `data-ally-*` on its wrapper while mounted.
-See `test/provider.test.tsx` for a script-based integration fixture.
+```sh
+pnpm add ./ally-react-0.1.0.tgz react@^19
+```
 
-The separate `@ally/react/core` export contains `AllyPolicySchema`,
-`AdaptationPlanSchema`, `DecisionInputSchema`, `AdaptationPlanJsonSchema`,
-`DEFAULT_POLICY`, `guardPlan`, `scoreProfile`, `decideRule`, and
-`createPresetPlan`, plus `PlannerResponseSchema` and `buildDecisionInput`.
-It imports no browser APIs and can be
-used by the host server. The host owns the OpenAI endpoint and API key.
+Mount the provider around the adaptive subtree:
 
-To enable AI planning, set `policy.llm.enabled` and mount the host route at
-`config.endpoint` (default `/api/ally/plan`). See
-[`docs/HOST_PLANNER_HANDOFF.md`](docs/HOST_PLANNER_HANDOFF.md) for the exact
-request, response, and server-side trust rules.
+```tsx
+import '@ally/react/styles.css';
+import { AllyProvider, useAlly } from '@ally/react';
+import { DEFAULT_POLICY } from '@ally/react/core';
+import { useState } from 'react';
 
-The current entry points target React 19 and ESM. Plan fields follow
-[`docs/CONTRACTS.md`](docs/CONTRACTS.md); implementation progress is in
-[`docs/IMPLEMENTATION_PHASES.md`](docs/IMPLEMENTATION_PHASES.md).
+function Checkout() {
+  const ally = useAlly();
+  const [email, setEmail] = useState('');
+  return <form onSubmit={(event) => {
+    event.preventDefault();
+    if (!email.trim()) {
+      ally.reportError({ field: 'email', category: 'required' });
+      return;
+    }
+    ally.reportStep('shipping');
+  }}>
+    <input name="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+    <button type="submit">Shipping</button>
+    <button type="button" onClick={() => ally.resetPreferences()}>Reset Ally preferences</button>
+  </form>;
+}
+
+export function AllyCheckout() {
+  return <AllyProvider policy={DEFAULT_POLICY} config={{
+    steps: ['cart', 'shipping', 'payment'],
+    allowedFields: ['email'], errorCategories: ['required'],
+    persistence: 'local', storageKey: 'ally:checkout:v1',
+  }}><Checkout /></AllyProvider>;
+}
+```
+
+Use one provider per subtree; nested providers are unsupported. `steps` must list every value passed to `reportStep`. Report error **categories**, never input values or error messages. The default persistence is memory. `local` stores at most 20 validated preference records in browser localStorage for seven days; unavailable or denied storage falls back to memory. `resetPreferences()` clears the SDK's preference records. Keep and Undo controls are rendered by the provider; `useAlly()` also exposes `keep()`, `undo()`, `plan`, `status`, `plannerStatus`, `summary`, `explanation`, and `outcome`. The outcome is `unknown` unless comparable complete windows have enough taps; it is not a measure of user impact.
+
+## Host UI contract
+
+Interactive controls should consume `--ally-target`, `--ally-space`, and `--ally-font`; for example, `min-height: var(--ally-target)` and `font-size: calc(1rem * var(--ally-font))`. Mark protected elements with `data-ally-slot="price"`, `"legalText"`, `"totalAmount"`, or `"payButton"`. Use `data-ally-slot="primaryAction"` for a sticky CTA, separate from the pay button. Mark optional sections with `data-ally-optional="promoBanner"`, `"recommendations"`, `"voucherCarousel"`, or `"socialProof"`. Ally applies only schema-defined tokens and flags, clamps them to merchant policy, and keeps protected slots visible. See [`test/fixtures/consumer.tsx`](test/fixtures/consumer.tsx) for a three-step script fixture.
+
+## Planner endpoint
+
+To enable AI planning, set `policy.llm.enabled: true` and `config.endpoint: '/api/ally/plan'`. The route must be same-origin. The SDK posts a strict `DecisionInput` containing `schemaVersion`, anonymous `summary` counters/timings/sizes, computed `profile`, `policy`, and at most three preference summaries. It never sends field values, visible text, identifiers, screenshots, or absolute coordinates. The host owns its OpenAI key, model, server-side policy, and route.
+
+The server validates input with `DecisionInputSchema` from `@ally/react/core`, recomputes the profile, applies its authoritative policy, and returns either HTTP `204` or a guarded HTTP `200` response:
+
+```ts
+// Shape of a request produced by the SDK; summary contains counters and timings only.
+import { buildDecisionInput, scoreProfile, serializeDecisionInput } from '@ally/react/core';
+const request = buildDecisionInput(summary, scoreProfile(summary), policy,
+  preferences, ['cart', 'shipping', 'payment']);
+const body = serializeDecisionInput(request); // POST /api/ally/plan
+```
+
+```json
+{ "schemaVersion": 1, "plan": { "profile": { "motor": 0.8, "visual": 0, "cognitive": 0 }, "tokens": { "targetMinSize": 56, "spacingScale": 1.25, "fontScale": 1, "contrast": "normal", "density": "comfortable" }, "layout": { "stepMode": "default", "hideNonEssential": [], "primaryActionSticky": false, "confirmDestructive": true }, "assist": { "inlineHints": false, "voiceOffer": false }, "confidence": 0.8, "explanation": "Larger targets may help after repeated missed taps.", "ttlSeconds": 120 }, "source": "llm", "latencyMs": 100 }
+```
+
+This is a response-shape example; the server must compute or validate every field. Invalid, late, timed-out, or unavailable planner responses fall back to the local decision. See [`docs/HOST_PLANNER_HANDOFF.md`](docs/HOST_PLANNER_HANDOFF.md) and [`docs/CONTRACTS.md`](docs/CONTRACTS.md) for the complete contract.
+
+## Build and verification
+
+From the repository root:
+
+- `pnpm -C sdk build` — emit ESM, declarations, and CSS.
+- `pnpm -C sdk typecheck` — check SDK TypeScript.
+- `pnpm -C sdk test` — run Vitest unit and jsdom scripts, including the host fixture.
+- `pnpm -C sdk test:contract` — run SSR contract and fresh tarball consumer checks.
+- `pnpm -C sdk test:package` — pack and check only the tarball consumer.
+- `pnpm -C sdk test:ai:mock` — run seven synthetic planner fixtures.
+- `pnpm -C sdk test:ai` — evaluate a real host endpoint when `ALLY_AI_ENDPOINT` is set.
+
+Generated reports and the tarball are written to `sdk/test-results/`. The offline package test extracts the tarball into a fresh consumer and links installed React, zod, and TypeScript dependencies from the SDK workspace because their archives are absent from the offline package store. The consumer imports package output, not SDK source. jsdom and SSR verify logic and contracts, not visual browser compatibility. Mock fixtures do not measure real model quality or user impact.

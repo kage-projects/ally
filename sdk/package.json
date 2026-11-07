@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.18.0",
+  "files": ["dist", "README.md"],
   "sideEffects": ["./dist/styles.css"],
   "exports": {
     ".": {
@@ -20,7 +21,8 @@
     "build": "tsup && node scripts/copy-styles.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:contract": "node test/contract.mjs",
+    "test:contract": "node test/verify-contract.mjs",
+    "test:package": "node test/consumer-package.mjs",
     "test:ai": "node test/ai-eval.mjs",
     "test:ai:mock": "node test/ai-eval.mjs --mock"
   },

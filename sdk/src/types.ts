@@ -6,6 +6,7 @@ import type {
   Profile,
   Preset,
 } from './schema.js';
+import type { OutcomeObservation } from './preferences.js';
 
 export type AllyStatus = 'disabled' | 'observing' | 'pending' | 'applied' | 'kept';
 export type PlannerStatus = 'idle' | 'loading' | 'fallback';
@@ -44,6 +45,7 @@ export interface AllyContextValue {
   explanation: string | null;
   status: AllyStatus;
   plannerStatus: PlannerStatus;
+  outcome: OutcomeObservation | null;
   keep: () => void;
   undo: () => void;
   resetPreferences: () => void;

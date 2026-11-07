@@ -1,6 +1,6 @@
 # Kontrak Bersama Implementasi MVP
 
-Status: keputusan desain v1; Fase 0–3 sudah berupa kode, preferensi dan verifikasi final masih tahap berikutnya. Dokumen ini merinci dan memperbaiki rancangan awal PRD. Perubahan yang disengaja dicatat di [indeks fase](IMPLEMENTATION_PHASES.md). Semua fase memakai kontrak ini agar tidak mendefinisikan ulang API.
+Status: keputusan desain v1 telah diimplementasikan dalam Fase 0–5 package SDK dan diverifikasi dengan skrip. Dokumen ini merinci dan memperbaiki rancangan awal PRD. Perubahan yang disengaja dicatat di [indeks fase](IMPLEMENTATION_PHASES.md). Semua fase memakai kontrak ini agar tidak mendefinisikan ulang API.
 
 ## Batas package dan kepemilikan
 
@@ -16,7 +16,7 @@ AllyProvider menerima policy, children, onDecision opsional, dan config. Provide
 
 Config v1: enabled (default true), endpoint (default /api/ally/plan), storageKey (default ally:pref:v1), persistence (memory atau local; default memory), steps (array nama step yang ditetapkan developer), allowedFields dan errorCategories (array allowlist host, default kosong). Endpoint relatif same-origin. SSR dan render pertama tidak mengakses DOM/storage; pemulihan preferensi dilakukan setelah mount.
 
-useAlly menghasilkan plan, profile, summary, explanation, status, plannerStatus, keep(), undo(), resetPreferences(), reportStep(step), dan reportError({field, category}). Pemakaian hook di luar provider menghasilkan error developer yang jelas. field/category harus berasal dari allowlist host, tanpa pesan error, nilai field, URL, atau ID pengguna. Nilai field hanya disimpan sementara untuk menghitung duplikasi lokal; payload keluar berisi counter.
+useAlly menghasilkan plan, profile, summary, outcome, explanation, status, plannerStatus, keep(), undo(), resetPreferences(), reportStep(step), dan reportError({field, category}). Outcome adalah perbandingan observasi dua window yang memenuhi syarat, bukan bukti kausal. Pemakaian hook di luar provider menghasilkan error developer yang jelas. field/category harus berasal dari allowlist host, tanpa pesan error, nilai field, URL, atau ID pengguna. Nilai field hanya disimpan sementara untuk menghitung duplikasi lokal; payload keluar berisi counter.
 
 `onDecision` menerima action (`applied`, `kept`, `undone`, `expired`, `corrected`), source, plan efektif, preset, reasonCodes, dan koreksi guard/DOM. Callback dapat dipakai host untuk log tanpa nilai form; Keep/Undo dikirim sekali per tindakan. Fase 3 menghubungkan source `llm`/`cache` dari endpoint melalui client planner SDK.
 
@@ -25,7 +25,7 @@ Status UI: disabled, observing, pending, applied, kept. Status planner terpisah:
 ## Kontrak data dan provenance
 
 Pertahankan field FrictionSummary, Profile, AdaptationPlan, dan AllyPolicy dari PRD. Tambahkan envelope v1, jangan memasukkan metadata ke dalam output token:
-- DecisionInput: schemaVersion=1, summary, profile, policy, preferences (array kosong sebelum Fase 4).
+- DecisionInput: schemaVersion=1, summary, profile, policy, preferences (maksimal tiga ringkasan relevan; kosong saat belum ada feedback).
 - DecisionResult internal: source (rule/llm/cache), preset, plan, reasonCodes, contextEpoch. Hanya objek plan mengikuti schema AdaptationPlan.
 - Metadata observasi lokal: durasi aktual, sinyal tersedia, sumber live/simulation, jumlah sampel. Signal yang belum diimplementasikan bernilai nol pada payload demi kompatibilitas; daftar kemampuan tetap di konfigurasi server dan prompt, sehingga nol tidak dianggap bukti ketiadaan friksi.
 - contextEpoch integer lokal bertambah pada step/policy berubah, Undo, Keep, reset, disable, dan unmount. Bukan identifier pengguna; jangan kirim ke model.
@@ -46,4 +46,4 @@ SDK mengekspor evidence gate dari core: bila strength di bawah 0.6 dan tidak ada
 
 ## Pengendalian perubahan
 
-Kontrak v1 adalah satu sumber keputusan di dokumentasi; src/schema.ts menjadi sumber tipe/runtime setelah ditulis. Perubahan field, status, default, atau makna Keep/Undo harus diperbarui di sini, contoh payload, seluruh konsumen, dan pengujian kontrak dalam satu perubahan. Jangan membuat nama alternatif pada fase berikutnya. Simpan alasan perubahan sebagai catatan singkat di PR.
+Kontrak v1 adalah satu sumber keputusan di dokumentasi; src/schema.ts menjadi sumber tipe/runtime. Perubahan field, status, default, atau makna Keep/Undo harus diperbarui di sini, contoh payload, seluruh konsumen, dan pengujian kontrak dalam satu perubahan. Jangan membuat nama alternatif pada fase berikutnya. Simpan alasan perubahan sebagai catatan singkat di PR.

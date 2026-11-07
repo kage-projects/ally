@@ -15,10 +15,32 @@ export function AllyProvider({ children, policy, config, onDecision }: AllyProvi
   const [view, setView] = useState<RuntimeView>(() => initialRuntimeView(policy, config.enabled !== false));
   const [whyOpen, setWhyOpen] = useState(false);
   const whyId = useId();
+  const previousStorageConfig = useRef<{ persistence: 'memory' | 'local';
+    storageKey: string } | null>(null);
   const configKey = JSON.stringify({ steps: config.steps, allowedFields: config.allowedFields,
     errorCategories: config.errorCategories, endpoint: config.endpoint,
     storageKey: config.storageKey, persistence: config.persistence });
+  const storageConfigKey = JSON.stringify({ persistence: config.persistence ?? 'memory',
+    storageKey: config.storageKey ?? 'ally:pref:v1' });
   const policyKey = JSON.stringify(policy);
+
+  useEffect(() => {
+    const next = JSON.parse(storageConfigKey) as { persistence: 'memory' | 'local';
+      storageKey: string };
+    const previous = previousStorageConfig.current;
+    if (previous && (previous.persistence !== next.persistence ||
+        previous.storageKey !== next.storageKey)) {
+      if (previous.persistence === 'local') {
+        try { rootRef.current?.ownerDocument.defaultView?.localStorage.removeItem(previous.storageKey); }
+        catch { /* A denied storage adapter is already memory-only. */ }
+      }
+      if (next.persistence === 'local') {
+        try { rootRef.current?.ownerDocument.defaultView?.localStorage.removeItem(next.storageKey); }
+        catch { /* A denied storage adapter is already memory-only. */ }
+      }
+    }
+    previousStorageConfig.current = next;
+  }, [storageConfigKey]);
 
   useEffect(() => {
     const scope = rootRef.current;
@@ -46,6 +68,7 @@ export function AllyProvider({ children, policy, config, onDecision }: AllyProvi
     explanation: view.explanation,
     status: view.status,
     plannerStatus: view.plannerStatus,
+    outcome: view.outcome,
     keep: () => runtimeRef.current?.keep(),
     undo: () => runtimeRef.current?.undo(),
     resetPreferences: () => runtimeRef.current?.resetPreferences(),
