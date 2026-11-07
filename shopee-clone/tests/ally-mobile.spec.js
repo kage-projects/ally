@@ -52,8 +52,7 @@ test('Ally observes real form errors, applies a guarded planner result, and supp
   await expect(page.locator('.ally-demo-waiting')).toContainText('Penyesuaian siap');
   await page.getByRole('button',{name:'Selesai mengisi, terapkan',exact:true}).tap();
   await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','applied');
-  const after=await page.locator('#address-phone').evaluate(element=>getComputedStyle(element).fontSize);
-  expect(parseFloat(after)).toBeGreaterThan(parseFloat(before));
+  await expect.poll(async()=>parseFloat(await page.locator('#address-phone').evaluate(element=>getComputedStyle(element).fontSize))).toBeGreaterThan(parseFloat(before));
   await expect(page.locator('.ally-controls')).toBeInViewport();
   await page.getByRole('button',{name:'Why',exact:true}).click();
   await expect(page.locator('.ally-why')).toBeVisible();
@@ -63,7 +62,7 @@ test('Ally observes real form errors, applies a guarded planner result, and supp
   await page.locator('.ally-demo-trigger').click();
   await page.getByRole('button',{name:'Batalkan penyesuaian',exact:true}).click();
   await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','observing');
-  expect(await page.locator('#address-phone').evaluate(element=>getComputedStyle(element).fontSize)).toBe(before);
+  await expect(page.locator('#address-phone')).toHaveCSS('font-size',before);
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await expect(page.getByRole('region',{name:'Panel Ally'})).toContainText('undone · llm');
 });

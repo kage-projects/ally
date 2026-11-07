@@ -37,7 +37,7 @@ export function createDashboardProxy({ origin = () => process.env.ALLY_DASHBOARD
     try {
       upstream = dashboardUpstream(req, origin);
     } catch { unavailable(); return true; }
-    const headers = {};
+    const headers = { 'x-ally-dashboard-proxy': '1' };
     for (const name of ['accept', 'accept-encoding', 'accept-language', 'content-type', 'rsc',
       'next-router-state-tree', 'next-router-prefetch', 'next-url', 'if-none-match', 'if-modified-since']) {
       if (req.headers[name] !== undefined) headers[name] = req.headers[name];
