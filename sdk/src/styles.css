@@ -1,0 +1,39 @@
+[data-ally-root] {
+  --ally-target: 44px;
+  --ally-space: 1;
+  --ally-font: 1;
+}
+
+[data-ally-root][data-ally-sticky="true"] [data-ally-slot="primaryAction"] {
+  position: sticky;
+  bottom: 0;
+}
+
+[data-ally-root] .ally-controls,
+[data-ally-root] .ally-toast,
+[data-ally-root] .ally-why {
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+[data-ally-root] .ally-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px;
+}
+
+[data-ally-root] .ally-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+[data-ally-root] .ally-why {
+  flex-basis: 100%;
+}
+
+[data-ally-hide~="promoBanner"] [data-ally-optional="promoBanner"],
+[data-ally-hide~="recommendations"] [data-ally-optional="recommendations"],
+[data-ally-hide~="voucherCarousel"] [data-ally-optional="voucherCarousel"],
+[data-ally-hide~="socialProof"] [data-ally-optional="socialProof"] {
+  display: none;
+}
