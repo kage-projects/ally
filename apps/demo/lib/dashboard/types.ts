@@ -6,6 +6,7 @@ import type {
   DecisionStatus,
   EvaluationResults,
   FrictionSummary,
+  InputModality,
   Preset,
   Profile,
 } from "../../../../mocks/dashboard/contracts";
@@ -18,6 +19,7 @@ export type {
   DecisionStatus,
   EvaluationResults,
   FrictionSummary,
+  InputModality,
   Preset,
   Profile,
 };
@@ -59,4 +61,16 @@ export type DashboardViewModel = {
   activeDecision: DashboardDecision | null;
   comparison: SessionComparison;
   lastEventAt: number | null;
+};
+
+export type ConnectionStatus = "waiting" | "live" | "idle" | "unavailable";
+
+export type DashboardState = DashboardViewModel & {
+  mode: "live" | "demo";
+  lastReceivedAt: number | null;
+  currentContext: { step: string; inputModality: InputModality } | null;
+  recentEventIds: string[];
+  beforeWindows: FrictionSummary[];
+  afterWindows: FrictionSummary[];
+  firstAppliedAt: number | null;
 };

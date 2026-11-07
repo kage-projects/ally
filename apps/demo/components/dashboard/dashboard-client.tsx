@@ -1,9 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-
-import { buildMockDashboardState } from "@/lib/dashboard/mock-state";
 import type { AllyBusEvent, EvaluationResults } from "@/lib/dashboard/types";
+import { useAllyBus } from "@/lib/dashboard/use-ally-bus";
 
 import { ActiveAdaptationBanner } from "./active-adaptation-banner";
 import { DashboardEmptyState } from "./dashboard-empty-state";
@@ -16,17 +14,21 @@ import { SessionImpactPanel } from "./session-impact-panel";
 import styles from "./dashboard.module.css";
 
 type DashboardClientProps = {
-  initialEvents: AllyBusEvent[];
+  demoEvents: AllyBusEvent[];
   evaluation: EvaluationResults;
 };
 
 export function DashboardClient({
-  initialEvents,
+  demoEvents,
   evaluation,
 }: DashboardClientProps) {
-  const [events, setEvents] = useState<AllyBusEvent[]>(initialEvents);
-  const dashboard = useMemo(() => buildMockDashboardState(events), [events]);
-  const hasData = events.length > 0;
+  const { dashboard, connectionStatus, secondsSinceEvent, reset, loadDemo } = useAllyBus();
+  const hasData = dashboard.currentSummary !== null || dashboard.decisions.length > 0;
+  const streamLabel = dashboard.mode === "demo" ? "Demo · Sample session"
+    : connectionStatus === "waiting" ? "Listening · Same-origin events"
+    : connectionStatus === "unavailable" ? "Event channel unavailable"
+    : connectionStatus === "idle" ? "Idle · Session retained"
+    : "Live event stream";
 
   return (
     <div className={styles.page}>
@@ -34,9 +36,12 @@ export function DashboardClient({
         <a className={styles.skipLink} href="#decision-stream">Skip to decisions</a>
         <DashboardHeader
           hasData={hasData}
-          onReset={() => setEvents([])}
-          onRestore={() => setEvents(initialEvents)}
-          summary={dashboard.currentSummary}
+          onReset={reset}
+          onRestore={() => loadDemo(demoEvents)}
+          context={dashboard.currentContext}
+          mode={dashboard.mode}
+          connectionStatus={connectionStatus}
+          secondsSinceEvent={secondsSinceEvent}
         />
 
         <div className={styles.workspaceBar}>
@@ -44,7 +49,9 @@ export function DashboardClient({
             <span className={styles.workspaceDot} aria-hidden="true" />
             Adaptation workspace
           </span>
-          <span className={styles.demoLabel}>Preview · Sample data</span>
+          <span className={styles.demoLabel}>
+            {streamLabel}
+          </span>
         </div>
 
         {hasData ? (
@@ -68,7 +75,10 @@ export function DashboardClient({
             </div>
           </>
         ) : (
-          <DashboardEmptyState onRestore={() => setEvents(initialEvents)} />
+          <DashboardEmptyState
+            connectionStatus={connectionStatus}
+            onRestore={() => loadDemo(demoEvents)}
+          />
         )}
 
         <footer className={styles.footer}>

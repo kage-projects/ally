@@ -1,21 +1,33 @@
 import { Button } from "@/components/arc/button/button";
-import type { FrictionSummary } from "@/lib/dashboard/types";
+import type { ConnectionStatus, DashboardState } from "@/lib/dashboard/types";
 
 import styles from "./dashboard.module.css";
 
 type DashboardHeaderProps = {
-  summary: FrictionSummary | null;
+  context: DashboardState["currentContext"];
+  mode: DashboardState["mode"];
+  connectionStatus: ConnectionStatus;
+  secondsSinceEvent: number | null;
   hasData: boolean;
   onReset: () => void;
   onRestore: () => void;
 };
 
 export function DashboardHeader({
-  summary,
+  context,
+  mode,
+  connectionStatus,
+  secondsSinceEvent,
   hasData,
   onReset,
   onRestore,
 }: DashboardHeaderProps) {
+  const statusLabel = mode === "demo" ? "Demo session"
+    : connectionStatus === "waiting" ? "Listening"
+    : connectionStatus === "live" ? "Live"
+    : connectionStatus === "idle" ? "Idle · Waiting for checkout"
+    : "Live updates unavailable";
+
   return (
     <header className={styles.topbar}>
       <div className={styles.brandRow}>
@@ -35,22 +47,30 @@ export function DashboardHeader({
 
       <div className={styles.headerMeta}>
         <div className={styles.statusRow} aria-label="Current dashboard context">
-          <span className={styles.statusPill}>
+          <span className={styles.statusPill} data-status={mode === "demo" ? "demo" : connectionStatus}>
             <span className={styles.statusDot} aria-hidden="true" />
-            {hasData ? "Demo session" : "No session loaded"}
+            <span role="status">{statusLabel}</span>
+          </span>
+          {mode === "live" && secondsSinceEvent !== null ? (
+            <span className={styles.lastEvent} title="Time since the last valid event was received">
+              {secondsSinceEvent}s ago
+            </span>
+          ) : null}
+          <span className={styles.contextPill}>
+            {context?.inputModality ?? "—"}
           </span>
           <span className={styles.contextPill}>
-            {summary?.inputModality ?? "—"}
-          </span>
-          <span className={styles.contextPill}>
-            {summary?.context.step ?? "—"}
+            {context?.step ?? "—"}
           </span>
         </div>
 
         <div className={styles.headerActions}>
-          <a className={styles.button} href="#evaluation-evidence">
-            Evaluation <span aria-hidden="true">↗</span>
+          <a className={styles.button} href="/dashboard/simulator" target="_blank" rel="noreferrer">
+            Event simulator <span aria-hidden="true">↗</span>
           </a>
+          {hasData ? <a className={styles.button} href="#evaluation-evidence">
+            Evaluation <span aria-hidden="true">↗</span>
+          </a> : null}
           <Button
             className={styles.arcButton}
             onClick={hasData ? onReset : onRestore}

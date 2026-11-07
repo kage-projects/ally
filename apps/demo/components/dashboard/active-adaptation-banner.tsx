@@ -17,7 +17,7 @@ export function ActiveAdaptationBanner({
           <div className={styles.eyebrow}>Active adaptation</div>
           <h2 className={styles.adaptationTitle}>No adaptation applied</h2>
           <p className={styles.adaptationCopy}>
-            Load a sample session to explore adaptation decisions.
+            No active adaptation in this session. Signals and decisions appear below.
           </p>
         </div>
       </section>

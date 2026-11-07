@@ -7,6 +7,7 @@
     "dev": "pnpm --filter @ally/demo dev",
     "build": "pnpm --filter @ally/demo build",
     "lint": "pnpm --filter @ally/demo lint",
-    "typecheck": "pnpm --filter @ally/demo typecheck"
+    "typecheck": "pnpm --filter @ally/demo typecheck",
+    "test:dashboard": "pnpm --filter @ally/demo test:dashboard"
   }
 }

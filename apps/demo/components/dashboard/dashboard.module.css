@@ -139,6 +139,20 @@
   margin-right: 8px;
 }
 
+.statusPill[data-status="live"] .statusDot {
+  background: var(--dashboard-success);
+}
+
+.statusPill[data-status="idle"] .statusDot,
+.statusPill[data-status="unavailable"] .statusDot {
+  background: var(--dashboard-warning);
+}
+
+.lastEvent {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .contextPill {
   border-left: 1px solid var(--dashboard-border);
   padding-left: 12px;
@@ -147,6 +161,7 @@
 
 .headerActions {
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .button,
@@ -779,6 +794,48 @@
   color: var(--dashboard-muted);
   font-size: 0.875rem;
   line-height: 1.75;
+}
+
+.emptyHint {
+  margin-top: 18px;
+  color: var(--dashboard-muted);
+  font-size: 0.75rem;
+}
+
+.simulatorBody {
+  max-width: 760px;
+  padding: 32px;
+}
+
+.simulatorBody .emptyCopy {
+  max-width: 64ch;
+  margin-inline: 0;
+}
+
+.simulatorActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.simulatorStatus {
+  margin-top: 24px;
+  font-size: 0.875rem;
+}
+
+.simulatorEvents {
+  margin-top: 24px;
+  color: var(--dashboard-muted);
+  font-size: 0.8125rem;
+}
+
+.simulatorEvents [data-sent="true"] {
+  color: var(--dashboard-copy);
 }
 
 .page .restoreButton {
