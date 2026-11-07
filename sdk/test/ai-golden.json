@@ -1,0 +1,9 @@
+[
+  { "id": "normal", "route": "none", "signals": {}, "dimensions": [] },
+  { "id": "motor_single", "route": "rule", "signals": { "missTap": 3 }, "dimensions": ["motor"] },
+  { "id": "motor_visual", "route": "llm", "signals": { "missTap": 3, "zoomEvent": 2 }, "dimensions": ["motor", "visual"] },
+  { "id": "motor_cognitive", "route": "llm", "signals": { "missTap": 3, "backtrack": 2 }, "dimensions": ["motor", "cognitive"] },
+  { "id": "visual_cognitive", "route": "llm", "signals": { "zoomEvent": 2, "backtrack": 2 }, "dimensions": ["visual", "cognitive"] },
+  { "id": "all_dimensions", "route": "llm", "signals": { "missTap": 3, "zoomEvent": 2, "backtrack": 2 }, "dimensions": ["motor", "visual", "cognitive"] },
+  { "id": "low_gap", "route": "llm", "signals": { "missTap": 2, "rageClick": 1, "zoomEvent": 1, "errorLoop": 1 }, "dimensions": ["motor", "visual"] }
+]
