@@ -11,9 +11,9 @@ export function PageHeader({ title, back = '/profile', children, time }) {
 }
 export function GestureBar() { return <div className="gesture-bar" aria-hidden="true"><i/></div>; }
 export function ActionFooter({ children, className = '' }) { return <footer className={`action-footer ${className}`}><div>{children}</div><GestureBar/></footer>; }
-export function Row({ children, right, to, className = '', onClick }) {
+export function Row({ children, right, to, className = '', onClick, ...props }) {
   const content = <><span>{children}</span><span className="row-right">{right}{(to || onClick) && <ChevronRight size={15}/>}</span></>;
-  return to ? <AppLink to={to} className={`ui-row ${className}`}>{content}</AppLink> : onClick ? <button type="button" className={`ui-row row-button ${className}`} onClick={onClick}>{content}</button> : <div className={`ui-row ${className}`}>{content}</div>;
+  return to ? <AppLink {...props} to={to} className={`ui-row ${className}`}>{content}</AppLink> : onClick ? <button {...props} type="button" className={`ui-row row-button ${className}`} onClick={onClick}>{content}</button> : <div {...props} className={`ui-row ${className}`}>{content}</div>;
 }
 export function Tag({ children, className = '' }) { return <span className={`tag ${className}`}>{children}</span>; }
 export function MallTag() { return <span className="mall-tag">Mall | <b>ORI</b></span>; }

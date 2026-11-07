@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { useAlly } from '@ally/react';
+import { AllyHint } from './AllyAssistance';
 import { ChevronRight, ChevronDown, TicketPercent, Coins, CircleHelp, Minus, Plus } from 'lucide-react';
 import { AppLink, navigate } from './navigation';
 import { PageHeader, ChatIcon, ActionFooter, MallTag, LiveTag, Toggle, art } from './mobile-ui';
@@ -18,7 +19,7 @@ export default function Cart() {
   const subtotal=cartItems.filter(item=>selected.includes(item.id)).reduce((sum,item)=>sum+item.price*(quantities[item.id]||1),0);
   const total=subtotal-(selected.length&&draft.coins?Math.min(100,subtotal):0);
   async function removeSelected(){if(await ui.confirm('Hapus barang?',`${selected.length} barang terpilih akan dihapus dari keranjang.`,'Hapus')){removeCart(selected);ui.notify('Barang dihapus dari keranjang.')}}
-  return <div className="app flow-page cart-page"><PageHeader title={<>Shopping Cart <small>({cartChanged?cartItems.length:188})</small></>} back="/"><button className="cart-edit" onClick={()=>setEdit(!edit)}>{edit?'Done':'Edit'}</button><Action label="Chat penjual" onClick={()=>ui.show('Chat penjual','Pilih pesanan di My Purchases untuk melihat detail toko dan pengirimannya.')}><ChatIcon/></Action></PageHeader><main className="cart-content">
+  return <div className="app flow-page cart-page"><PageHeader title={<>Shopping Cart <small>({cartChanged?cartItems.length:188})</small></>} back="/"><button className="cart-edit" onClick={()=>setEdit(!edit)}>{edit?'Done':'Edit'}</button><Action label="Chat penjual" onClick={()=>ui.show('Chat penjual','Pilih pesanan di My Purchases untuk melihat detail toko dan pengirimannya.')}><ChatIcon/></Action></PageHeader><main className="cart-content"><AllyHint context="cart"/>
     {!cartItems.length&&<div className="empty-state"><h2>Keranjang kosong</h2><p>Barang yang ditambahkan akan muncul di sini.</p><AppLink className="outline-btn orange" to="/">Kembali berbelanja</AppLink></div>}
     {cartItems.map((item,i)=><section className="cart-shop" key={item.id}>
       <div className="cart-shop-heading"><input type="checkbox" aria-label={`Pilih toko ${item.shop}`} checked={selected.includes(item.id)} onChange={()=>select(item.id)}/>{item.mall?<MallTag/>:<span className="star-tag">Star+</span>}<span className="shop-name">{item.shop}</span>{item.live&&<LiveTag/>}<ChevronRight size={14}/><button onClick={()=>{setEdit(!edit);if(!edit)setSelected([item.id])}}>{edit?'Done':'Edit'}</button></div>

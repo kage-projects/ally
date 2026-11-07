@@ -24,6 +24,7 @@ test('Ally opt-in survives navigation and reload while reference mode remains th
 test('Ally observes real form errors, applies a guarded planner result, and supports Keep/Undo',async({page})=>{
   await page.route('**/api/ally/status',route=>route.fulfill({json:{aiEnabled:true,keyConfigured:true,model:'test-planner'}}));
   let request;
+  const planned=page.waitForResponse(response=>response.url().endsWith('/api/ally/plan'));
   await page.route('**/api/ally/plan',async route=>{
     request=route.request().postDataJSON();
     // Longer than the original SDK's fixed 2s deadline: regression for live AI.
@@ -43,9 +44,10 @@ test('Ally observes real form errors, applies a guarded planner result, and supp
   await expect.poll(()=>request?.summary.context.step,{timeout:2000}).toBe('checkout');
   expect(request.summary.counts.errorLoop).toBeGreaterThanOrEqual(5);
   expect(request.summary.windowMs).toBeLessThan(5000);
-  await expect(page.locator('.ally-demo-trigger')).toHaveText('Ally · Memproses…');
+  await expect(page.locator('.ally-demo-trigger')).toHaveText('Ally · Menunggu input selesai');
   expect(JSON.stringify(request)).not.toContain('naufal');
   expect(request.policy.llm.timeoutMs).toBe(15000);
+  await planned;
   await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','pending');
   await expect(page.locator('.ally-demo-waiting')).toContainText('Penyesuaian siap');
   await page.getByRole('button',{name:'Selesai mengisi, terapkan',exact:true}).tap();

@@ -123,3 +123,44 @@ Ally SDK and planner backend below; commerce actions still remain local.
 - Confirmed the demo pill is visible immediately on `/cart?ally=1` and
   `/address/edit?ally=1`. It is hidden on plain `/` by design. Homepage demo
   mode (`/?ally=1`) shows the pill but does not activate shopping adaptations.
+
+### Expanded Ally scenarios — complete
+
+| ID | Work | Status |
+| --- | --- | --- |
+| A1 | Observe browsing, account navigation, purchases, order details and tracking with coarse anonymous phases | Complete — all 12 routes tested at both mobile sizes |
+| A2 | Contextual guidance on all 12 supplied screens plus review/return dialogs; scenario catalog in demo panel | Complete — 14 linked scenarios and adaptive screenshots inspected |
+| A3 | Genuine repeated errors from product/order search, unavailable payment activation, reviews and returns | Complete — genuine form events, no automatic commerce choices |
+| A4 | Fast zoom observations and guarded local combined help, with optional asynchronous AI refinement | Complete — weak evidence rejected; strict merchant thresholds respected |
+| A5 | Keep/Undo/Why within native modal dialogs; preserve form values and commerce choices | Complete — modal controls, AI failure and late-response cancellation pass |
+| A6 | Reference screenshot regression, complete mobile suite and final screenshots | Complete — production build, 17 unit tests, 66 Playwright tests and 27 reference captures pass |
+
+The current host snapshot is `0.1.0-shopee.3`. This supersedes the earlier
+checkout-only and AI-required combined-friction behavior above. The original
+sibling SDK source remains unchanged. Reference mode remains the default.
+
+- A combined local preset requires both supported dimensions to meet the
+  merchant apply threshold; its confidence is the weaker supported score.
+  Fast validation snapshots now emit at six repeated errors. This corresponds
+  to four invalid Submit attempts with two fields, or seven attempts with one.
+- Reference captures retain the previous diagnostic comparison scores, with
+  zero broken images, page errors or horizontal overflow. Adaptive captures
+  are under `screenshots/actual/ally-cases/`; modal controls and the compact
+  transient explanation were also inspected.
+- A browser run against the actual local server, without mocked endpoints,
+  produced local help in 247ms from the first of four Submit taps. The planner
+  returned HTTP 502 under the current network restriction, while the guarded
+  local plan applied successfully with no horizontal overflow. This measures
+  local assistance, not successful live AI refinement.
+
+### Ally quantity glyph refinement
+
+- Center plus/minus glyphs inside the existing adaptive quantity targets.
+  Scale icons to 20–24px with a 2.25 stroke so the visible symbol grows with
+  the hit area. Default cart and dialog icon sizes remain unchanged.
+- Validation: production build and six relevant Playwright checks pass at
+  360×800 @2 and 390×844 @1. Before/after card screenshots were inspected.
+  Browser measurements confirm centered 24px glyphs in 56px motor targets and
+  20px glyphs in 48px visual targets, including the quantity dialog. Plus/minus
+  actions work, Undo restores 12px cart glyphs while retaining the selected
+  quantity, and neither mobile size has horizontal overflow.

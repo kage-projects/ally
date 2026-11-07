@@ -31,19 +31,48 @@ with `?ally=1` or `VITE_ALLY_ENABLED=1`. Internal links preserve the explicit
 `ally` parameter, so the mode also survives reloads and opening a link in a new
 tab. `?ally=0` explicitly selects reference mode.
 
-For a repeatable AI demonstration, open the address demo, clear Full Name and
-Phone Number, then press Submit four times. Repeated validation errors now
-trigger the planner immediately once enough real evidence is present; there is
-no additional 10-second observation wait. The pill shows "Memproses…" while AI
-responds. When the pill says "Menunggu input selesai",
+Open the pill and expand **14 skenario untuk dicoba** for links, genuine
+interaction triggers and expected adaptations. All twelve supplied screens now
+support opt-in observation, including browsing, account navigation and orders.
+
+For a repeatable demonstration without an API key, open the address demo, clear
+Full Name and Phone Number, then press Submit four times. Enough repeated
+validation evidence immediately produces guarded local assistance. Optional AI
+refinement runs asynchronously; the local plan remains useful when AI fails.
+When the pill says "Menunggu input selesai",
 tap "Selesai mengisi, terapkan" in the prompt below it to leave the input field.
 Ally deliberately defers layout changes while an input is focused.
 Try Keep, Why, and Undo. The pill's Reset clears session preferences.
 
-The planner is not called for every click or every form error. Sufficient
-single-dimension evidence uses local rules; ambiguous/combined evidence can call
-AI. When the backend is unavailable the SDK retains local rule behavior. A
-combined case may make no change if AI fails and no local plan qualifies.
+For reading assistance, pinch to enlarge the page, return to normal scale, and
+repeat. The two separate zoom episodes trigger a visual preset immediately.
+Keep/Undo/Why also work inside native review, return and search dialogs.
+
+The planner is not called for every click or every form error. The evidence
+gate still rejects weak signals. Combined evidence can produce a modest local
+plan and optionally request AI refinement. Keep cancels pending refinement;
+Undo restores the previous presentation without changing input or commerce
+choices. Preferences are in memory for the current page session.
+
+| Scenario | Demo route | Assistance |
+| --- | --- | --- |
+| Product search | `/?ally=1` | Search hints, more readable input |
+| Account navigation | `/profile?ally=1` | Larger navigation labels |
+| Cart and quantities | `/cart?ally=1` | Larger targets, missing-selection hints |
+| Checkout | `/checkout?ally=1` | Guidance for missing payment/address |
+| Voucher validation | `/vouchers?ally=1` | Larger controls and eligibility guidance after seven invalid Apply attempts |
+| Shipping selection | `/shipping?ally=1` | Clearer dates and service choices |
+| Payment selection | `/payment?ally=1` | Clearer bank selection and unavailable-activation guidance |
+| Address selection | `/addresses?ally=1` | More readable addresses and larger Edit targets |
+| Address validation | `/address/edit?ally=1` | Larger fields and inline guidance |
+| Purchase history | `/purchases?ally=1` | Larger tabs and unsuccessful-search guidance |
+| Order details | `/orders/1?ally=1` | Readable product/status details, protected totals |
+| Delivery tracking | `/delivery?ally=1` | Larger timeline text and stronger contrast |
+| Reviews | `/purchases?tab=4&ally=1` → Rate | Star-selection guidance after repeated invalid saves |
+| Return/refund | `/purchases?tab=4&ally=1` → Return/Refund | Reason/explanation guidance after repeated invalid saves |
+
+The SDK never chooses a voucher, shipping method, bank, review score or refund
+reason for the user. It does not submit orders, reviews or returns automatically.
 
 ## Backend and limits
 
@@ -72,14 +101,18 @@ Firebase accounts/history, or public deployment.
 
 ## SDK artifact
 
-`vendor/ally-react-0.1.0-shopee.2.tgz` is a runtime JavaScript snapshot built from
-the supplied sibling `../sdk`. It has two host patches: instead of always
+`vendor/ally-react-0.1.0-shopee.3.tgz` is a runtime JavaScript snapshot built from
+the supplied sibling `../sdk`. Host patches in `scripts/ally-patches.mjs`:
+instead of always
 aborting at 2 seconds, it respects `policy.llm.timeoutMs`, with a 2-second minimum
 and 30-second maximum. This host uses 15 seconds; the backend stops one second
-earlier. Five repeated validation errors also emit an early evidence snapshot,
-independently of the existing motor fast-event latch. Regular 10-second outcome
-windows and the SDK/server evidence gates remain unchanged. SDK schema
-validation, stale-response cancellation and Undo are retained.
+earlier. Six repeated validation errors or two separate zoom episodes emit
+early evidence snapshots independently of the motor fast-event latch. A modest
+combined preset supplies immediate guarded local help while optional AI refines
+it. Regular 10-second outcome windows and score/evidence thresholds remain
+unchanged. Local combined confidence is bounded by the weaker supported
+dimension and must meet the merchant apply threshold. SDK schema validation,
+stale-response cancellation and Undo remain.
 The sibling SDK source is unchanged. Declarations are not generated by this host
 snapshot; the full SDK's own type/package test suite is separate.
 
@@ -87,8 +120,11 @@ To rebuild after an SDK change:
 
 ```powershell
 npm.cmd run sdk:build
-npm.cmd install ./vendor/ally-react-0.1.0-shopee.2.tgz
+npm.cmd install ./vendor/ally-react-0.1.0-shopee.3.tgz
 ```
+
+Restart Vite after replacing the SDK artifact so dependency optimization uses
+the new runtime snapshot.
 
 ## Validate
 
@@ -98,7 +134,10 @@ npm.cmd run visual:check
 ```
 
 Tests use mocked OpenAI responses, including a response slower than the original
-2-second deadline. Visual validation checks all 12 reference screens at 360×800
+2-second deadline. They also exercise genuine zoom, pointer and form events,
+local assistance with AI disabled/failing, modal controls, protected commerce
+values and cancelling late refinement after Keep. Visual validation checks all
+12 reference screens at 360×800
 @2 and 390×844 @1, plus matching-aspect captures for three tall references.
 
 With the dev server running, explicitly opt into one small paid live smoke test:
