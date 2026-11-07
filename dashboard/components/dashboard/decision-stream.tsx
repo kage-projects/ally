@@ -14,12 +14,13 @@ type DecisionFilter = "all" | DecisionSource;
 export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }) {
   const [filter, setFilter] = useState<DecisionFilter>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const stream = useRef<HTMLElement>(null);
   const dialogTitleId = useId();
   const selectedDecision = decisions.find((decision) => decision.id === selectedId) ?? null;
-  const activeId = selectedDecision?.id ?? null;
+  const isDialogOpen = selectedDecision !== null || historyOpen;
   const filteredDecisions = useMemo(
     () => filter === "all" ? decisions : decisions.filter((decision) => decision.source === filter),
     [decisions, filter],
@@ -29,7 +30,7 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
     const element = dialog.current;
     const openingTrigger = trigger.current;
     const section = stream.current;
-    if (activeId === null || !element) return;
+    if (!isDialogOpen || !element) return;
     if (!element.open) element.showModal();
     return () => {
       if (element.open) element.close();
@@ -38,7 +39,7 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
         fallback?.focus({ preventScroll: true });
       }
     };
-  }, [activeId]);
+  }, [isDialogOpen]);
 
   function closeDetails() {
     dialog.current?.close();
@@ -46,6 +47,7 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
 
   function restoreFocus() {
     setSelectedId(null);
+    setHistoryOpen(false);
     if (trigger.current?.isConnected) trigger.current.focus({ preventScroll: true });
     else (stream.current ?? document.getElementById("dashboard-content"))?.focus({ preventScroll: true });
   }
@@ -81,7 +83,7 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
 
       {filteredDecisions.length ? (
         <div className={styles.decisionList}>
-          {filteredDecisions.map((decision) => (
+          {filteredDecisions.slice(0, 2).map((decision) => (
             <article className={styles.decisionEntry} key={decision.id}>
               <div className={styles.decisionAvatar} aria-hidden="true">
                 {decision.source === "llm" ? "AI" : decision.source === "fallback" ? "F" : "A"}
@@ -102,7 +104,7 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
                   </div>
                   <StatusBadge status={decision.status} />
                 </div>
-                <p className={styles.decisionExplanation}>{decision.explanation}</p>
+                <p className={`${styles.decisionExplanation} ${styles.decisionPreview}`}>{decision.explanation}</p>
                 <button
                   aria-haspopup="dialog"
                   aria-label={`View details for ${formatPreset(decision.preset)}`}
@@ -129,9 +131,10 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
 
       {filteredDecisions.length ? (
         <div className={styles.streamEnd}>
-          <span className={styles.streamEndMark} aria-hidden="true">✳</span>
-          <span>You’re all caught up.</span>
-          <p>Every adaptation leaves a clear trail.</p>
+          <button className={styles.detailToggle} type="button" aria-haspopup="dialog" onClick={(event) => {
+            trigger.current = event.currentTarget;
+            setHistoryOpen(true);
+          }}>View all decisions <span aria-hidden="true">↗</span></button>
         </div>
       ) : null}
 
@@ -162,6 +165,7 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
                 <span>{formatPercent(selectedDecision.confidence)} confidence</span>
               </div>
               <p className={styles.decisionExplanation}>{selectedDecision.explanation}</p>
+              {historyOpen ? <button className={styles.detailToggle} type="button" onClick={() => setSelectedId(null)}>← Back to history</button> : null}
               <DecisionChanges decision={selectedDecision} />
               <div className={styles.guardrailList} aria-label="Guardrail results">
                 <GuardrailItem label="Schema valid" valid={selectedDecision.guardrails.schemaValid} />
@@ -188,6 +192,23 @@ export function DecisionStream({ decisions }: { decisions: DashboardDecision[] }
                   </dd>
                 </div>
               </dl>
+            </div>
+          </>
+        ) : historyOpen ? (
+          <>
+            <div className={styles.dialogHeading}>
+              <div><p className={styles.eyebrow}>Decision history</p><h2 className={styles.adaptationTitle} id={dialogTitleId}>All decisions · {decisions.length}</h2></div>
+              <button className={styles.dialogClose} onClick={closeDetails} type="button">Close ×</button>
+            </div>
+            <div className={styles.dialogBody}>
+              <p className={styles.panelHint}>Latest first · All sources · Up to 100 recorded decisions</p>
+              {decisions.map((decision) => <article className={styles.historyEntry} key={decision.id}>
+                <div className={styles.decisionTopline}><h3 className={styles.decisionTitle}>{formatPreset(decision.preset)}</h3><StatusBadge status={decision.status} /></div>
+                <div className={styles.sourceMeta}><SourceBadge source={decision.source} /><span>{formatClock(decision.at)} UTC</span><span>{decision.latencyMs}ms</span></div>
+                <p className={styles.decisionExplanation}>{decision.explanation}</p>
+                <button className={styles.detailToggle} type="button" onClick={() => setSelectedId(decision.id)}>View details for {formatPreset(decision.preset)} ↗</button>
+              </article>)}
+              {!decisions.length ? <p>No decisions in the current session.</p> : null}
             </div>
           </>
         ) : null}

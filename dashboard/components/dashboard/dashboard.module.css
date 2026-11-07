@@ -1053,6 +1053,7 @@
 }
 
 @media (min-width: 1101px) {
+
   .topbar {
     min-height: 84px;
     padding-block: 14px;
@@ -1274,131 +1275,668 @@
 }
 
 
-/* Overview uses the full width; outcomes and evidence share the second row. */
-.overviewGrid,
-.analyticsGrid {
-  display: grid;
-  min-width: 0;
+/* Overview: a trend above three columns, with full records in drawers. */
+.overviewPage .shell { width: min(100%, 1760px); }
+.overviewPage .footer { margin-top: auto; min-height: 44px; padding: 10px 24px; font-size: 0.875rem; }
+.dashboardLayout { display: grid; grid-template-columns: minmax(240px, .85fr) minmax(0, 1.65fr) minmax(320px, 1fr); }
+.signalColumn, .outcomeColumn { min-width: 0; }
+.signalColumn { border-right: 1px solid var(--dashboard-border); }
+.outcomeColumn { border-left: 1px solid var(--dashboard-border); }
+.signalColumn > .panel + .panel, .outcomeColumn > .panel + .panel { border-top: 1px solid var(--dashboard-border); }
+.overviewPage .streamPanel { min-height: 0; }
+.overviewPage .panelHeader { padding: 16px 22px 10px; }
+.overviewPage .panelBody { padding: 0 22px 16px; }
+.overviewPage .signalList { gap: 10px; }
+.overviewPage .signalRow { gap: 4px; }
+.overviewPage .profileList { gap: 12px; }
+.overviewPage .contextGrid { gap: 8px 12px; margin-top: 14px; padding-top: 10px; }
+.overviewPage .contextLabel, .overviewPage .contextValue { font-size: .8125rem; }
+.overviewPage .contextValue { margin-top: 0; }
+.overviewPage .decisionEntry { padding: 18px 22px; gap: 10px; }
+.overviewPage .decisionExplanation { font-size: 1rem; line-height: 1.55; margin-top: 12px; overflow-wrap: anywhere; }
+.decisionPreview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.overviewPage .streamEnd { padding: 12px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; font-size: .875rem; }
+.overviewPage .streamEnd .detailToggle { margin-top: 0; }
+.overviewPage .metricRow { padding: 10px 0; }
+.overviewPage .metricValues { margin-top: 6px; }
+.overviewPage .metricValue strong { font-size: 1.5rem; }
+.overviewPage .metricValue small { font-size: .8125rem; }
+.overviewPage .outcomeColumn .panelHint { font-size: .8125rem; line-height: 1.5; }
+.overviewPage .metricName { font-size: .9375rem; }
+.overviewPage .evaluationGrid .evaluationRow, .overviewPage .evaluationColumnLabels { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 7px 0; }
+.overviewPage .evaluationGrid .evaluationNumbers { font-size: .875rem; gap: 8px; }
+.overviewPage .evaluationName { font-size: .875rem; }
+.overviewPage .decisionDialog { width: min(680px, calc(100vw - 24px)); height: 100dvh; max-height: 100dvh; margin: 0 0 0 auto; }
+.overviewPage .decisionDialog .decisionExplanation { display: block; overflow: visible; }
+.overviewPage .decisionDialog .panelBody { padding: 0 24px 24px; }
+.historyEntry { padding-block: 20px; border-bottom: 1px solid var(--dashboard-border); }
+.historyEntry .decisionExplanation { overflow-wrap: anywhere; }
+.trendPanel { border-bottom: 1px solid var(--dashboard-border); padding: 14px 24px 10px; }
+.trendHeading { display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 8px 24px; }
+.trendHeading .panelHint { margin-top: 1px; font-size: .8125rem; }
+.trendLegend { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 20px; font-size: .8125rem; color: var(--dashboard-copy); }
+.trendLegend > span { display: flex; align-items: center; gap: 7px; }
+.trendLegend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--dashboard-accent); }
+.trendLegend .trendApplyKey { border-color: var(--dashboard-success); border-top-style: dashed; }
+.trendLegend .trendUndoKey { border-color: var(--dashboard-warning); border-top-style: dotted; }
+.trendLegend strong { color: var(--dashboard-text); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.trendLegend small { color: var(--dashboard-muted); font-size: .8125rem; font-weight: 400; }
+.trendPlot { position: relative; padding-left: 42px; margin-top: 8px; }
+.trendSvg { display: block; width: 100%; height: 112px; overflow: visible; }
+.trendYAxis { position: absolute; inset: 6px auto 25px 0; display: flex; flex-direction: column; justify-content: space-between; color: var(--dashboard-muted); font-size: .75rem; }
+.trendXAxis { display: flex; justify-content: space-between; gap: 8px; color: var(--dashboard-muted); font-size: .75rem; margin-top: 4px; }
+.trendXAxis span:nth-child(2) { text-align: center; }
+.trendGridline { stroke: var(--dashboard-border); stroke-dasharray: 3 6; }
+.trendLine { fill: none; stroke: var(--dashboard-accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.trendPoint { fill: var(--dashboard-accent); }
+.trendApplyMarker { stroke: var(--dashboard-success); stroke-dasharray: 6 4; stroke-width: 1.5; }
+.trendUndoMarker { stroke: var(--dashboard-warning); stroke-dasharray: 2 4; stroke-width: 1.5; }
+.trendCollecting { min-height: 132px; display: grid; place-items: center; color: var(--dashboard-muted); font-size: .875rem; text-align: center; }
+@media (min-width: 1101px) {
+  .overviewPage .topbar { min-height: 80px; padding: 12px 24px; }
+  .overviewPage .adaptationBanner { padding: 12px 24px; }
+  .overviewPage .adaptationTitle { margin-top: 2px; }
+  .overviewPage .adaptationCopy { margin-top: 2px; }
+}
+@media (max-width: 1100px) {
+  .dashboardLayout { grid-template-columns: minmax(240px, .85fr) minmax(0, 1.5fr); }
+  .outcomeColumn { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-left: 0; border-top: 1px solid var(--dashboard-border); }
+  .outcomeColumn > .panel + .panel { border-top: 0; border-left: 1px solid var(--dashboard-border); }
+  .trendLegend { gap: 8px 14px; }
+}
+@media (max-width: 720px) {
+  .dashboardLayout, .outcomeColumn { display: flex; flex-direction: column; }
+  .signalColumn { border-right: 0; border-bottom: 1px solid var(--dashboard-border); }
+  .outcomeColumn > .panel + .panel { border-left: 0; border-top: 1px solid var(--dashboard-border); }
+  .trendPanel { padding-inline: 20px; }
+  .trendXAxis { flex-wrap: wrap; }
+  .trendXAxis span:nth-child(2) { order: 1; flex-basis: 100%; }
+  .trendLegend { font-size: .75rem; }
+  .overviewPage .decisionEntry { grid-template-columns: 30px minmax(0, 1fr); }
+  .overviewPage .streamTabs button { font-size: .875rem; }
+}
+
+/* Side-by-side presentation: keep the overview composed at half a laptop width. */
+@media (min-width: 600px) and (max-width: 1100px) {
+  .overviewPage .topbar { flex-wrap: nowrap; gap: 12px; min-height: 56px; padding: 8px 12px; }
+  .overviewPage .brandRow { gap: 10px; }
+  .overviewPage .brand { font-size: 1.25rem; gap: 4px; }
+  .overviewPage .mark { width: 18px; height: 18px; }
+  .overviewPage .brandDivider { height: 24px; }
+  .overviewPage .title { font-size: .875rem; }
+  .overviewPage .subtitle { font-size: .625rem; margin-top: 0; }
+  .overviewPage .headerMeta { width: auto; flex-direction: column; align-items: end; gap: 3px; }
+  .overviewPage .statusRow { font-size: .625rem; gap: 6px; }
+  .overviewPage .contextPill { padding-left: 6px; }
+  .overviewPage .headerActions { gap: 4px; }
+  .overviewPage .button, .overviewPage .arcButton { min-height: 26px; padding: 3px 8px; font-size: .6875rem; gap: 4px; }
+  .overviewPage .adaptationBanner { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 12px; padding: 7px 12px; }
+  .overviewPage .eyebrow { font-size: .625rem; }
+  .overviewPage .adaptationTitle { font-size: .875rem; margin-top: 2px; }
+  .overviewPage .adaptationCopy { font-size: .625rem; margin-top: 2px; }
+  .overviewPage .tokenValue { padding-left: 8px; gap: 2px; }
+  .overviewPage .tokenValue > span { font-size: .625rem; }
+  .overviewPage .tokenValue > strong { font-size: .8125rem; }
+
+  .overviewPage .trendPanel { padding: 6px 12px; }
+  .overviewPage .trendHeading { flex-wrap: nowrap; gap: 6px; }
+  .overviewPage .trendHeading .panelHint { font-size: .625rem; }
+  .overviewPage .trendLegend { gap: 4px 8px; font-size: .625rem; }
+  .overviewPage .trendLegend > span { gap: 3px; }
+  .overviewPage .trendLegend i { width: 10px; }
+  .overviewPage .trendLegend strong { font-size: .875rem; }
+  .overviewPage .trendLegend small { font-size: .625rem; }
+  .overviewPage .trendPlot { padding-left: 28px; margin-top: 4px; }
+  .overviewPage .trendSvg { height: 48px; }
+  .overviewPage .trendYAxis { font-size: .5625rem; inset-block: 0 16px; }
+  .overviewPage .trendXAxis { flex-wrap: nowrap; font-size: .5625rem; margin-top: 2px; }
+  .overviewPage .trendXAxis span:nth-child(2) { order: initial; flex-basis: auto; }
+  .overviewPage .trendCollecting { min-height: 64px; font-size: .75rem; }
+
+  .overviewPage .dashboardLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .overviewPage .signalColumn { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); border-right: 0; border-bottom: 1px solid var(--dashboard-border); }
+  .overviewPage .signalColumn > .panel + .panel { border-top: 0; border-left: 1px solid var(--dashboard-border); }
+  .overviewPage .streamPanel { grid-column: 1; }
+  .overviewPage .outcomeColumn { grid-column: 2; display: block; border-top: 0; border-left: 1px solid var(--dashboard-border); }
+  .overviewPage .outcomeColumn > .panel + .panel { border-left: 0; border-top: 1px solid var(--dashboard-border); }
+  .overviewPage .panelHeader { padding: 7px 12px 4px; gap: 6px; }
+  .overviewPage .panelBody { padding: 0 12px 7px; }
+  .overviewPage .sectionHeading { font-size: .8125rem; }
+  .overviewPage .panelHint, .overviewPage .outcomeColumn .panelHint { font-size: .625rem; line-height: 1.4; margin-top: 2px; }
+  .overviewPage .signalList { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px 10px; }
+  .overviewPage .signalRow { gap: 2px; }
+  .overviewPage .signalLabel, .overviewPage .signalValue, .overviewPage .profileLabel, .overviewPage .profileValue { font-size: .6875rem; }
+  .overviewPage .profileList { gap: 7px; }
+  .overviewPage .profileRow { gap: 3px; }
+  .overviewPage .contextGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 6px; padding-top: 5px; }
+  .overviewPage .contextLabel, .overviewPage .contextValue { font-size: .5625rem; }
+  .overviewPage .contextItem { display: flex; flex-wrap: wrap; gap: 2px 4px; }
+
+  .overviewPage .entryCount { font-size: .625rem; }
+  .overviewPage .streamTabs button { min-height: 28px; font-size: .6875rem; }
+  .overviewPage .decisionEntry { grid-template-columns: 22px minmax(0, 1fr); gap: 6px; padding: 8px 12px; }
+  .overviewPage .decisionAvatar { width: 22px; height: 22px; font-size: .625rem; }
+  .overviewPage .decisionTitle { font-size: .75rem; }
+  .overviewPage .decisionStatus { font-size: .625rem; }
+  .overviewPage .sourceMeta { font-size: .625rem; gap: 2px 5px; margin-top: 2px; }
+  .overviewPage .decisionExplanation { font-size: .75rem; line-height: 1.4; margin-top: 6px; }
+  .overviewPage .detailToggle { min-height: 26px; font-size: .6875rem; margin-top: 3px; padding-block: 3px; }
+  .overviewPage .streamEnd { padding: 6px 12px; gap: 0 6px; font-size: .625rem; }
+
+  .overviewPage .metricRow { padding: 5px 0; }
+  .overviewPage .metricRow:first-child { padding-top: 0; }
+  .overviewPage .metricName { font-size: .6875rem; }
+  .overviewPage .metricImprovement { font-size: .625rem; }
+  .overviewPage .metricValues { margin-top: 2px; gap: 8px; }
+  .overviewPage .metricValue { display: flex; align-items: baseline; gap: 5px; }
+  .overviewPage .metricValue:last-child { justify-content: end; }
+  .overviewPage .metricValue strong { font-size: 1rem; }
+  .overviewPage .metricValue small { font-size: .5625rem; }
+  .overviewPage .metricArrow { padding-top: 0; font-size: .75rem; }
+  .overviewPage .evaluationGrid .evaluationRow, .overviewPage .evaluationColumnLabels { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 6px; align-items: baseline; padding: 4px 0; }
+  .overviewPage .evaluationGrid .evaluationNumbers { font-size: .625rem; gap: 5px; text-align: right; }
+  .overviewPage .evaluationName, .overviewPage .evaluationColumnLabels { font-size: .625rem; }
+  .overviewPage .mockBadge { font-size: .5625rem; }
+  .overviewPage .footer { min-height: 26px; padding: 5px 12px; gap: 4px 12px; font-size: .5625rem; }
+  .overviewPage .footerBrand { font-size: .8125rem; }
+  .overviewPage .footerNote { display: inline; }
+  .overviewPage .panelBody .emptyState { min-height: 110px; padding: 8px 0; }
+  .overviewPage .emptyTitle { font-size: .875rem; }
+  .overviewPage .emptyCopy { font-size: .6875rem; line-height: 1.4; margin: 5px auto; }
+  .overviewPage .emptyIcon { font-size: 1.25rem; margin-bottom: 6px; }
+  .overviewPage .waitingGrid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .overviewPage .waitingGrid > .emptyState { min-height: 320px; padding: 20px 12px; }
 }
 
 @media (min-width: 1101px) {
-  .overviewGrid {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  .overviewPage .panelHeader { padding-top: 14px; padding-bottom: 8px; }
+  .overviewPage .signalList { gap: 5px; }
+  .overviewPage .signalRow { gap: 2px; }
+  .overviewPage .contextGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .overviewPage .profileRow { grid-template-columns: minmax(110px, 1fr) minmax(0, 1fr); align-items: center; gap: 14px; }
+  .overviewPage .metricValue { display: flex; align-items: baseline; gap: 8px; }
+  .overviewPage .metricValue:last-child { justify-content: end; }
+  .overviewPage .metricArrow { padding-top: 0; }
+  .overviewPage .metricRow { padding-block: 8px; }
+  .overviewPage .evaluationGrid .evaluationRow, .overviewPage .evaluationGrid .evaluationColumnLabels { grid-template-columns: minmax(110px, 1fr) minmax(0, 1.7fr); gap: 12px; }
+  .overviewPage .evaluationGrid .evaluationNumbers { text-align: right; }
+  .trendSvg { height: 100px; }
+}
+@media (min-width: 600px) and (max-width: 1100px) {
+  .overviewPage { font-size: .75rem; line-height: 1.25; }
+  .overviewPage .signalMeta, .overviewPage .profileMeta { line-height: 1.3; }
+  .overviewPage .profileTrack { height: 3px; }
+  .overviewPage .trendPanel { padding-block: 5px; }
+  .overviewPage .trendSvg { height: 40px; }
+  .overviewPage .decisionTopline { gap: 4px; }
+  .overviewPage .panelHint { line-height: 1.3; }
+}
+
+.activityColumn, .evidenceColumn { display: contents; }
+.dashboardLayout > .evidenceColumn > .trendPanel { grid-column: 1 / -1; grid-row: 1; }
+@media (min-width: 1101px) {
+  .dashboardLayout > .activityColumn > .signalColumn { grid-column: 1; grid-row: 2; }
+  .dashboardLayout > .activityColumn > .streamPanel { grid-column: 2; grid-row: 2; }
+  .dashboardLayout > .evidenceColumn > .outcomeColumn { grid-column: 3; grid-row: 2; }
+}
+@media (min-width: 600px) and (max-width: 1100px) {
+  .overviewPage .dashboardLayout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .overviewPage .activityColumn, .overviewPage .evidenceColumn { display: flex; flex-direction: column; min-width: 0; }
+  .overviewPage .evidenceColumn { border-left: 1px solid var(--dashboard-border); }
+  .overviewPage .signalColumn { display: block; }
+  .overviewPage .signalColumn > .panel + .panel { border-left: 0; border-top: 1px solid var(--dashboard-border); }
+  .overviewPage .profileList { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .overviewPage .signalList { gap: 4px 8px; }
+  .overviewPage .signalColumn .panelHeader { display: flex; padding-block: 6px 3px; }
+  .overviewPage .signalColumn .panelHeader > div { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 8px; }
+  .overviewPage .signalColumn .panelHint { margin-top: 0; }
+  .overviewPage .outcomeColumn { border-left: 0; }
+  .overviewPage .trendHeading { flex-wrap: wrap; }
+  .overviewPage .trendLegend { width: 100%; justify-content: space-between; }
+  .overviewPage .trendSvg { height: 72px; }
+  .overviewPage .trendXAxis { flex-wrap: wrap; }
+  .overviewPage .trendXAxis span:nth-child(2) { flex-basis: 100%; order: 1; }
+  .overviewPage .footer { justify-content: space-between; }
+}
+@media (min-width: 600px) and (max-width: 1100px) {
+  .overviewPage .topbar { min-height: 50px; padding-block: 5px; }
+  .overviewPage .signalMeta, .overviewPage .profileMeta { font-size: .6875rem; line-height: 1.2; }
+  .overviewPage .signalRow { gap: 1px; }
+  .overviewPage .signalList { gap: 3px 8px; }
+  .overviewPage .decisionEntry { padding-block: 6px; }
+  .overviewPage .streamEnd { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding-block: 4px; }
+  .overviewPage .streamEnd .detailToggle { min-height: 22px; }
+  .overviewPage .outcomeColumn .panelHeader { padding-top: 5px; }
+  .overviewPage .metricRow { padding-block: 4px; }
+  .overviewPage .trendSvg { height: 60px; }
+}
+@media (min-width: 600px) and (max-width: 1100px) {
+  .overviewPage .trendSvg { height: 40px; }
+  .overviewPage .contextGrid { margin-top: 3px; padding-top: 3px; }
+  .overviewPage .decisionEntry { padding-block: 4px; }
+  .overviewPage .decisionExplanation { margin-top: 3px; }
+  .overviewPage .streamPanel > .panelHeader { padding-block: 5px 3px; }
+}
+
+/*
+ * Split-screen presentation layout.
+ * The dashboard is expected to use roughly 3/4 of a laptop display while a
+ * mobile checkout occupies the remaining quarter. Keep the overview as one
+ * bounded viewport and let the three evidence columns consume every remaining
+ * pixel instead of leaving an empty band above the footer.
+ */
+@media (min-width: 960px) and (min-height: 680px) {
+  .overviewPage {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .overviewPage .shell {
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  .overviewPage .contentArea {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .overviewPage .adaptationBanner,
+  .overviewPage .footer {
+    flex: none;
+  }
+
+  .overviewPage .dashboardLayout {
+    display: grid;
+    min-height: 0;
+    flex: 1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  .overviewPage .activityColumn,
+  .overviewPage .evidenceColumn {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .overviewPage .activityColumn {
+    border-right: 1px solid var(--dashboard-border);
+  }
+
+  .overviewPage .evidenceColumn {
+    border-left: 0;
+  }
+
+  .overviewPage .signalColumn {
+    display: grid;
+    flex: none;
+    grid-template-rows: auto auto;
+    align-content: stretch;
+    border-right: 0;
     border-bottom: 1px solid var(--dashboard-border);
   }
 
-  .analyticsGrid {
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+  .overviewPage .streamPanel {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
   }
 
-  .overviewGrid > .panel + .panel,
-  .analyticsGrid > .panel + .panel {
-    border-left: 1px solid var(--dashboard-border);
+  .overviewPage .trendPanel {
+    flex: none;
+    border-bottom: 1px solid var(--dashboard-border);
   }
 
-  .topbar { min-height: 68px; padding: 10px 24px; }
-  .adaptationBanner { padding: 10px 24px; }
-  .panelHeader { padding: 12px 20px 8px; }
-  .panelBody { padding: 0 20px 12px; }
-  .panelHint { font-size: 0.75rem; line-height: 1.45; }
-
-  .signalList { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 24px; }
-  .signalRow { gap: 3px; }
-  .signalLabel, .signalValue, .profileLabel, .profileValue { font-size: 0.875rem; }
-  .contextGrid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 10px;
-    padding-top: 8px;
-  }
-  .contextItem { display: flex; align-items: baseline; gap: 8px; }
-  .contextLabel, .contextValue { font-size: 0.75rem; margin-top: 0; }
-  .profileList { gap: 14px; }
-
-  .streamTabs button { min-height: 34px; font-size: 0.875rem; }
-  .decisionEntry { padding: 12px 20px; }
-  .decisionExplanation { font-size: 0.875rem; line-height: 1.5; }
-  .streamEnd { padding: 12px 20px; }
-  .streamEndMark { font-size: 1rem; margin-bottom: 0; }
-  .streamEnd p { margin-top: 0; }
-
-  .metricRow { padding: 10px 0; }
-  .metricName { font-size: 0.875rem; }
-  .metricValues { margin-top: 6px; gap: 8px; }
-  .metricValue strong { font-size: 1.375rem; }
-  .metricValue small, .metricImprovement { font-size: 0.75rem; }
-
-  .evaluationGrid .evaluationRow,
-  .evaluationGrid .evaluationColumnLabels {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    align-items: baseline;
-    gap: 10px;
-    padding: 9px 0;
-  }
-  .evaluationGrid .evaluationNumbers { font-size: 0.75rem; gap: 8px; text-align: right; }
-  .evaluationName { font-size: 0.8125rem; }
-  .mockNotice { gap: 2px; margin-bottom: 6px; font-size: 0.75rem; }
-  .mockBadge { font-size: 0.6875rem; }
-  .evaluationMeta { margin-top: 8px; gap: 2px; font-size: 0.75rem; line-height: 1.45; }
-  .evaluationActions { margin-top: 8px; }
-  .footer { min-height: 36px; padding: 6px 24px; font-size: 0.75rem; margin-top: auto; }
-  .panelBody .emptyState { min-height: 180px; }
-}
-
-@media (max-width: 1100px) {
-  .overviewGrid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
-  .signalList { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .analyticsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .analyticsGrid > .streamPanel { grid-column: 1 / -1; }
-  .overviewGrid > .panel, .analyticsGrid > .panel { border-bottom: 1px solid var(--dashboard-border); }
-}
-
-@media (max-width: 720px) {
-  .overviewGrid, .analyticsGrid { grid-template-columns: minmax(0, 1fr); }
-  .signalList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (min-width: 1101px) {
-  .dashboardLayout {
+  .overviewPage .outcomeColumn {
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
-    grid-template-rows: auto 1fr;
+    min-height: 0;
+    flex: 1;
+    grid-template-rows: minmax(0, 1.2fr) minmax(0, 0.92fr);
+    align-content: stretch;
+    border-top: 0;
+    border-left: 0;
   }
-  .overviewGrid { grid-column: 2 / 4; grid-row: 1; border-left: 1px solid var(--dashboard-border); }
-  .analyticsGrid { display: contents; }
-  .analyticsGrid > .streamPanel { grid-column: 1; grid-row: 1 / 3; min-height: 0; }
-  .analyticsGrid > .panel:nth-child(2) { grid-column: 2; grid-row: 2; }
-  .analyticsGrid > .panel:nth-child(3) { grid-column: 3; grid-row: 2; }
-  .overviewGrid .panelHeader { padding-top: 10px; }
-  .overviewGrid .signalList { gap: 6px 12px; }
-  .overviewGrid .contextGrid { gap: 6px; }
-  .overviewGrid .contextItem { gap: 4px; flex-wrap: wrap; }
-  .overviewGrid .profileList { gap: 10px; }
-  .adaptationBanner { padding-block: 8px; }
-  .adaptationTitle { margin-top: 2px; font-size: 1.125rem; }
-  .decisionEntry { padding-block: 10px; }
-  .decisionExplanation { margin-top: 8px; }
-  .decisionEntry .detailToggle { min-height: 32px; margin-top: 4px; padding-block: 4px; }
-  .sourceMeta { font-size: 0.75rem; }
-  .streamEnd { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 8px; padding-block: 12px; font-size: 0.8125rem; }
-  .streamEnd p { font-size: 0.75rem; }
-  .metricRow { padding-block: 8px; }
-  .metricValues { margin-top: 4px; }
-  .evaluationGrid .evaluationRow, .evaluationGrid .evaluationColumnLabels { padding-block: 7px; }
+
+  .overviewPage .signalColumn > .panel,
+  .overviewPage .outcomeColumn > .panel {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .overviewPage .signalColumn > .panel + .panel,
+  .overviewPage .outcomeColumn > .panel + .panel {
+    border-left: 0;
+    border-top: 1px solid var(--dashboard-border);
+  }
+
+  .overviewPage .decisionList {
+    min-height: 0;
+  }
+
+  .overviewPage .streamEnd {
+    margin-top: auto;
+  }
 }
-@media (min-width: 1101px) {
-  .metricValue { display: flex; align-items: baseline; gap: 8px; }
-  .metricValue:last-child { justify-content: flex-end; }
-  .metricArrow { padding-top: 0; }
-  .metricValues { margin-top: 5px; }
-  .overviewGrid .panelHeader { padding-top: 8px; padding-bottom: 6px; }
-  .overviewGrid .panelBody { padding-bottom: 8px; }
-  .overviewGrid .signalList { gap: 4px 12px; }
-  .overviewGrid .profileList { gap: 8px; }
-  .overviewGrid .contextGrid { margin-top: 6px; padding-top: 6px; }
-  .topbar { padding-block: 6px; }
-  .adaptationBanner { padding-block: 6px; }
-  .adaptationCopy { margin-top: 2px; }
-  .evaluationGrid .evaluationRow, .evaluationGrid .evaluationColumnLabels { padding-block: 5px; }
-  .analyticsGrid .panelHeader { padding-top: 10px; padding-bottom: 6px; }
-  .analyticsGrid .panelBody { padding-bottom: 8px; }
+
+@media (min-width: 960px) and (min-height: 680px) and (max-height: 950px) {
+  .overviewPage .topbar {
+    min-height: 64px;
+    padding: 8px 20px;
+  }
+
+  .overviewPage .brandRow {
+    gap: 16px;
+  }
+
+  .overviewPage .brand {
+    gap: 6px;
+    font-size: 1.55rem;
+  }
+
+  .overviewPage .mark {
+    width: 23px;
+    height: 23px;
+  }
+
+  .overviewPage .brandDivider {
+    height: 28px;
+  }
+
+  .overviewPage .title {
+    font-size: 1rem;
+  }
+
+  .overviewPage .subtitle,
+  .overviewPage .statusRow {
+    font-size: 0.75rem;
+  }
+
+  .overviewPage .headerMeta {
+    column-gap: 16px;
+    row-gap: 5px;
+  }
+
+  .overviewPage .headerActions {
+    gap: 6px;
+  }
+
+  .overviewPage .button,
+  .overviewPage .arcButton {
+    min-height: 32px;
+    padding: 5px 11px;
+    font-size: 0.75rem;
+  }
+
+  .overviewPage .adaptationBanner {
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.5fr);
+    gap: 14px;
+    padding: 8px 20px;
+  }
+
+  .overviewPage .eyebrow {
+    font-size: 0.7rem;
+  }
+
+  .overviewPage .adaptationTitle {
+    margin-top: 1px;
+    font-size: 1rem;
+  }
+
+  .overviewPage .adaptationCopy {
+    margin-top: 1px;
+    font-size: 0.72rem;
+  }
+
+  .overviewPage .tokenValue {
+    gap: 2px;
+    padding-left: 12px;
+  }
+
+  .overviewPage .tokenValue > span {
+    font-size: 0.7rem;
+  }
+
+  .overviewPage .tokenValue > strong {
+    font-size: 0.9rem;
+  }
+
+  .overviewPage .trendPanel {
+    padding: 8px 20px 5px;
+  }
+
+  .overviewPage .trendHeading {
+    flex-wrap: nowrap;
+    gap: 8px 16px;
+  }
+
+  .overviewPage .trendHeading .panelHint,
+  .overviewPage .trendLegend {
+    font-size: 0.68rem;
+  }
+
+  .overviewPage .trendLegend {
+    gap: 5px 10px;
+  }
+
+  .overviewPage .trendLegend i {
+    width: 12px;
+  }
+
+  .overviewPage .trendPlot {
+    margin-top: 3px;
+    padding-left: 30px;
+  }
+
+  .overviewPage .trendSvg {
+    height: 58px;
+  }
+
+  .overviewPage .trendYAxis,
+  .overviewPage .trendXAxis {
+    font-size: 0.6rem;
+  }
+
+  .overviewPage .trendYAxis {
+    inset-block: 0 18px;
+  }
+
+  .overviewPage .panel {
+    overflow: hidden;
+  }
+
+  .overviewPage .panelHeader {
+    padding: 8px 20px 5px;
+  }
+
+  .overviewPage .panelBody {
+    padding: 0 20px 8px;
+  }
+
+  .overviewPage .sectionHeading {
+    font-size: 0.8rem;
+  }
+
+  .overviewPage .panelHint,
+  .overviewPage .outcomeColumn .panelHint {
+    margin-top: 1px;
+    font-size: 0.64rem;
+    line-height: 1.35;
+  }
+
+  .overviewPage .signalList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px 10px;
+  }
+
+  .overviewPage .signalRow,
+  .overviewPage .profileRow {
+    gap: 2px;
+  }
+
+  .overviewPage .signalLabel,
+  .overviewPage .signalValue,
+  .overviewPage .profileLabel,
+  .overviewPage .profileValue {
+    font-size: 0.68rem;
+  }
+
+  .overviewPage .track,
+  .overviewPage .profileTrack {
+    height: 3px;
+  }
+
+  .overviewPage .contextGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px 10px;
+    margin-top: 5px;
+    padding-top: 4px;
+  }
+
+  .overviewPage .contextItem {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px 4px;
+  }
+
+  .overviewPage .contextLabel,
+  .overviewPage .contextValue {
+    font-size: 0.6rem;
+  }
+
+  .overviewPage .profileList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .overviewPage .profileRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .overviewPage .entryCount {
+    font-size: 0.65rem;
+  }
+
+  .overviewPage .streamTabs button {
+    min-height: 34px;
+    font-size: 0.72rem;
+  }
+
+  .overviewPage .decisionEntry {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 8px;
+    padding: 9px 20px;
+  }
+
+  .overviewPage .decisionAvatar {
+    width: 24px;
+    height: 24px;
+    font-size: 0.65rem;
+  }
+
+  .overviewPage .decisionTitle {
+    font-size: 0.8rem;
+  }
+
+  .overviewPage .decisionStatus,
+  .overviewPage .sourceMeta {
+    font-size: 0.65rem;
+  }
+
+  .overviewPage .decisionExplanation {
+    margin-top: 5px;
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .overviewPage .decisionPreview {
+    -webkit-line-clamp: 2;
+  }
+
+  .overviewPage .detailToggle {
+    min-height: 27px;
+    margin-top: 2px;
+    padding-block: 2px;
+    font-size: 0.68rem;
+  }
+
+  .overviewPage .streamEnd {
+    padding: 5px 20px;
+    font-size: 0.65rem;
+  }
+
+  .overviewPage .metricRow {
+    padding: 5px 0;
+  }
+
+  .overviewPage .metricName {
+    font-size: 0.72rem;
+  }
+
+  .overviewPage .metricImprovement,
+  .overviewPage .metricValue small {
+    font-size: 0.62rem;
+  }
+
+  .overviewPage .metricValues {
+    margin-top: 2px;
+    gap: 8px;
+  }
+
+  .overviewPage .metricValue {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+
+  .overviewPage .metricValue:last-child {
+    justify-content: end;
+  }
+
+  .overviewPage .metricValue strong {
+    font-size: 1.05rem;
+  }
+
+  .overviewPage .metricArrow {
+    padding-top: 0;
+    font-size: 0.75rem;
+  }
+
+  .overviewPage .evaluationGrid .evaluationRow,
+  .overviewPage .evaluationColumnLabels {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+    gap: 8px;
+    padding: 4px 0;
+  }
+
+  .overviewPage .evaluationName,
+  .overviewPage .evaluationColumnLabels,
+  .overviewPage .evaluationGrid .evaluationNumbers,
+  .overviewPage .mockBadge {
+    font-size: 0.62rem;
+  }
+
+  .overviewPage .evaluationGrid .evaluationNumbers {
+    gap: 5px;
+    text-align: right;
+  }
+
+  .overviewPage .footer {
+    min-height: 32px;
+    padding: 6px 20px;
+    font-size: 0.62rem;
+  }
+
+  .overviewPage .footerBrand {
+    font-size: 0.9rem;
+  }
 }

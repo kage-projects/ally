@@ -124,10 +124,21 @@ The dashboard was inspected at 1440px; no horizontal overflow occurred at 768px.
 These checks use synthetic events; checkout SDK integration and real evaluation
 results remain separate phases.
 
-Phase 3–6 implementation checks: primary body/data text is at least 16px,
-secondary metadata 14px, and key outcome values 28px. Flat grid separators and
-the dark palette are retained; text contrast was checked against the background.
-Current browser access is unavailable, so fresh screenshots at 1920×1080,
-1366×768, and narrow widths plus native-dialog keyboard interaction remain a
-manual verification gate. Actual checkout rehearsal and measured evaluation
-output also require the checkout SDK/evaluation producer.
+## Overview and friction trend
+
+The overview shows a timestamped miss-tap trend above three columns: signals and
+profile, the two latest matching decisions, and session impact plus an evaluation
+summary. Applied/Undo markers use accepted lifecycle event timestamps. Zero-tap
+windows have no rate and break the line, as do missing windows; no samples are
+interpolated. The chart retains the latest 30 windows, and sample sessions remain
+labelled. Observed session changes do not establish causal evaluation results.
+
+Use **View all decisions** for the full retained history (up to 100 records), and
+**View details** for complete explanations, settings, and guardrails. **View all
+evaluation results** opens every evaluation metric, source information, and the
+refresh action. These drawers support Escape and return focus to their trigger.
+
+Browser verification at 100% zoom: the sample overview fits 1920×1080 including
+the footer without scrolling. A 1366×768 laptop uses vertical scrolling; a 390px
+mobile viewport stacks the panels without horizontal overflow. Actual checkout
+rehearsal and measured evaluation output require the SDK/evaluation producer.

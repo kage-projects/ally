@@ -1,3 +1,6 @@
+"use client";
+
+import { useId, useRef } from "react";
 import {
   EVALUATION_REPORT_URL,
   EVALUATION_SOURCE,
@@ -13,6 +16,7 @@ type EvaluationPanelProps = {
   onRefresh?: () => void;
   refreshing?: boolean;
   refreshError?: string | null;
+  compact?: boolean;
 };
 
 const ROWS = [
@@ -22,13 +26,49 @@ const ROWS = [
   { key: "completionRate", label: "Completion rate" },
 ] as const;
 
-export function EvaluationPanel({
+export function EvaluationPanel(props: EvaluationPanelProps) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  if (!props.compact) return <EvaluationContent {...props} />;
+  const demo = props.demoResults?.isMock === true ? props.demoResults : null;
+  const results = demo ?? (props.evidence.status === "ready" ? props.evidence.results : null);
+  return (
+    <section className={styles.panel} id="evaluation-evidence" aria-labelledby={titleId} data-evaluation-state={demo ? "sample" : results ? "ready" : "unavailable"}>
+      <div className={styles.panelHeader}>
+        <div><h2 className={styles.sectionHeading} id={titleId}>Evaluation</h2><p className={styles.panelHint}>{results ? `${results.sessionsPerVariant} sessions per variant · Mean ± SD` : "Measured results pending"}</p></div>
+        {demo ? <span className={styles.mockBadge}>SAMPLE</span> : null}
+      </div>
+      <div className={styles.panelBody}>
+        {results ? <>
+          <p className={styles.panelHint}>{demo ? "Illustrative data · Not measured" : "Measured evaluation · Separate from live session"}</p>
+          <div className={styles.evaluationGrid} role="table" aria-label="Evaluation summary: mean and standard deviation">
+            <div className={styles.evaluationColumnLabels} role="row"><span role="columnheader">Metric</span><span className={styles.evaluationNumbers} role="presentation"><span role="columnheader">Ally off</span><span role="columnheader">Ally on</span></span></div>
+            {ROWS.slice(0, 2).map(({ key, label }) => <div className={styles.evaluationRow} role="row" key={key}>
+              <span className={styles.evaluationName} role="rowheader">{label}</span>
+              <span className={styles.evaluationNumbers} role="presentation"><span role="cell">{formatEvaluationSample(results.metrics[key].allyOff.mean, results.metrics[key].allyOff.standardDeviation, results.metrics[key].unit)}</span><strong role="cell">{formatEvaluationSample(results.metrics[key].allyOn.mean, results.metrics[key].allyOn.standardDeviation, results.metrics[key].unit)}</strong></span>
+            </div>)}
+          </div>
+        </> : <p className={styles.panelHint}>Awaiting validated results from {EVALUATION_SOURCE}.</p>}
+        <button className={styles.detailToggle} type="button" aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>View all evaluation results ↗</button>
+        {props.refreshError ? <p className={styles.panelHint} role="status">{props.refreshError}</p> : null}
+      </div>
+      <dialog ref={dialog} className={styles.decisionDialog} aria-label="Full evaluation results">
+        <div className={styles.dialogHeading}><h2 className={styles.adaptationTitle}>Evaluation evidence</h2><button className={styles.dialogClose} type="button" onClick={() => dialog.current?.close()}>Close ×</button></div>
+        <EvaluationContent {...props} />
+      </dialog>
+    </section>
+  );
+}
+
+function EvaluationContent({
   evidence,
   demoResults,
   onRefresh,
   refreshing = false,
   refreshError = null,
+  compact = false,
 }: EvaluationPanelProps) {
+  const headingId = useId();
   const demo = demoResults?.isMock === true ? demoResults : null;
   const results = demo ?? (evidence.status === "ready" ? evidence.results : null);
   const state = demo ? "sample" : results ? "ready" : "unavailable";
@@ -36,13 +76,13 @@ export function EvaluationPanel({
   return (
     <section
       className={styles.panel}
-      id="evaluation-evidence"
-      aria-labelledby="evaluation-title"
+      id={compact ? undefined : "evaluation-evidence"}
+      aria-labelledby={headingId}
       data-evaluation-state={state}
     >
       <div className={styles.panelHeader}>
         <div>
-          <h2 className={styles.sectionHeading} id="evaluation-title">Evaluation</h2>
+          <h2 className={styles.sectionHeading} id={headingId}>Evaluation</h2>
           <p className={styles.panelHint}>
             {results ? `${results.sessionsPerVariant} sessions per variant · Mean ± SD` : "Measured results pending"}
           </p>
