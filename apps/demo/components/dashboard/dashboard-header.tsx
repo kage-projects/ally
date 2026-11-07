@@ -22,8 +22,7 @@ export function DashboardHeader({
   onReset,
   onRestore,
 }: DashboardHeaderProps) {
-  const statusLabel = mode === "demo" ? "Demo session"
-    : connectionStatus === "waiting" ? "Listening"
+  const statusLabel = connectionStatus === "waiting" ? "Listening"
     : connectionStatus === "live" ? "Live"
     : connectionStatus === "idle" ? "Idle · Waiting for checkout"
     : "Live updates unavailable";
@@ -47,10 +46,12 @@ export function DashboardHeader({
 
       <div className={styles.headerMeta}>
         <div className={styles.statusRow} aria-label="Current dashboard context">
-          <span className={styles.statusPill} data-status={mode === "demo" ? "demo" : connectionStatus}>
-            <span className={styles.statusDot} aria-hidden="true" />
-            <span role="status">{statusLabel}</span>
-          </span>
+          {mode === "live" ? (
+            <span className={styles.statusPill} data-status={connectionStatus}>
+              <span className={styles.statusDot} aria-hidden="true" />
+              <span role="status">{statusLabel}</span>
+            </span>
+          ) : null}
           {mode === "live" && secondsSinceEvent !== null ? (
             <span className={styles.lastEvent} title="Time since the last valid event was received">
               {secondsSinceEvent}s ago

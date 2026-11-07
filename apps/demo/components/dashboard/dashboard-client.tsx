@@ -29,11 +29,6 @@ export function DashboardClient({
   const { dashboard, connectionStatus, secondsSinceEvent, reset, loadDemo } = useAllyBus();
   const { evidence, refreshing, refreshError, refresh } = useEvaluation(initialEvaluation);
   const hasData = dashboard.currentSummary !== null || dashboard.decisions.length > 0;
-  const streamLabel = dashboard.mode === "demo" ? "Demo · Sample session"
-    : connectionStatus === "waiting" ? "Listening · Same-origin events"
-    : connectionStatus === "unavailable" ? "Event channel unavailable"
-    : connectionStatus === "idle" ? "Idle · Session retained"
-    : "Live event stream";
 
   return (
     <div className={styles.page}>
@@ -49,41 +44,28 @@ export function DashboardClient({
           secondsSinceEvent={secondsSinceEvent}
         />
 
-        <div className={styles.workspaceBar}>
-          <span className={styles.workspaceLabel}>
-            <span className={styles.workspaceDot} aria-hidden="true" />
-            Adaptation workspace
-          </span>
-          <span className={styles.demoLabel}>
-            {streamLabel}
-          </span>
-        </div>
-
         <div id="dashboard-content" className={styles.contentArea} tabIndex={-1}>
           {hasData ? (
             <>
               <ActiveAdaptationBanner decision={dashboard.activeDecision} />
 
-              <div className={styles.grid}>
-                <div className={`${styles.column} ${styles.columnLeft}`}>
-                  <LiveSignalsPanel summary={dashboard.currentSummary} />
-                  <ProfileGauge profile={dashboard.profile} />
-                </div>
+              <div className={styles.dashboardLayout}>
+              <div className={styles.overviewGrid}>
+                <LiveSignalsPanel summary={dashboard.currentSummary} />
+                <ProfileGauge profile={dashboard.profile} />
+              </div>
 
-                <div className={`${styles.column} ${styles.columnCenter}`}>
-                  <DecisionStream decisions={dashboard.decisions} />
-                </div>
-
-                <div className={`${styles.column} ${styles.columnRight}`}>
-                  <SessionImpactPanel comparison={dashboard.comparison} />
-                  <EvaluationPanel
-                    evidence={evidence}
-                    demoResults={dashboard.mode === "demo" ? demoEvaluation : undefined}
-                    onRefresh={refresh}
-                    refreshing={refreshing}
-                    refreshError={refreshError}
-                  />
-                </div>
+              <div className={styles.analyticsGrid}>
+                <DecisionStream decisions={dashboard.decisions} />
+                <SessionImpactPanel comparison={dashboard.comparison} />
+                <EvaluationPanel
+                  evidence={evidence}
+                  demoResults={dashboard.mode === "demo" ? demoEvaluation : undefined}
+                  onRefresh={refresh}
+                  refreshing={refreshing}
+                  refreshError={refreshError}
+                />
+              </div>
               </div>
             </>
           ) : (
