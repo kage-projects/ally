@@ -1,0 +1,1404 @@
+.page {
+  --dashboard-bg: #08090a;
+  --dashboard-border: #26282b;
+  --dashboard-muted: #92979d;
+  --dashboard-copy: #b8bdc3;
+  --dashboard-text: #edeff1;
+  --dashboard-accent: #60b8f5;
+  --dashboard-success: #70c7a3;
+  --dashboard-warning: #d5b77a;
+  --dashboard-danger: #d8a4aa;
+  --background: var(--dashboard-bg);
+  --surface: var(--dashboard-bg);
+  --surface-muted: #141618;
+  --foreground: var(--dashboard-text);
+  --text-secondary: var(--dashboard-copy);
+  --text-muted: var(--dashboard-muted);
+  --border: var(--dashboard-border);
+  min-height: 100dvh;
+  color: var(--dashboard-text);
+  background: var(--dashboard-bg);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  width: min(100%, 1540px);
+  min-height: 100dvh;
+  margin-inline: auto;
+  border-inline: 1px solid var(--dashboard-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.skipLink {
+  position: absolute;
+  z-index: 10;
+  top: 8px;
+  left: 16px;
+  padding: 10px 16px;
+  color: #08090a;
+  background: #edeff1;
+  transform: translateY(-150%);
+}
+
+.skipLink:focus {
+  transform: translateY(0);
+}
+
+.topbar,
+.brandRow,
+.brand,
+.statusRow,
+.headerActions,
+.footer {
+  display: flex;
+  align-items: center;
+}
+
+.topbar {
+  min-height: 112px;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.brandRow {
+  gap: 28px;
+}
+
+.brand {
+  gap: 9px;
+  font-size: 2rem;
+  font-weight: 750;
+  letter-spacing: -0.08em;
+}
+
+.mark {
+  width: 29px;
+  height: 29px;
+}
+
+.brandDot {
+  color: var(--dashboard-accent);
+}
+
+.brandDivider {
+  height: 32px;
+  width: 1px;
+  background: var(--dashboard-border);
+}
+
+.title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.3;
+}
+
+.subtitle {
+  margin-top: 3px;
+  color: var(--dashboard-muted);
+  font-size: 1rem;
+}
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: end;
+  column-gap: 28px;
+  row-gap: 12px;
+  min-width: 0;
+}
+
+.statusRow {
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--dashboard-muted);
+  font-size: 1rem;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--dashboard-copy);
+}
+
+.statusDot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dashboard-muted);
+}
+
+.statusDot {
+  margin-right: 8px;
+}
+
+.statusPill[data-status="live"] .statusDot {
+  background: var(--dashboard-success);
+}
+
+.statusPill[data-status="idle"] .statusDot,
+.statusPill[data-status="unavailable"] .statusDot {
+  background: var(--dashboard-warning);
+}
+
+.lastEvent {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.contextPill {
+  border-left: 1px solid var(--dashboard-border);
+  padding-left: 12px;
+  text-transform: capitalize;
+}
+
+.contextPill:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.headerActions {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.button,
+.arcButton,
+.restoreButton {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 999px;
+  padding: 8px 16px;
+  color: var(--dashboard-text);
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.page .arcButton {
+  min-height: 44px;
+  border-color: transparent;
+  color: var(--dashboard-muted);
+}
+
+.button:hover,
+.page .arcButton:hover {
+  color: var(--dashboard-text);
+  background: #191b1e;
+  box-shadow: none;
+}
+
+.page :is(a, button):focus-visible {
+  outline: 2px solid var(--dashboard-accent);
+  outline-offset: -3px;
+}
+
+.adaptationBanner {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 1.8fr);
+  align-items: center;
+  gap: 32px;
+  padding: 12px 32px;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.eyebrow,
+.detailLabel {
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.adaptationTitle {
+  margin-top: 6px;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+
+.adaptationCopy {
+  margin-top: 4px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.chipRow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.tokenValue {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding-left: 24px;
+  border-left: 1px solid var(--dashboard-border);
+}
+
+.tokenValue > span {
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.tokenValue > strong {
+  font-size: 1.125rem;
+  font-weight: 550;
+  letter-spacing: -0.025em;
+  text-transform: capitalize;
+  font-variant-numeric: tabular-nums;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.88fr) minmax(440px, 1.8fr) minmax(300px, 1fr);
+  min-height: 0;
+}
+
+.column {
+  min-width: 0;
+}
+
+.columnLeft,
+.columnCenter {
+  border-right: 1px solid var(--dashboard-border);
+}
+
+.column .panel + .panel {
+  border-top: 1px solid var(--dashboard-border);
+}
+
+.panel {
+  min-width: 0;
+  scroll-margin-top: 20px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px 24px 20px;
+}
+
+.sectionHeading {
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.panelHint {
+  margin-top: 4px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.panelBody {
+  padding: 0 24px 24px;
+}
+
+.signalList,
+.profileList {
+  display: grid;
+  gap: 17px;
+}
+
+.signalRow,
+.profileRow {
+  display: grid;
+  gap: 7px;
+}
+
+.signalMeta,
+.profileMeta,
+.metricHeader,
+.decisionTopline,
+.evaluationRow,
+.evaluationColumnLabels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.signalLabel,
+.profileLabel {
+  color: var(--dashboard-copy);
+  font-size: 1rem;
+}
+
+.signalValue,
+.profileValue {
+  font-size: 1rem;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+}
+
+.track,
+.profileTrack {
+  position: relative;
+  overflow: hidden;
+  height: 3px;
+  background: #202326;
+}
+
+.bar,
+.profileBar {
+  height: 100%;
+  background: #9fa7af;
+}
+
+.profileBarMotor {
+  background: #dce0e4;
+}
+
+.profileBarVisual {
+  background: #72b4e0;
+}
+
+.profileBarCognitive {
+  background: #87929e;
+}
+
+.threshold {
+  position: absolute;
+  inset-block: 0;
+  left: 60%;
+  width: 2px;
+  background: var(--dashboard-bg);
+}
+
+.profileList {
+  gap: 22px;
+}
+
+.contextGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--dashboard-border);
+}
+
+.contextLabel {
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.contextValue {
+  margin-top: 3px;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.entryCount {
+  flex: none;
+  padding-top: 3px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.page .streamTabs {
+  display: flex;
+  border: 0;
+  border-bottom: 1px solid var(--dashboard-border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.streamTabs > div {
+  flex: 1;
+  gap: 0;
+  padding: 0;
+}
+
+.streamTabs button {
+  flex: 1;
+  min-height: 48px;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.streamTabs button:hover {
+  background: #111315;
+}
+
+.streamTabs button > span[aria-hidden="true"] {
+  inset: auto 25% 0;
+  height: 3px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--dashboard-accent);
+  box-shadow: none;
+}
+
+.decisionEntry {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 24px;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.decisionAvatar {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #34383d;
+  border-radius: 50%;
+  color: #e1e5e9;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.decisionContent {
+  min-width: 0;
+}
+
+.decisionTopline {
+  align-items: start;
+  gap: 8px;
+}
+
+.decisionTitle {
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+
+.sourceMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 7px;
+  row-gap: 2px;
+  margin-top: 4px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sourceTag,
+.sourceLlm {
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.sourceTag {
+  color: var(--dashboard-copy);
+}
+
+.sourceLlm {
+  color: var(--dashboard-accent);
+}
+
+.decisionStatus {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  padding-top: 2px;
+  font-size: 0.875rem;
+}
+
+.statusKept {
+  color: var(--dashboard-success);
+}
+
+.statusUndone {
+  color: var(--dashboard-danger);
+}
+
+.statusNeutral {
+  color: var(--dashboard-muted);
+}
+
+.decisionExplanation {
+  margin-top: 14px;
+  color: #c9cdd2;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.decisionDetails {
+  margin-top: 20px;
+}
+
+.diffList {
+  margin-top: 10px;
+}
+
+.diffItem {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.7fr) minmax(0, 1.3fr);
+  gap: 16px;
+  padding: 7px 0;
+  border-bottom: 1px solid #1e2023;
+  font-size: 0.875rem;
+}
+
+.diffItem dt {
+  color: var(--dashboard-muted);
+}
+
+.diffItem dd {
+  color: var(--dashboard-copy);
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+.guardrailList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 16px;
+}
+
+.guardrailItem {
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.guardrailItem strong {
+  color: var(--dashboard-copy);
+  font-weight: 450;
+}
+
+.detailToggle {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  border: 0;
+  padding: 6px 0;
+  color: var(--dashboard-accent);
+  background: transparent;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.detailToggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.streamEnd {
+  display: grid;
+  justify-items: center;
+  padding: 40px 24px 48px;
+  color: var(--dashboard-copy);
+  font-size: 1rem;
+}
+
+.streamEndMark {
+  margin-bottom: 12px;
+  color: #727981;
+  font-size: 1.5rem;
+}
+
+.streamEnd p {
+  margin-top: 4px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.metricRow {
+  padding: 19px 0;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.metricRow:first-child {
+  padding-top: 0;
+}
+
+.metricRow:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.metricName {
+  color: var(--dashboard-copy);
+  font-size: 1rem;
+}
+
+.metricImprovement {
+  color: var(--dashboard-success);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricValues {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  margin-top: 13px;
+}
+
+.metricValue {
+  display: grid;
+  gap: 3px;
+}
+
+.metricValue:last-child {
+  text-align: right;
+}
+
+.metricValue small {
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.metricValue strong {
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricValue:first-child strong {
+  color: var(--dashboard-muted);
+}
+
+.metricArrow {
+  padding-top: 14px;
+  color: #696f76;
+}
+
+.evaluationRow {
+  padding: 12px 0;
+  border-bottom: 1px solid #1e2023;
+}
+
+.evaluationRow:last-child {
+  border-bottom: 0;
+}
+
+.evaluationName {
+  color: var(--dashboard-copy);
+  font-size: 0.875rem;
+}
+
+.evaluationNumbers {
+  display: grid;
+  flex: none;
+  grid-template-columns: 48px 48px;
+  gap: 12px;
+  text-align: right;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.evaluationNumbers > span {
+  color: var(--dashboard-muted);
+}
+
+.evaluationNumbers strong {
+  color: var(--dashboard-text);
+  font-weight: 500;
+}
+
+.evaluationColumnLabels {
+  padding: 12px 0 4px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.evaluationColumnLabels .evaluationNumbers {
+  font-size: inherit;
+}
+
+.mockNotice {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.mockBadge {
+  color: var(--dashboard-warning);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+}
+
+.emptyState {
+  display: grid;
+  min-height: 460px;
+  place-items: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.panelBody .emptyState {
+  min-height: 240px;
+  padding: 20px 0;
+}
+
+.emptyIcon {
+  margin-bottom: 20px;
+  color: var(--dashboard-muted);
+  font-size: 2.5rem;
+}
+
+.emptyTitle {
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+
+.emptyCopy {
+  max-width: 42ch;
+  margin: 10px auto 24px;
+  color: var(--dashboard-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.emptyHint {
+  margin-top: 18px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.simulatorBody {
+  max-width: 760px;
+  padding: 32px;
+}
+
+.simulatorBody .emptyCopy {
+  max-width: 64ch;
+  margin-inline: 0;
+}
+
+.simulatorActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.simulatorStatus {
+  margin-top: 24px;
+  font-size: 1rem;
+}
+
+.simulatorEvents {
+  margin-top: 24px;
+  color: var(--dashboard-muted);
+  font-size: 1rem;
+}
+
+.simulatorEvents [data-sent="true"] {
+  color: var(--dashboard-copy);
+}
+
+.page .restoreButton {
+  min-height: 44px;
+  border-color: #edeff1;
+  color: #08090a;
+  background: #edeff1;
+}
+
+.footer {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  min-height: 72px;
+  padding: 20px 32px;
+  border-top: 1px solid var(--dashboard-border);
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.footerBrand {
+  color: var(--dashboard-copy);
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.08em;
+}
+
+.contextPill,
+.contextValue,
+.decisionExplanation,
+.panelHint,
+.evaluationName,
+.mockNotice,
+.simulatorStatus {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.metricImprovement[data-trend="worse"] {
+  color: var(--dashboard-danger);
+}
+
+.metricImprovement[data-trend="neutral"],
+.metricImprovement[data-trend="unknown"] {
+  color: var(--dashboard-muted);
+}
+
+.sourceTag[data-source="fallback"] {
+  color: var(--dashboard-warning);
+}
+
+.decisionDialog {
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(85dvh, 900px);
+  margin: auto;
+  border: 1px solid #606873;
+  border-radius: 0;
+  padding: 0;
+  color: var(--dashboard-text);
+  background: var(--dashboard-bg);
+  overflow: auto;
+}
+
+.decisionDialog::backdrop {
+  background: rgba(0, 0, 0, 0.76);
+}
+
+.dialogHeading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  border-bottom: 1px solid var(--dashboard-border);
+}
+
+.dialogHeading h2 {
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.dialogBody {
+  padding: 0 24px 24px;
+}
+
+.dialogClose {
+  flex: none;
+  min-height: 44px;
+  border: 1px solid #606873;
+  padding: 8px 14px;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dialogClose:hover {
+  background: var(--surface-muted);
+}
+
+.dialogMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-block: 16px;
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+}
+
+.decisionDialog .diffItem {
+  font-size: 1rem;
+}
+
+.decisionDialog .guardrailList {
+  display: grid;
+}
+
+.decisionDialog .guardrailItem {
+  font-size: 0.875rem;
+}
+
+.evaluationGrid .evaluationRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.evaluationGrid .evaluationNumbers {
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  text-align: left;
+  font-size: 1rem;
+}
+
+.evaluationNumbers > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.evaluationColumnLabels {
+  display: grid;
+  gap: 8px;
+}
+
+.evaluationActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.evaluationMeta,
+.evaluationUnavailable {
+  color: var(--dashboard-muted);
+  font-size: 0.875rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.evaluationUnavailable {
+  padding-bottom: 12px;
+}
+
+.waitingGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr);
+}
+
+.waitingEvaluation {
+  min-width: 0;
+  border-left: 1px solid var(--dashboard-border);
+}
+
+.contentArea {
+  min-width: 0;
+}
+
+.contentArea:focus-visible {
+  outline: 2px solid var(--dashboard-accent);
+  outline-offset: -2px;
+}
+
+.evaluationMeta {
+  display: grid;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.detailToggle:disabled {
+  color: var(--dashboard-muted);
+  cursor: progress;
+}
+
+.panelHeader > div:first-child {
+  min-width: 0;
+}
+
+.panelHeader > .detailToggle {
+  flex: none;
+  max-width: 110px;
+  margin-top: 0;
+  text-align: right;
+}
+
+.signalLabel,
+.profileLabel,
+.signalValue,
+.profileValue,
+.contextValue,
+.metricName,
+.evaluationName,
+.decisionExplanation,
+.diffItem {
+  font-size: 1rem;
+}
+
+.dialogMeta > div {
+  min-width: 0;
+}
+
+.dialogMeta dt {
+  font-size: 0.875rem;
+}
+
+.dialogMeta dd {
+  color: var(--dashboard-text);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1101px) {
+  .topbar {
+    min-height: 84px;
+    padding-block: 14px;
+  }
+
+  .adaptationBanner {
+    padding-block: 12px;
+  }
+
+  .panelHeader {
+    padding: 16px 20px 12px;
+  }
+
+  .panelBody {
+    padding: 0 20px 16px;
+  }
+
+  .signalList,
+  .profileList {
+    gap: 10px;
+  }
+
+  .decisionEntry {
+    gap: 8px;
+    padding: 14px 20px;
+  }
+
+  .footer {
+    min-height: 52px;
+    padding-block: 10px;
+  }
+
+  .streamPanel {
+    min-height: 100%;
+  }
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.7fr);
+  }
+
+  .columnCenter {
+    border-right: 0;
+  }
+
+  .columnRight {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--dashboard-border);
+  }
+
+  .columnRight .panel + .panel {
+    border-top: 0;
+    border-left: 1px solid var(--dashboard-border);
+  }
+
+  .headerMeta {
+    flex-direction: column;
+    align-items: end;
+    gap: 8px;
+  }
+
+  .adaptationBanner {
+    grid-template-columns: 1fr 1.8fr;
+    gap: 20px;
+  }
+
+  .tokenValue {
+    padding-left: 14px;
+  }
+}
+
+@media (max-width: 720px) {
+  .waitingGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .waitingEvaluation {
+    border-top: 1px solid var(--dashboard-border);
+    border-left: 0;
+  }
+  .shell {
+    border-inline: 0;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    gap: 22px;
+    padding: 24px 20px 20px;
+  }
+
+  .brandRow {
+    gap: 20px;
+  }
+
+  .headerMeta {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .statusRow {
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.875rem;
+  }
+
+  .contextPill {
+    padding-left: 8px;
+  }
+
+  .adaptationBanner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 20px;
+  }
+
+  .tokenValue {
+    padding-left: 12px;
+  }
+
+  .tokenValue:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .tokenValue > span {
+    font-size: 0.875rem;
+  }
+
+  .tokenValue > strong {
+    font-size: 1rem;
+  }
+
+  .grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .columnCenter {
+    order: -1;
+  }
+
+  .columnLeft {
+    border-top: 1px solid var(--dashboard-border);
+    border-right: 0;
+  }
+
+  .columnRight {
+    display: block;
+  }
+
+  .columnRight .panel + .panel {
+    border-top: 1px solid var(--dashboard-border);
+    border-left: 0;
+  }
+
+  .panelHeader {
+    padding-inline: 20px;
+  }
+
+  .panelBody {
+    padding-inline: 20px;
+  }
+
+  .decisionEntry {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 10px;
+    padding: 22px 20px;
+  }
+
+  .decisionAvatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .footer {
+    justify-content: start;
+    padding-inline: 20px;
+  }
+
+  .footerNote {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .contextPill {
+    display: none;
+  }
+
+  .chipRow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 0;
+  }
+
+  .tokenValue:nth-child(4) {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .diffItem {
+    grid-template-columns: minmax(72px, 0.7fr) minmax(0, 1.3fr);
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    transition: none;
+    animation: none;
+  }
+}
+
+
+/* Overview uses the full width; outcomes and evidence share the second row. */
+.overviewGrid,
+.analyticsGrid {
+  display: grid;
+  min-width: 0;
+}
+
+@media (min-width: 1101px) {
+  .overviewGrid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    border-bottom: 1px solid var(--dashboard-border);
+  }
+
+  .analyticsGrid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .overviewGrid > .panel + .panel,
+  .analyticsGrid > .panel + .panel {
+    border-left: 1px solid var(--dashboard-border);
+  }
+
+  .topbar { min-height: 68px; padding: 10px 24px; }
+  .adaptationBanner { padding: 10px 24px; }
+  .panelHeader { padding: 12px 20px 8px; }
+  .panelBody { padding: 0 20px 12px; }
+  .panelHint { font-size: 0.75rem; line-height: 1.45; }
+
+  .signalList { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 24px; }
+  .signalRow { gap: 3px; }
+  .signalLabel, .signalValue, .profileLabel, .profileValue { font-size: 0.875rem; }
+  .contextGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+  .contextItem { display: flex; align-items: baseline; gap: 8px; }
+  .contextLabel, .contextValue { font-size: 0.75rem; margin-top: 0; }
+  .profileList { gap: 14px; }
+
+  .streamTabs button { min-height: 34px; font-size: 0.875rem; }
+  .decisionEntry { padding: 12px 20px; }
+  .decisionExplanation { font-size: 0.875rem; line-height: 1.5; }
+  .streamEnd { padding: 12px 20px; }
+  .streamEndMark { font-size: 1rem; margin-bottom: 0; }
+  .streamEnd p { margin-top: 0; }
+
+  .metricRow { padding: 10px 0; }
+  .metricName { font-size: 0.875rem; }
+  .metricValues { margin-top: 6px; gap: 8px; }
+  .metricValue strong { font-size: 1.375rem; }
+  .metricValue small, .metricImprovement { font-size: 0.75rem; }
+
+  .evaluationGrid .evaluationRow,
+  .evaluationGrid .evaluationColumnLabels {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 0;
+  }
+  .evaluationGrid .evaluationNumbers { font-size: 0.75rem; gap: 8px; text-align: right; }
+  .evaluationName { font-size: 0.8125rem; }
+  .mockNotice { gap: 2px; margin-bottom: 6px; font-size: 0.75rem; }
+  .mockBadge { font-size: 0.6875rem; }
+  .evaluationMeta { margin-top: 8px; gap: 2px; font-size: 0.75rem; line-height: 1.45; }
+  .evaluationActions { margin-top: 8px; }
+  .footer { min-height: 36px; padding: 6px 24px; font-size: 0.75rem; margin-top: auto; }
+  .panelBody .emptyState { min-height: 180px; }
+}
+
+@media (max-width: 1100px) {
+  .overviewGrid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .signalList { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .analyticsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .analyticsGrid > .streamPanel { grid-column: 1 / -1; }
+  .overviewGrid > .panel, .analyticsGrid > .panel { border-bottom: 1px solid var(--dashboard-border); }
+}
+
+@media (max-width: 720px) {
+  .overviewGrid, .analyticsGrid { grid-template-columns: minmax(0, 1fr); }
+  .signalList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1101px) {
+  .dashboardLayout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-rows: auto 1fr;
+  }
+  .overviewGrid { grid-column: 2 / 4; grid-row: 1; border-left: 1px solid var(--dashboard-border); }
+  .analyticsGrid { display: contents; }
+  .analyticsGrid > .streamPanel { grid-column: 1; grid-row: 1 / 3; min-height: 0; }
+  .analyticsGrid > .panel:nth-child(2) { grid-column: 2; grid-row: 2; }
+  .analyticsGrid > .panel:nth-child(3) { grid-column: 3; grid-row: 2; }
+  .overviewGrid .panelHeader { padding-top: 10px; }
+  .overviewGrid .signalList { gap: 6px 12px; }
+  .overviewGrid .contextGrid { gap: 6px; }
+  .overviewGrid .contextItem { gap: 4px; flex-wrap: wrap; }
+  .overviewGrid .profileList { gap: 10px; }
+  .adaptationBanner { padding-block: 8px; }
+  .adaptationTitle { margin-top: 2px; font-size: 1.125rem; }
+  .decisionEntry { padding-block: 10px; }
+  .decisionExplanation { margin-top: 8px; }
+  .decisionEntry .detailToggle { min-height: 32px; margin-top: 4px; padding-block: 4px; }
+  .sourceMeta { font-size: 0.75rem; }
+  .streamEnd { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 8px; padding-block: 12px; font-size: 0.8125rem; }
+  .streamEnd p { font-size: 0.75rem; }
+  .metricRow { padding-block: 8px; }
+  .metricValues { margin-top: 4px; }
+  .evaluationGrid .evaluationRow, .evaluationGrid .evaluationColumnLabels { padding-block: 7px; }
+}
+@media (min-width: 1101px) {
+  .metricValue { display: flex; align-items: baseline; gap: 8px; }
+  .metricValue:last-child { justify-content: flex-end; }
+  .metricArrow { padding-top: 0; }
+  .metricValues { margin-top: 5px; }
+  .overviewGrid .panelHeader { padding-top: 8px; padding-bottom: 6px; }
+  .overviewGrid .panelBody { padding-bottom: 8px; }
+  .overviewGrid .signalList { gap: 4px 12px; }
+  .overviewGrid .profileList { gap: 8px; }
+  .overviewGrid .contextGrid { margin-top: 6px; padding-top: 6px; }
+  .topbar { padding-block: 6px; }
+  .adaptationBanner { padding-block: 6px; }
+  .adaptationCopy { margin-top: 2px; }
+  .evaluationGrid .evaluationRow, .evaluationGrid .evaluationColumnLabels { padding-block: 5px; }
+  .analyticsGrid .panelHeader { padding-top: 10px; padding-bottom: 6px; }
+  .analyticsGrid .panelBody { padding-bottom: 8px; }
+}

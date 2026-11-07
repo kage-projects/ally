@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "isMock": true,
+  "label": "MOCK DATA — replace with eval/results.json before submission",
+  "scenario": "Synthetic tremor checkout sessions",
+  "generatedAt": null,
+  "sessionsPerVariant": 20,
+  "metrics": {
+    "misTapRate": {
+      "unit": "percent",
+      "allyOff": { "mean": 23, "standardDeviation": 4.2 },
+      "allyOn": { "mean": 5, "standardDeviation": 1.8 },
+      "improvementPercent": 78.3
+    },
+    "timeToComplete": {
+      "unit": "seconds",
+      "allyOff": { "mean": 84, "standardDeviation": 9.5 },
+      "allyOn": { "mean": 51, "standardDeviation": 6.4 },
+      "improvementPercent": 39.3
+    },
+    "errorLoops": {
+      "unit": "count",
+      "allyOff": { "mean": 2.1, "standardDeviation": 0.8 },
+      "allyOn": { "mean": 0.6, "standardDeviation": 0.4 },
+      "improvementPercent": 71.4
+    },
+    "completionRate": {
+      "unit": "percent",
+      "allyOff": { "mean": 80, "standardDeviation": 0 },
+      "allyOn": { "mean": 95, "standardDeviation": 0 },
+      "improvementPercent": 18.8
+    }
+  }
+}
