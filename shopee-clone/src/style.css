@@ -1,0 +1,84 @@
+﻿/* Measurements use the 720px reference at a 2x device scale. */
+@font-face {
+  font-family: Roboto;
+  src: url('/assets/roboto-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Roboto, Arial, sans-serif; background: #efefef; color: #151515; }
+.app { width: 100%; max-width: 430px; margin: auto; min-height: 100dvh; background: #efefef; }
+main { padding-bottom: 62.5px; }
+.header {
+  height: 89px;
+  padding: 0 7.5px;
+  color: #fff;
+  background: #fc5438 url('/assets/header-pattern.png') no-repeat;
+  background-size: 100% 89px;
+}
+.status { height: 43.5px; display: flex; justify-content: space-between; align-items: flex-start; padding: 10.5px 17px 0 16.5px; }
+.status img:first-child { width: 72.5px; height: 15.5px; }
+.status img:last-child { width: 77px; height: 15px; }
+.search-row { display: flex; align-items: center; gap: 11.5px; }
+.search { height: 38px; min-width: 0; flex: 1; display: flex; align-items: center; gap: 1.5px; padding: 0 10px; border-radius: 8px; background: #fafafa; color: #d95b41; }
+.search > svg { flex-shrink: 0; }
+.search input { min-width: 0; width: 100%; padding: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 13.5px; color: #d95b41; }
+.search input::placeholder { color: #d95b41; opacity: 1; }
+.camera { width: 19.5px; height: 19px; flex-shrink: 0; }
+.cart { position: relative; width: 30px; height: 29px; padding-top: 3px; }
+.cart > img { width: 29px; height: 25.5px; }
+.cart b { position: absolute; top: -1px; right: -1px; background: white; color: #dd6751; border-radius: 12px; font-size: 10px; line-height: 14px; font-weight: 400; padding: 0 4px; }
+.chat { width: 26px; height: 29px; position: relative; padding-top: 4px; }
+.chat > img { width: 26px; height: 21.5px; }
+.chat i { position: absolute; top: 0; right: -2px; width: 7px; height: 7px; background: white; border-radius: 50%; }
+.wallet { margin: 0 7.5px; height: 53px; background: #fff; border-radius: 8px; display: grid; grid-template-columns: 38px 1fr 1fr 1fr; align-items: center; box-shadow: 0 2px 5px #ddd5; }
+.wallet > div:not(:first-child) { padding-left: 6.5px; border-left: 1px solid #f3f3f3; min-width: 0; }
+.wallet .qr { display: grid; place-items: center; }
+.qr img { width: 25px; height: 24px; }
+.wallet > div:nth-child(3) { padding-left: 5px; }
+.wallet-title { display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 13.5px; line-height: 17px; }
+.wallet-title { position: relative; top: 1px; }
+.wallet > div:nth-child(3) .wallet-title { left: -2px; }
+.wallet-title img { width: 13.5px; height: 13px; object-fit: contain; }
+.wallet-title img.coins { width: 16px; height: 16px; }
+.wallet small { display: block; color: #888; font-size: 10px; line-height: 12px; margin-top: 4px; }
+.wallet small.orange { color: #d65c40; }
+.categories { position: relative; margin: 7px 7.5px 0; height: 94px; padding-top: 11.5px; background: #fff; border-radius: 8px; overflow: hidden; }
+.category-scroll { overflow-x: auto; scrollbar-width: none; }
+.category-scroll::-webkit-scrollbar { display: none; }
+.category-row { display: flex; width: max-content; padding-right: 10px; }
+.category { width: 62.7px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 9.7px; line-height: 11.5px; gap: 8px; }
+.category img { width: 34px; height: 34.5px; object-fit: cover; flex-shrink: 0; }
+.category span { width: 58px; }
+.category:first-child span { width: 50px; }
+.category:nth-child(3) span, .category:nth-child(4) span { width: 45px; }
+.dots { position: absolute; bottom: 5.5px; left: 50%; transform: translateX(-50%); display: flex; }
+.dots b, .dots i { width: 14px; height: 4px; background: #e7482c; border-radius: 3px; }
+.dots i { width: 12px; background: #ddd; }
+.banner { margin: 11px 7.5px 0; border-radius: 8px; overflow: hidden; background: #fff; }
+.banner img { width: 100%; display: block; }
+.media { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 11px 7.5px 0; }
+.media-panel { background: #fff; border-radius: 8px; padding: 13.5px 5.5px 11.5px 6px; min-width: 0; }
+.media-title { display: flex; align-items: center; gap: 2px; color: #cf5d44; font-size: 13.5px; line-height: 16px; font-weight: 400; margin: 0 0 7.5px; }
+.media-title svg { color: #d0d0d0; }
+.media-images { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5px; }
+.media-images img { width: 100%; border-radius: 3px; display: block; }
+.products { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #fff; border-radius: 8px 8px 0 0; margin-top: 7.5px; padding: 9px 7.5px; }
+.products img { display: block; width: 100%; border-radius: 5px; }
+.product { font-size: 12px; line-height: 15px; min-width: 0; }
+.product div { padding: 7.5px 7px; }
+.product b { font-size: 10px; font-weight: 400; background: #ee4d2d; color: #fff; border-radius: 2px; padding: 0 2px; }
+.bottom { position: fixed; bottom: 0; width: 100%; max-width: 430px; height: 62.5px; background: white; display: flex; justify-content: space-around; z-index: 5; padding-top: 6px; }
+.bottom > div:not(.home-indicator) { width: 16.666%; text-align: center; color: #888; font-size: 9.5px; line-height: 12px; white-space: nowrap; }
+.bottom .active { color: #d96c57 !important; }
+.nav-icon { position: relative; height: 27.5px; display: flex; align-items: flex-start; justify-content: center; }
+.nav-icon img { width: 25px; height: 25px; object-fit: contain; }
+.bottom .active img { width: 27px; height: 26px; }
+.nav-icon b { position: absolute; top: -5px; left: calc(50% + 1px); border-radius: 50%; background: #e75b42; color: white; font-size: 10px; line-height: 15px; font-weight: 400; min-width: 15px; }
+.home-indicator { position: absolute; bottom: 4px; width: 142px; height: 5px; border-radius: 3px; background: #747474; }
+
+/* Align the extracted artwork with the reference's device-pixel grid. */
+@media (min-resolution: 2dppx) {
+  .banner img, .media-images img, .products img { transform: translate(-.5px, -.5px); }
+}
