@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-Ally is an adaptive UI engine in development. This repository contains planning documents, `Poster.pdf`, SDK design documents, and the Phase 0 SDK package foundation.
+Ally is an adaptive UI engine in development. This repository contains planning documents, `Poster.pdf`, SDK design documents, and the SDK package through Phase 2.
 
 - `ALLY_PRD.md`: product requirements, data contracts, privacy rules, and evaluation targets.
 - `ALLY_BUILD_PLAN.md`: implementation milestones, target architecture, and acceptance criteria.
@@ -17,9 +17,9 @@ The SDK package in `sdk/` exposes:
 - `pnpm -C sdk build`: build the SDK package.
 - `pnpm -C sdk typecheck`: check SDK types.
 - `pnpm -C sdk test`: run SDK unit and DOM simulation scripts.
-- `pnpm -C sdk test:contract`: run mocked endpoint and package-consumer scripts.
+- `pnpm -C sdk test:contract`: run the package-consumer script.
 
-Implement and verify these scripts during scaffolding before treating them as available.
+These scripts are available; the mock endpoint contract arrives in Phase 3.
 
 ## Coding Style & Naming Conventions
 

@@ -1,6 +1,6 @@
 # Rencana Implementasi SDK Ally — Analisis dan Indeks Fase
 
-Status: Fase 0–1 package sdk selesai; Fase 2–5 belum diimplementasikan. Lingkup kerja ini hanya package sdk dan pengujian berbasis skrip. Aplikasi React host serta endpoint OpenAI dibangun rekan tim. Mulai dari [arsitektur proyek](ARCHITECTURE.md) dan [kontrak bersama](CONTRACTS.md).
+Status: Fase 0–2 package sdk selesai; Fase 3–5 belum diimplementasikan. Lingkup kerja ini hanya package sdk dan pengujian berbasis skrip. Aplikasi React host serta endpoint OpenAI dibangun rekan tim. Mulai dari [arsitektur proyek](ARCHITECTURE.md) dan [kontrak bersama](CONTRACTS.md).
 
 ## Temuan analisis dan keputusan perbaikan
 
@@ -47,11 +47,11 @@ Masing-masing dokumen fase mempunyai empat deliverable bernomor, total 24. Satu 
 
 - [x] Fase 0: 4/4 deliverable — **100%**.
 - [x] Fase 1: 4/4 deliverable — **100%**.
-- [ ] Fase 2: 0/4 deliverable — **0%**.
+- [x] Fase 2: 4/4 deliverable — **100%**.
 - [ ] Fase 3: 0/4 deliverable — **0%**.
 - [ ] Fase 4: 0/4 deliverable — **0%**.
 - [ ] Fase 5: 0/4 deliverable — **0%**.
 
-**Total implementasi: 8/24 = 33,33%.** Bukti Fase 0 berada di [dokumen fondasi](PHASE_0_FOUNDATION.md) dan bukti Fase 1 di [dokumen sensor/rule](PHASE_1_SENSORS_RULES.md). Riset dan dokumen perencanaan tidak dihitung sebagai kode. Saat menandai item berikutnya, tambahkan path artefak, perintah/skenario verifikasi, hasil, dan tanggal pada dokumen fase; kemudian sinkronkan angka di indeks ini.
+**Total implementasi: 12/24 = 50,00%.** Bukti Fase 0 berada di [dokumen fondasi](PHASE_0_FOUNDATION.md), Fase 1 di [dokumen sensor/rule](PHASE_1_SENSORS_RULES.md), dan Fase 2 di [dokumen adaptasi React](PHASE_2_REACT_ADAPTATION.md). Riset dan dokumen perencanaan tidak dihitung sebagai kode. Saat menandai item berikutnya, tambahkan path artefak, perintah/skenario verifikasi, hasil, dan tanggal pada dokumen fase; kemudian sinkronkan angka di indeks ini.
 
 Referensi proyek: [PRD](../../ALLY_PRD.md), [build plan](../../ALLY_BUILD_PLAN.md), [riset SDK](SDK_IMPLEMENTATION_RESEARCH.md). Referensi teknis yang digunakan pada analisis ditautkan di fase terkait.

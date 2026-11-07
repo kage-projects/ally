@@ -4,10 +4,11 @@
 
 Folder `sdk/` menjadi root implementasi package React SDK Ally (`@ally/react`). Teman satu tim membangun aplikasi host dan endpoint server. Pekerjaan dalam folder ini hanya membangun package, kontrak integrasi, dokumentasi, dan pengujian berbasis skrip.
 
-Package Fase 0–1 sudah memiliki schema, guard, sensor, rule, preset, entry React/core, dan pengujian skrip. Planner client dan UI adaptasi masih direncanakan:
+Package Fase 0–2 sudah memiliki schema, guard, sensor, rule, preset, applier, provider, kontrol UI, entry React/core, dan pengujian skrip. Planner client dan preferensi masih direncanakan:
 
 - `src/index.ts`: ekspor API publik, termasuk `AllyProvider` dan `useAlly`.
-- `src/provider.tsx`, `src/useAlly.ts`: lifecycle, context, penerapan adaptasi, Keep/Undo.
+- `src/provider.tsx`, `src/useAlly.ts`, `src/runtime.ts`, `src/state.ts`: lifecycle, context, status, Keep/Undo.
+- `src/applier.ts`: transaksi DOM, token, marker slot, dan restore.
 - `src/sensor.ts`, `src/rules.ts`, `src/presets.ts`: agregasi sinyal, keputusan deterministik, pemetaan preset.
 - `src/schema.ts`, `src/guard.ts`: kontrak Zod, validasi, dan batas policy.
 - `src/engine-client.ts`, `src/bus.ts`: request planner, cache/timeout, dan BroadcastChannel `ally`.
@@ -22,7 +23,7 @@ Gunakan pnpm. Perintah berikut tersedia dari `sdk/`:
 - `pnpm build`: menghasilkan package dan deklarasi tipe.
 - `pnpm test`: menjalankan Vitest dan simulasi DOM.
 - `pnpm typecheck`: memeriksa TypeScript tanpa menghasilkan berkas.
-- `pnpm test:contract`: memeriksa protokol endpoint tiruan dan package consumer melalui skrip.
+- `pnpm test:contract`: memeriksa package consumer melalui skrip.
 
 Jadikan React sebagai peer dependency. Uji kontrak host dengan fixture React/jsdom dan mock HTTP dalam folder test/. Pengujian aplikasi serta browser langsung menjadi tanggung jawab pembangun host.
 

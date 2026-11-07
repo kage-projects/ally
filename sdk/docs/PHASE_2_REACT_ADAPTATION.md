@@ -30,11 +30,13 @@ observing → kandidat tervalidasi → fokus aman? → pending atau snapshot+app
 
 Uji apply rule → replace AI → Undo kembali ke baseline awal; Keep → plan berikutnya → Undo kembali ke kept baseline. Uji Keep lalu Undo sebelum plan berikutnya membatalkan Keep yang sama. Callback feedback dideduplikasi per keputusan. Uji timeout toast tidak mengirim Keep, pending saat composition, cleanup Strict Mode, nested provider ditolak, data-* host dipertahankan, serta hide slot opsional yang memuat totalAmount menghapus nama hide dari atribut root. Uji juga target baru yang menjadi ancestor slot terkunci saat hide aktif.
 
-## Checklist bukti — 0/4 (0%)
+## Checklist bukti — 4/4 (100%)
 
-- [ ] 2A — State machine, epoch, dan lifecycle React teruji.
-- [ ] 2B — Token/slot host, snapshot, guard, dan restore presisi bekerja.
-- [ ] 2C — Keep/Undo/TTL/pending dan pembatalan keputusan teruji.
-- [ ] 2D — Toast/Why, keyboard, fokus, dan callback log lulus skrip komponen jsdom.
+Terverifikasi 7 November 2026 dengan `pnpm -C sdk typecheck`, `test` (34 test lulus), `build`, dan `test:contract`.
 
-Setiap item bernilai 25% fase; catat bukti sebelum dicentang.
+- [x] 2A — `src/state.ts`, `src/runtime.ts`, dan `src/provider.tsx` menjalankan status UI, epoch, mount/cleanup, sensor scoped, serta disable dan perubahan policy. `test/runtime.test.ts` memeriksa transisi; `test/provider.test.tsx` memeriksa Strict Mode, SSR boundary, dan nested provider.
+- [x] 2B — `src/applier.ts` menyimpan nilai dan priority token serta kehadiran atribut sebelum transaksi. Ia menjalankan guard dan menulis `--ally-*`/`data-ally-*` pada wrapper. Hide berbahaya dibuang untuk seluruh nama ketika marker opsional memuat slot terlindungi; MutationObserver mencabut hide saat marker berubah atau memuat elemen yang sedang fokus. Sticky hanya aktif pada `primaryAction` yang terpisah dari `payButton`; pelanggaran marker dilaporkan melalui error integrasi.
+- [x] 2C — Satu baseline transaksi mendukung replace rule→LLM→Undo dan Keep→plan baru→Undo. Kandidat ditunda saat input atau composition aktif dan dibuang pada epoch/TTL lama. Keep/Undo eksplisit, toast timeout netral, TTL restore ditunda sampai blur, cooldown 10 detik, dan blokir reapply 60 detik diuji dengan fake timers.
+- [x] 2D — `src/ui/Toast.tsx` dan `WhyPanel.tsx` memberi announcement sopan, tombol native Keep/Undo/Why, serta kontrol yang tetap ada sesudah toast hilang. Test jsdom memeriksa fokus Why, event callback yang dideduplikasi, payload tanpa nilai input, dan pengembalian status.
+
+Planner AI dan preferensi persisten tetap Fase 3–4. `plannerStatus` masih `idle`; jalur kandidat `llm` di runtime adalah seam internal untuk pengujian replacement, bukan pemanggilan endpoint. BroadcastChannel opsional ditunda. Uji jsdom tidak membuktikan layout atau perilaku rendering browser nyata; itu memerlukan aplikasi host.

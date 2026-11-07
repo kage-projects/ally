@@ -4,6 +4,7 @@ import type {
   AllyPolicy,
   FrictionSummary,
   Profile,
+  Preset,
 } from './schema.js';
 
 export type AllyStatus = 'disabled' | 'observing' | 'pending' | 'applied' | 'kept';
@@ -11,9 +12,12 @@ export type PlannerStatus = 'idle' | 'loading' | 'fallback';
 export type DecisionSource = 'rule' | 'llm' | 'cache';
 
 export interface AllyDecisionEvent {
+  action: 'applied' | 'kept' | 'undone' | 'expired' | 'corrected';
   source: DecisionSource;
   plan: AdaptationPlan;
   corrections: string[];
+  reasonCodes: string[];
+  preset: Preset;
 }
 
 export interface AllyConfig {

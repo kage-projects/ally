@@ -37,11 +37,12 @@ export interface Sensor {
   stop(): void;
   reportStep(step: string): void;
   reportError(error: { field: string; category: string }): void;
+  updateContext(context: { priorPreset: Preset; undoCount: number }): void;
   inject(signal: SimulatedSignal): void;
 }
 
 const interactiveSelector = 'button, a, input, select, [role="button"]';
-const fieldSelector = 'input, textarea, select, [contenteditable="true"]';
+const fieldSelector = 'input, textarea, select, [contenteditable]:not([contenteditable="false"])';
 const namePattern = /^[a-zA-Z][a-zA-Z0-9_-]{0,31}$/;
 
 function emptyCounts(): FrictionSummary['counts'] {
@@ -75,6 +76,8 @@ export function createSensor(
   let paused = doc.hidden;
   let windowStart = clock.now();
   let currentStep = config.steps[0];
+  let priorPreset = config.priorPreset ?? null;
+  let undoCount = config.undoCount ?? 0;
   let stepStart = windowStart;
   let counts = emptyCounts();
   let stepDurations: number[] = [];
@@ -150,8 +153,7 @@ export function createSensor(
           avgTimeToTarget: 0,
           stepDurations: [...stepDurations],
         },
-        context: { step: currentStep, priorPreset: config.priorPreset ?? null,
-          undoCount: config.undoCount ?? 0 },
+        context: { step: currentStep, priorPreset, undoCount },
       },
       capabilities: {
         zoomScale: Boolean(win.visualViewport), zoomWheel: true,
@@ -300,10 +302,13 @@ export function createSensor(
   function reportStep(step: string) {
     if (!active || paused || !config.steps.includes(step) || step === currentStep) return;
     const now = clock.now();
-    stepDurations.push(Math.max(0, now - stepStart));
-    if (config.steps.indexOf(step) < config.steps.indexOf(currentStep)) counts.backtrack++;
+    const completedDuration = Math.max(0, now - stepStart);
+    const backtrack = counts.backtrack +
+      Number(config.steps.indexOf(step) < config.steps.indexOf(currentStep));
     currentStep = step;
-    stepStart = now;
+    resetWindow(now);
+    counts.backtrack = backtrack;
+    stepDurations.push(completedDuration);
     seenErrors.clear();
   }
 
@@ -363,6 +368,10 @@ export function createSensor(
     },
     reportStep,
     reportError,
+    updateContext(context) {
+      priorPreset = context.priorPreset;
+      undoCount = context.undoCount;
+    },
     inject,
   };
 }

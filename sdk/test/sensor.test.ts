@@ -101,16 +101,20 @@ describe('scoped live sensor', () => {
     sensor.reportError({ field: 'email', category: 'private-message' });
     sensor.reportError({ field: 'email', category: 'required' });
     sensor.reportError({ field: 'email', category: 'required' });
+    vi.advanceTimersByTime(10000);
     sensor.reportStep('shipping');
     sensor.reportError({ field: 'email', category: 'required' });
     sensor.reportError({ field: 'email', category: 'required' });
+    vi.advanceTimersByTime(10000);
     sensor.reportStep('cart');
     sensor.reportStep('unknown');
     vi.advanceTimersByTime(10000);
-    expect(snapshots[0].summary.counts).toMatchObject({ errorLoop: 2, backtrack: 1 });
-    expect(snapshots[0].summary.context.step).toBe('cart');
-    expect(JSON.stringify(snapshots[0])).not.toContain('email');
-    expect(JSON.stringify(snapshots[0])).not.toContain('private-message');
+    expect(snapshots[0].summary.counts.errorLoop).toBe(1);
+    expect(snapshots[1].summary.counts.errorLoop).toBe(1);
+    expect(snapshots[2].summary.counts).toMatchObject({ errorLoop: 0, backtrack: 1 });
+    expect(snapshots[2].summary.context.step).toBe('cart');
+    expect(JSON.stringify(snapshots)).not.toContain('email');
+    expect(JSON.stringify(snapshots)).not.toContain('private-message');
     sensor.stop();
   });
 

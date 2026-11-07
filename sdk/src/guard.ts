@@ -45,7 +45,8 @@ export function guardPlan(
   if (fontScale !== plan.tokens.fontScale) corrections.push('fontScale');
 
   const paymentLocked = policy.lockedComponents.includes('payButton');
-  const primaryActionSticky = paymentLocked ? false : plan.layout.primaryActionSticky;
+  // DOM safety for a sticky primaryAction is checked by the browser applier.
+  const primaryActionSticky = plan.layout.primaryActionSticky;
   const confirmDestructive = paymentLocked ? true : plan.layout.confirmDestructive;
   if (primaryActionSticky !== plan.layout.primaryActionSticky) corrections.push('primaryActionSticky');
   if (confirmDestructive !== plan.layout.confirmDestructive) corrections.push('confirmDestructive');

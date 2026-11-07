@@ -1,6 +1,6 @@
 # Kontrak Bersama Implementasi MVP
 
-Status: keputusan desain v1; Fase 0–1 sudah berupa kode, lifecycle provider dan planner masih tahap berikutnya. Dokumen ini merinci dan memperbaiki rancangan awal PRD. Perubahan yang disengaja dicatat di [indeks fase](IMPLEMENTATION_PHASES.md). Semua fase memakai kontrak ini agar tidak mendefinisikan ulang API.
+Status: keputusan desain v1; Fase 0–2 sudah berupa kode, planner AI dan preferensi masih tahap berikutnya. Dokumen ini merinci dan memperbaiki rancangan awal PRD. Perubahan yang disengaja dicatat di [indeks fase](IMPLEMENTATION_PHASES.md). Semua fase memakai kontrak ini agar tidak mendefinisikan ulang API.
 
 ## Batas package dan kepemilikan
 
@@ -18,6 +18,8 @@ Config v1: enabled (default true), endpoint (default /api/ally/plan), storageKey
 
 useAlly menghasilkan plan, profile, summary, explanation, status, plannerStatus, keep(), undo(), resetPreferences(), reportStep(step), dan reportError({field, category}). Pemakaian hook di luar provider menghasilkan error developer yang jelas. field/category harus berasal dari allowlist host, tanpa pesan error, nilai field, URL, atau ID pengguna. Nilai field hanya disimpan sementara untuk menghitung duplikasi lokal; payload keluar berisi counter.
 
+`onDecision` menerima action (`applied`, `kept`, `undone`, `expired`, `corrected`), source, plan efektif, preset, reasonCodes, dan koreksi guard/DOM. Callback dapat dipakai host untuk log tanpa nilai form; Keep/Undo dikirim sekali per tindakan. Fase 2 hanya mengirim source `rule` dari sensor; jalur `llm` diuji lewat kandidat internal dan akan dihubungkan ke endpoint pada Fase 3.
+
 Status UI: disabled, observing, pending, applied, kept. Status planner terpisah: idle, loading, fallback. Tidak ada plan valid berarti tidak mengubah UI.
 
 ## Kontrak data dan provenance
@@ -34,7 +36,7 @@ Semua bilangan finite; counter integer nonnegatif. Limit policy wajib min <= max
 
 Default demonstrasi: target 44..72px, spacing 1..2, font 1..1.6; apply=0.6, llm=0.2, timeout server 1500ms. Model dipilih server dari konfigurasi yang telah diuji; nama model dari browser tidak dipercaya. Tidak ada kemampuan voice pada MVP, sehingga voiceOffer selalu false.
 
-Guard dasar hadir sejak Fase 0 dan wajib sebelum semua penerapan, termasuk rule lokal. Server memiliki policy otoritatif sendiri; request client hanya dapat mempersempit izin. Irisan rentang kosong menghasilkan tidak ada plan. Server juga menghitung ulang profile dari summary agar tidak mempercayai skor client.
+Guard dasar hadir sejak Fase 0 dan wajib sebelum semua penerapan, termasuk rule lokal. Guard murni membatasi token, hide, voice, dan confirmDestructive; pemeriksaan apakah `primaryAction` benar-benar terpisah dari `payButton` dilakukan oleh applier DOM sebelum sticky diterapkan. Server memiliki policy otoritatif sendiri; request client hanya dapat mempersempit izin. Irisan rentang kosong menghasilkan tidak ada plan. Server juga menghitung ulang profile dari summary agar tidak mempercayai skor client.
 
 Host menandai elemen dengan atribut data-ally-slot bernilai price, legalText, totalAmount, payButton, atau primaryAction. Empat nilai pertama terlindungi; primaryAction hanya dipakai sebagai target sticky dan tidak boleh menjadi ancestor payButton. Elemen yang boleh disembunyikan memakai data-ally-optional dengan nilai enum allowHide: promoBanner, recommendations, voucherCarousel, atau socialProof. Contoh markup host: `<strong data-ally-slot="totalAmount">...</strong>` dan `<aside data-ally-optional="promoBanner">...</aside>`. Host mendaftarkan selector melalui atribut ini; tidak ada API registrasi kedua. Elemen opsional tidak boleh menjadi ancestor elemen terkunci.
 

@@ -17,7 +17,7 @@ describe('evidence and local rules', () => {
     expect(decision).toMatchObject({ kind: 'single', preset: 'motor', strength: 0.75,
       confidence: 0.75, requestPlanner: false });
     expect(decision.candidate?.plan.tokens.targetMinSize).toBe(48);
-    expect(decision.candidate?.plan.layout.primaryActionSticky).toBe(false);
+    expect(decision.candidate?.plan.layout.primaryActionSticky).toBe(true);
     expect(decision.candidate?.corrections).toContain('targetMinSize');
     expect(decision.reasonCodes).toContain('miss_tap');
   });

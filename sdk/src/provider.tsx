@@ -1,39 +1,69 @@
 'use client';
 
-import { createContext, useContext, useMemo } from 'react';
-import { AllyPolicySchema } from './schema.js';
+import { useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { AllyContext } from './context.js';
+import { AllyRuntime, initialRuntimeView } from './runtime.js';
+import type { RuntimeView } from './runtime.js';
 import type { AllyContextValue, AllyProviderProps } from './types.js';
+import { Toast } from './ui/Toast.js';
+import { WhyPanel } from './ui/WhyPanel.js';
 
-const AllyContext = createContext<AllyContextValue | null>(null);
-const noop = () => {};
+export function AllyProvider({ children, policy, config, onDecision }: AllyProviderProps) {
+  if (useContext(AllyContext)) throw new Error('Nested AllyProvider is not supported');
+  const rootRef = useRef<HTMLDivElement>(null);
+  const runtimeRef = useRef<AllyRuntime | null>(null);
+  const [view, setView] = useState<RuntimeView>(() => initialRuntimeView(policy, config.enabled !== false));
+  const [whyOpen, setWhyOpen] = useState(false);
+  const whyId = useId();
+  const configKey = JSON.stringify({ steps: config.steps, allowedFields: config.allowedFields,
+    errorCategories: config.errorCategories, endpoint: config.endpoint,
+    storageKey: config.storageKey, persistence: config.persistence });
+  const policyKey = JSON.stringify(policy);
 
-// Phase 0 scaffold: observation, adaptation, and persistence arrive in phases 1–4.
-export function AllyProvider({ children, policy, config }: AllyProviderProps) {
-  const policyIsValid = AllyPolicySchema.safeParse(policy).success;
-  const status = config.enabled === false || !policyIsValid ? 'disabled' : 'observing';
-  const value = useMemo<AllyContextValue>(() => ({
-    plan: null,
-    profile: null,
-    summary: null,
-    explanation: null,
-    status,
-    plannerStatus: 'idle',
-    keep: noop,
-    undo: noop,
-    resetPreferences: noop,
-    reportStep: noop,
-    reportError: noop,
-  }), [status]);
+  useEffect(() => {
+    const scope = rootRef.current;
+    if (!scope) return;
+    const runtime = new AllyRuntime(scope, policy, config, setView, onDecision);
+    runtimeRef.current = runtime;
+    runtime.start();
+    return () => {
+      runtime.stop();
+      if (runtimeRef.current === runtime) runtimeRef.current = null;
+    };
+    // The runtime is rebuilt only when host sensor configuration changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [configKey]);
 
-  return (
-    <AllyContext.Provider value={value}>
-      <div data-ally-root="" data-ally-status={status}>{children}</div>
-    </AllyContext.Provider>
-  );
-}
+  useEffect(() => { runtimeRef.current?.setPolicy(policy); }, [policyKey]);
+  useEffect(() => { runtimeRef.current?.setEnabled(config.enabled !== false); }, [config.enabled]);
+  useEffect(() => { runtimeRef.current?.setDecisionCallback(onDecision); }, [onDecision]);
+  useEffect(() => { if (!view.plan) setWhyOpen(false); }, [view.plan]);
 
-export function useAlly(): AllyContextValue {
-  const context = useContext(AllyContext);
-  if (!context) throw new Error('useAlly must be used inside AllyProvider');
-  return context;
+  const context = useMemo<AllyContextValue>(() => ({
+    plan: view.plan,
+    profile: view.profile,
+    summary: view.summary,
+    explanation: view.explanation,
+    status: view.status,
+    plannerStatus: view.plannerStatus,
+    keep: () => runtimeRef.current?.keep(),
+    undo: () => runtimeRef.current?.undo(),
+    resetPreferences: () => runtimeRef.current?.resetPreferences(),
+    reportStep: (step) => runtimeRef.current?.reportStep(step),
+    reportError: (error) => runtimeRef.current?.reportError(error),
+  }), [view]);
+
+  return <AllyContext.Provider value={context}>
+    <div ref={rootRef} data-ally-root="" data-ally-status={view.status}>
+      {children}
+      <Toast visible={view.toastVisible} explanation={view.explanation} />
+      {view.plan && <div className="ally-controls" data-ally-ui="" aria-label="Kontrol Ally">
+        {view.status !== 'kept' && <button type="button" onClick={() => context.keep()}>Keep</button>}
+        <button type="button" onClick={() => context.undo()}>Undo</button>
+        <button type="button" aria-expanded={whyOpen} aria-controls={whyId}
+          onClick={() => setWhyOpen((open) => !open)}>Why</button>
+        {whyOpen && view.explanation && <WhyPanel id={whyId} explanation={view.explanation} />}
+      </div>}
+    </div>
+  </AllyContext.Provider>;
 }

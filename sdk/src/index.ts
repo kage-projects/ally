@@ -1,6 +1,7 @@
 'use client';
 
-export { AllyProvider, useAlly } from './provider.js';
+export { AllyProvider } from './provider.js';
+export { useAlly } from './useAlly.js';
 export type {
   AllyConfig,
   AllyContextValue,

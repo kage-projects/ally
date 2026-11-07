@@ -9,7 +9,7 @@ describe('guardPlan', () => {
       targetMinSize: 48, spacingScale: 1.2, fontScale: 1.2,
     });
     expect(result.plan.layout.hideNonEssential).toEqual(['recommendations']);
-    expect(result.plan.layout.primaryActionSticky).toBe(false);
+    expect(result.plan.layout.primaryActionSticky).toBe(true);
     expect(result.plan.layout.confirmDestructive).toBe(true);
     expect(result.plan.assist.voiceOffer).toBe(false);
     expect(result.corrections).toContain('hideNonEssential');

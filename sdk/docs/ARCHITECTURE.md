@@ -1,6 +1,6 @@
 # Arsitektur Proyek Ally SDK — React Web MVP
 
-Status: Fase 0–1 (package, schema, guard, sensor, rule, preset) sudah berjalan; integrasi provider hingga preferensi masih rancangan. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
+Status: Fase 0–2 (package, core, sensor, applier, provider, kontrol Keep/Undo/Why) sudah berjalan; planner AI dan preferensi masih rancangan. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
 
 ## Tujuan dan batas sistem
 
@@ -12,11 +12,15 @@ Alur utama: interaksi → agregat anonim → gate evidence → rule/preset atau 
 
 ~~~text
 Repo ini: sdk/                   package @ally/react
-│  ├─ src/core/                 schema, rule, preset, guard; tanpa React/DOM
-│  ├─ src/browser/              sensor, applier, preference storage, planner client
-│  ├─ src/react/                AllyProvider, useAlly, Toast, Why
+│  ├─ src/schema.ts             kontrak Zod dan tipe
+│  ├─ src/rules.ts, presets.ts   evidence gate dan preset murni
+│  ├─ src/guard.ts, core.ts      batas policy dan entry server-safe
+│  ├─ src/sensor.ts              observasi browser dalam scope
+│  ├─ src/applier.ts, runtime.ts transaksi DOM dan lifecycle
+│  ├─ src/provider.tsx           integrasi React dan context hook
+│  ├─ src/state.ts, ui/          status, Toast, Why
 │  ├─ src/styles.css            default token/selector slot host
-│  ├─ test/                     unit, jsdom, mock HTTP, consumer, fixture AI
+│  ├─ test/                     unit, jsdom, consumer; mock HTTP Fase 3
 │  ├─ test-results/             ringkasan hasil skrip bila dibutuhkan
 │  └─ docs/                     desain ini dan panduan fase
 
@@ -25,7 +29,7 @@ Di luar scope pekerjaan SDK:
                                dashboard, checkout, dan bukti browser
 ~~~
 
-Subfolder core/browser/react adalah pengelompokan tanggung jawab yang disarankan; nama file aktual mengikuti [panduan sdk](../AGENTS.md), misalnya src/schema.ts dan src/provider.tsx. Export publik tetap @ally/react untuk komponen, @ally/react/core untuk logika server-safe, dan @ally/react/styles.css untuk default CSS. ESM dan deklarasi tipe menjadi hasil build; React adalah peer dependency. Entry React mempertahankan client boundary, sedangkan core dapat diimpor route server tanpa akses browser.
+Implementasi memakai modul datar agar package hackathon tetap ringkas, sambil mempertahankan batas tanggung jawab core, browser, dan React sesuai [panduan sdk](../AGENTS.md). Export publik tetap @ally/react untuk komponen, @ally/react/core untuk logika server-safe, dan @ally/react/styles.css untuk default CSS. ESM dan deklarasi tipe menjadi hasil build; React adalah peer dependency. Entry React mempertahankan client boundary, sedangkan core dapat diimpor route server tanpa akses browser.
 
 ~~~mermaid
 flowchart LR
@@ -95,4 +99,4 @@ Log keputusan hanya berisi timestamp, source, reason codes, jenis preset, koreks
 
 ## Keputusan yang masih memerlukan bukti implementasi
 
-Versi model, kompatibilitas browser, latency model, dan penurunan friksi belum dapat dipastikan dari dokumen. Dependensi package Fase 0 sudah dipin; hasil skrip SDK berikutnya dapat dicatat di sdk/test-results/, sedangkan hasil aplikasi adalah tanggung jawab rekan. [Checklist implementasi](IMPLEMENTATION_PHASES.md) kini 8/24; artefak dan bukti Fase 2–5 belum tersedia.
+Versi model, kompatibilitas browser, latency model, dan penurunan friksi belum dapat dipastikan dari dokumen. Dependensi package Fase 0 sudah dipin; hasil skrip SDK berikutnya dapat dicatat di sdk/test-results/, sedangkan hasil aplikasi adalah tanggung jawab rekan. [Checklist implementasi](IMPLEMENTATION_PHASES.md) kini 12/24; artefak dan bukti Fase 3–5 belum tersedia.
