@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "agentflow": {
+      "source": "howlil/agentflow",
+      "sourceType": "github",
+      "skillPath": "skills/agentflow/SKILL.md",
+      "computedHash": "f54dbf3e6f8b297dec2dfd571b2ec1a17901c123a9bef9768cf8d661bac1b622"
+    }
+  }
+}
