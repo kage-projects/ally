@@ -7,6 +7,8 @@ import {
   AdaptationPlanJsonSchema,
   AllyPolicySchema,
   DEFAULT_POLICY,
+  PlannerResponseSchema,
+  buildDecisionInput,
   decideRule,
   guardPlan,
   scoreProfile,
@@ -15,6 +17,8 @@ import {
 assert.equal(typeof guardPlan, 'function');
 assert.equal(typeof decideRule, 'function');
 assert.equal(typeof scoreProfile, 'function');
+assert.equal(typeof buildDecisionInput, 'function');
+assert.equal(typeof PlannerResponseSchema.safeParse, 'function');
 assert.equal(AllyPolicySchema.safeParse(DEFAULT_POLICY).success, true);
 assert.equal(AdaptationPlanJsonSchema.type, 'object');
 assert.equal(existsSync(new URL('../dist/styles.css', import.meta.url)), true);

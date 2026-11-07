@@ -1,6 +1,6 @@
 # Arsitektur Proyek Ally SDK — React Web MVP
 
-Status: Fase 0–2 (package, core, sensor, applier, provider, kontrol Keep/Undo/Why) sudah berjalan; planner AI dan preferensi masih rancangan. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
+Status: Fase 0–3 (core, sensor, applier, provider, planner HTTP) sudah berjalan; preferensi dan verifikasi final masih rancangan. Dokumen ini menyatukan [kontrak bersama](CONTRACTS.md) dan [enam fase](IMPLEMENTATION_PHASES.md). Bila detail field atau perilaku berbeda, CONTRACTS.md dan dokumen fase pemilik keputusan harus diperbarui bersama sebelum kode berubah.
 
 ## Tujuan dan batas sistem
 
@@ -17,11 +17,13 @@ Repo ini: sdk/                   package @ally/react
 │  ├─ src/guard.ts, core.ts      batas policy dan entry server-safe
 │  ├─ src/sensor.ts              observasi browser dalam scope
 │  ├─ src/applier.ts, runtime.ts transaksi DOM dan lifecycle
+│  ├─ src/engine-client.ts       request, timeout, cache planner
+│  ├─ src/planner-contract.ts    payload dan response schema
 │  ├─ src/provider.tsx           integrasi React dan context hook
 │  ├─ src/state.ts, ui/          status, Toast, Why
 │  ├─ src/styles.css            default token/selector slot host
-│  ├─ test/                     unit, jsdom, consumer; mock HTTP Fase 3
-│  ├─ test-results/             ringkasan hasil skrip bila dibutuhkan
+│  ├─ test/                     unit, jsdom, mock HTTP, consumer, fixture AI
+│  ├─ test-results/             hasil evaluator AI lokal (diabaikan Git)
 │  └─ docs/                     desain ini dan panduan fase
 
 Di luar scope pekerjaan SDK:
@@ -99,4 +101,4 @@ Log keputusan hanya berisi timestamp, source, reason codes, jenis preset, koreks
 
 ## Keputusan yang masih memerlukan bukti implementasi
 
-Versi model, kompatibilitas browser, latency model, dan penurunan friksi belum dapat dipastikan dari dokumen. Dependensi package Fase 0 sudah dipin; hasil skrip SDK berikutnya dapat dicatat di sdk/test-results/, sedangkan hasil aplikasi adalah tanggung jawab rekan. [Checklist implementasi](IMPLEMENTATION_PHASES.md) kini 12/24; artefak dan bukti Fase 3–5 belum tersedia.
+Versi model, kompatibilitas browser, latency model nyata, dan penurunan friksi belum dapat dipastikan dari pengujian SDK. Mock planner Fase 3 menghasilkan routing 21/21, semantik sintetis 15/15, dan pelanggaran schema/policy 0/21; endpoint rekan belum diuji. [Checklist implementasi](IMPLEMENTATION_PHASES.md) kini 16/24; artefak dan bukti Fase 4–5 belum tersedia.

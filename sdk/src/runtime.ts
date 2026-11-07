@@ -1,6 +1,8 @@
 import { createApplier, captureScope } from './applier.js';
 import type { ApplyResult, ScopeSnapshot } from './applier.js';
 import { guardPlan } from './guard.js';
+import { PlannerClient } from './engine-client.js';
+import { buildDecisionInput } from './planner-contract.js';
 import { decideRule } from './rules.js';
 import { AllyPolicySchema } from './schema.js';
 import type { AdaptationPlan, AllyPolicy, FrictionSummary, Preset, Profile } from './schema.js';
@@ -57,6 +59,9 @@ export class AllyRuntime {
   private onUpdate: (view: RuntimeView) => void;
   private onDecision?: (event: AllyDecisionEvent) => void;
   private readonly applier: ReturnType<typeof createApplier>;
+  private readonly planner = new PlannerClient();
+  private plannerBusy = false;
+  private plannerSerial = 0;
   private sensor: Sensor | null = null;
   private policy: AllyPolicy | null;
   private enabled: boolean;
@@ -129,6 +134,61 @@ export class AllyRuntime {
     if (this.toastTimer !== null) clearTimeout(this.toastTimer);
     this.toastTimer = null;
     this.view.toastVisible = false;
+  }
+
+  private cancelPlanner(clearCache = false) {
+    this.plannerSerial++;
+    this.plannerBusy = false;
+    this.planner.abort();
+    if (clearCache) this.planner.clearCache();
+    this.view.plannerStatus = 'idle';
+  }
+
+  private startPlanner(
+    snapshot: SensorSnapshot,
+    profile: Profile,
+    policy: AllyPolicy,
+    preset: Preset,
+    reasonCodes: string[],
+  ) {
+    if (this.plannerBusy || !this.alive || !this.enabled || !this.policy || this.active?.kept) return;
+    let input;
+    try {
+      input = buildDecisionInput(snapshot.summary, profile, policy, [], this.config.steps);
+    } catch {
+      this.view.plannerStatus = 'fallback';
+      this.publish();
+      return;
+    }
+    const epoch = this.epoch;
+    const serial = ++this.plannerSerial;
+    const previousStatus = this.view.plannerStatus;
+    this.plannerBusy = true;
+    this.view.plannerStatus = 'loading';
+    this.publish();
+    void this.planner.plan(this.config.endpoint ?? '/api/ally/plan', input, snapshot.windowId)
+      .then((outcome) => {
+        if (serial !== this.plannerSerial || epoch !== this.epoch ||
+            !this.alive || !this.enabled || !this.policy || this.active?.kept) return;
+        this.plannerBusy = false;
+        if (outcome.kind === 'skipped') {
+          this.view.plannerStatus = previousStatus;
+        } else if (outcome.kind === 'error') {
+          this.view.plannerStatus = outcome.reason === 'aborted' ? 'idle' : 'fallback';
+        } else {
+          this.view.plannerStatus = 'idle';
+          if (outcome.kind === 'plan') {
+            this.acceptCandidate({ plan: outcome.plan, source: outcome.source,
+              preset, reasonCodes, contextEpoch: epoch });
+          }
+        }
+        this.publish();
+      }).catch(() => {
+        if (serial !== this.plannerSerial || epoch !== this.epoch || !this.alive) return;
+        this.plannerBusy = false;
+        this.view.plannerStatus = 'fallback';
+        this.publish();
+      });
   }
 
   private showToast() {
@@ -214,6 +274,7 @@ export class AllyRuntime {
     this.alive = false;
     this.sensor?.stop();
     this.sensor = null;
+    this.cancelPlanner(true);
     this.clearPending();
     this.clearTtl();
     this.clearToast();
@@ -244,9 +305,14 @@ export class AllyRuntime {
     this.view.summary = snapshot.summary;
     this.view.profile = decision.profile;
     this.publish();
-    if (!decision.candidate || this.active?.kept) return;
-    this.acceptCandidate({ plan: decision.candidate.plan, source: 'rule',
-      preset: decision.preset, reasonCodes: decision.reasonCodes });
+    if (this.active?.kept) return;
+    if (decision.candidate) {
+      this.acceptCandidate({ plan: decision.candidate.plan, source: 'rule',
+        preset: decision.preset, reasonCodes: decision.reasonCodes });
+    } else if (decision.requestPlanner) {
+      this.startPlanner(snapshot, decision.profile, effectivePolicy,
+        decision.preset, decision.reasonCodes);
+    }
   }
 
   acceptCandidate(request: CandidateRequest): boolean {
@@ -348,6 +414,7 @@ export class AllyRuntime {
   keep() {
     if (!this.alive || !this.active || this.active.kept) return;
     this.epoch++;
+    this.cancelPlanner(true);
     this.clearPending();
     this.clearTtl();
     this.active.kept = true;
@@ -357,8 +424,9 @@ export class AllyRuntime {
   }
 
   undo() {
-    if (!this.alive || (!this.active && !this.pending)) return;
+    if (!this.alive || (!this.active && !this.pending && !this.plannerBusy)) return;
     this.epoch++;
+    this.cancelPlanner(true);
     if (this.active) {
       this.rejected.set(this.active.signature, Date.now() + 60000);
       this.undoBoost = Math.min(1, this.undoBoost + 0.15);
@@ -373,6 +441,7 @@ export class AllyRuntime {
     this.sensor?.reportStep(step);
     this.step = step;
     this.epoch++;
+    this.cancelPlanner();
     this.clearPending();
     this.clearTtl();
     if (this.active) {
@@ -398,6 +467,7 @@ export class AllyRuntime {
   resetPreferences() {
     if (!this.alive) return;
     this.epoch++;
+    this.cancelPlanner(true);
     this.clearPending();
     this.undoBoost = 0;
     this.rejected.clear();
@@ -408,6 +478,7 @@ export class AllyRuntime {
     if (!this.alive) return;
     const parsed = AllyPolicySchema.safeParse(value);
     this.epoch++;
+    this.cancelPlanner(true);
     this.clearPending();
     if (!parsed.success) {
       this.policy = null;
@@ -449,6 +520,7 @@ export class AllyRuntime {
     if (!this.alive || this.enabled === enabled) return;
     this.enabled = enabled;
     this.epoch++;
+    this.cancelPlanner(!enabled);
     this.clearPending();
     if (!enabled) {
       this.sensor?.stop();

@@ -15,6 +15,7 @@ export interface SensorConfig {
 
 export interface SensorSnapshot {
   sequence: number;
+  windowId: number;
   reason: 'fast' | 'window';
   source: 'live' | 'simulation';
   summary: FrictionSummary;
@@ -85,6 +86,7 @@ export function createSensor(
   let targetSizeSamples = 0;
   let modalities = new Set<'touch' | 'mouse' | 'keyboard'>();
   let sequence = 0;
+  let windowId = 0;
   let fastEmitted = false;
   let interval: ReturnType<typeof setInterval> | null = null;
   let focusTimer: ReturnType<typeof setTimeout> | null = null;
@@ -116,6 +118,7 @@ export function createSensor(
   }
 
   function resetWindow(now: number) {
+    windowId++;
     windowStart = now;
     stepStart = now;
     counts = emptyCounts();
@@ -137,6 +140,7 @@ export function createSensor(
     const modality = modalities.size > 1 ? 'mixed' : [...modalities][0] ?? 'mouse';
     return {
       sequence: ++sequence,
+      windowId,
       reason,
       source,
       summary: {

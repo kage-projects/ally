@@ -20,6 +20,8 @@ export { decideRule, scoreProfile } from './rules.js';
 export type { RuleDecision } from './rules.js';
 export { createPresetPlan } from './presets.js';
 export type { SinglePreset } from './presets.js';
+export { buildDecisionInput, PlannerResponseSchema, serializeDecisionInput } from './planner-contract.js';
+export type { PlannerResponse } from './planner-contract.js';
 export type { GuardCorrection, GuardResult } from './guard.js';
 export type {
   AdaptationPlan,

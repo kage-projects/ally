@@ -20,7 +20,9 @@
     "build": "tsup && node scripts/copy-styles.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:contract": "node test/contract.mjs"
+    "test:contract": "node test/contract.mjs",
+    "test:ai": "node test/ai-eval.mjs",
+    "test:ai:mock": "node test/ai-eval.mjs --mock"
   },
   "dependencies": {
     "zod": "4.6.7"

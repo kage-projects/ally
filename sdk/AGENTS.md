@@ -4,14 +4,14 @@
 
 Folder `sdk/` menjadi root implementasi package React SDK Ally (`@ally/react`). Teman satu tim membangun aplikasi host dan endpoint server. Pekerjaan dalam folder ini hanya membangun package, kontrak integrasi, dokumentasi, dan pengujian berbasis skrip.
 
-Package Fase 0–2 sudah memiliki schema, guard, sensor, rule, preset, applier, provider, kontrol UI, entry React/core, dan pengujian skrip. Planner client dan preferensi masih direncanakan:
+Package Fase 0–3 sudah memiliki schema, guard, sensor, rule, preset, applier, provider, kontrol UI, planner client, entry React/core, dan pengujian skrip. Preferensi masih direncanakan:
 
 - `src/index.ts`: ekspor API publik, termasuk `AllyProvider` dan `useAlly`.
 - `src/provider.tsx`, `src/useAlly.ts`, `src/runtime.ts`, `src/state.ts`: lifecycle, context, status, Keep/Undo.
 - `src/applier.ts`: transaksi DOM, token, marker slot, dan restore.
 - `src/sensor.ts`, `src/rules.ts`, `src/presets.ts`: agregasi sinyal, keputusan deterministik, pemetaan preset.
 - `src/schema.ts`, `src/guard.ts`: kontrak Zod, validasi, dan batas policy.
-- `src/engine-client.ts`, `src/bus.ts`: request planner, cache/timeout, dan BroadcastChannel `ally`.
+- `src/engine-client.ts`, `src/planner-contract.ts`: request planner, cache/timeout, dan protokol HTTP. `src/bus.ts` masih opsional.
 - `src/ui/`: `Toast.tsx` dan `WhyPanel.tsx`; `test/`: pengujian SDK.
 
 Rujuk `../ALLY_PRD.md` untuk tujuan produk, `docs/ARCHITECTURE.md` untuk batas sistem, `docs/CONTRACTS.md` untuk kontrak implementasi, dan `docs/IMPLEMENTATION_PHASES.md` untuk fase. Pertahankan nama field kontrak agar kompatibel dengan host.
@@ -24,6 +24,8 @@ Gunakan pnpm. Perintah berikut tersedia dari `sdk/`:
 - `pnpm test`: menjalankan Vitest dan simulasi DOM.
 - `pnpm typecheck`: memeriksa TypeScript tanpa menghasilkan berkas.
 - `pnpm test:contract`: memeriksa package consumer melalui skrip.
+- `pnpm test:ai:mock`: menjalankan tujuh fixture sintetis sebanyak tiga kali.
+- `pnpm test:ai`: mengevaluasi endpoint host bila `ALLY_AI_ENDPOINT` tersedia.
 
 Jadikan React sebagai peer dependency. Uji kontrak host dengan fixture React/jsdom dan mock HTTP dalam folder test/. Pengujian aplikasi serta browser langsung menjadi tanggung jawab pembangun host.
 
