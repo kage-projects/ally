@@ -244,6 +244,8 @@ The SDK applies plans through CSS variables `--ally-target`, `--ally-space`, `--
 
 Interactive elements/slots whose styles or sizes actually change receive temporary highlighting. These style measurements are only used locally by the SDK and are not sent to OpenAI.
 
+Elements that remain visible use a 240 ms style transition and gentle fade, including when Undo/expiry restores the appearance. The `prefers-reduced-motion: reduce` preference disables animation; highlighting and UI changes remain functional.
+
 - **Keep:** explicit positive feedback on the effective plan. The dialog and toast close, the changes remain active, and new evidence can trigger further assistance.
 - **Undo:** restores the transaction baseline and records negative feedback. Rules have separate protections against immediately reapplying a rejected plan.
 - **Preferences:** stored in memory by default; localStorage is opt-in, with a maximum of 20 records and a seven-day lifetime. At most three matching summaries can become context for a subsequent AI request.

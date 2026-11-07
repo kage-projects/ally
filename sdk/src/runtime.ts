@@ -473,7 +473,7 @@ export class AllyRuntime {
     this.clearPending();
     this.clearTtl();
     this.clearToast();
-    this.highlighter.clear();
+    const beforeStyles = this.highlighter.capture();
     this.view.helpVisible = false;
     const previous = this.active;
     if (previous) {
@@ -486,6 +486,7 @@ export class AllyRuntime {
     }
     this.view.status = transitionStatus(this.view.status, 'restore');
     this.publish();
+    this.highlighter.show(beforeStyles, false);
   }
 
   keep() {
