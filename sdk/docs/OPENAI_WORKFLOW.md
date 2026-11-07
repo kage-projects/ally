@@ -244,6 +244,8 @@ SDK menerapkan plan melalui CSS variables `--ally-target`, `--ally-space`, `--al
 
 Elemen interaktif/slot yang gaya atau ukurannya benar-benar berubah mendapat sorotan sementara. Pengukuran gaya ini hanya dipakai lokal oleh SDK, bukan dikirim ke OpenAI.
 
+Elemen yang tetap terlihat memakai transisi gaya dan fade ringan 240 ms, termasuk saat Undo/expiry mengembalikan tampilan. Preferensi `prefers-reduced-motion: reduce` menonaktifkan animasi; sorotan dan perubahan UI tetap berfungsi.
+
 - **Keep:** pilihan positif eksplisit untuk plan efektif. Dialog dan toast ditutup, perubahan dipertahankan, lalu bukti baru dapat memicu bantuan berikutnya.
 - **Undo:** baseline transaksi dikembalikan dan pilihan negatif dicatat. Rule memiliki proteksi tersendiri agar plan yang ditolak tidak langsung diterapkan lagi.
 - **Preferensi:** default berada di memori; localStorage bersifat opt-in, maksimal 20 record dengan masa berlaku tujuh hari. Paling banyak tiga ringkasan yang cocok dapat menjadi konteks request AI selanjutnya.
