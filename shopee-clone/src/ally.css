@@ -1,21 +1,22 @@
-/* Reference mode consumes no Ally sizing tokens. Changes apply only to an active plan. */
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) :is(.checkout-page,.cart-page,.edit-address-page) .primary-btn{min-height:var(--ally-target);height:auto;font-size:calc(14px * var(--ally-font));padding-block:calc(10px * var(--ally-space))}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-checkout{height:auto;min-height:56px;flex-wrap:wrap;row-gap:6px}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-checkout .primary-btn{min-width:125px}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-item{height:auto;min-height:134px}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-variant-line{height:auto;flex-wrap:wrap;gap:6px}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .cart-shop{height:auto;min-height:198px;padding-bottom:10px}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .quantity{height:auto;width:auto;min-height:var(--ally-target);align-items:center}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .quantity button{min-width:var(--ally-target);min-height:var(--ally-target);align-items:center;justify-content:center}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .quantity button svg{width:clamp(20px,calc(var(--ally-target) * .5 - 4px),24px);height:clamp(20px,calc(var(--ally-target) * .5 - 4px),24px);stroke-width:2.25;flex-shrink:0}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .quantity>span{min-width:24px}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-fields label{height:auto;min-height:56px;padding-block:calc(8px * var(--ally-space))}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-fields :is(input,textarea){min-height:var(--ally-target);font-size:calc(13px * var(--ally-font));line-height:1.5}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .checkout-message{min-height:var(--ally-target);height:auto}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .checkout-message input{min-height:var(--ally-target);font-size:calc(12px * var(--ally-font))}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .edit-address-page main{padding-bottom:160px}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"])[data-ally-contrast="high"] :is(.checkout-page,.cart-page,.edit-address-page) :is(.muted,small,.protection p,.address-fields input,.address-fields textarea){color:#333}
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"])[data-ally-inline-hints="true"] .field-error{font-weight:500;font-size:13px;line-height:1.5}
+/* Effective SDK attributes also preserve the kept baseline after a later Undo.
+   Reference mode has no adaptation attributes and consumes no sizing tokens. */
+[data-ally-root][data-ally-contrast] :is(.checkout-page,.cart-page,.edit-address-page) .primary-btn{min-height:var(--ally-target);height:auto;font-size:calc(14px * var(--ally-font));padding-block:calc(10px * var(--ally-space))}
+[data-ally-root][data-ally-contrast] .cart-checkout{height:auto;min-height:56px;flex-wrap:wrap;row-gap:6px}
+[data-ally-root][data-ally-contrast] .cart-checkout .primary-btn{min-width:125px}
+[data-ally-root][data-ally-contrast] .cart-item{height:auto;min-height:134px}
+[data-ally-root][data-ally-contrast] .cart-variant-line{height:auto;flex-wrap:wrap;gap:6px}
+[data-ally-root][data-ally-contrast] .cart-shop{height:auto;min-height:198px;padding-bottom:10px}
+[data-ally-root][data-ally-contrast] .quantity{height:auto;width:auto;min-height:var(--ally-target);align-items:center}
+[data-ally-root][data-ally-contrast] .quantity button{min-width:var(--ally-target);min-height:var(--ally-target);align-items:center;justify-content:center}
+[data-ally-root][data-ally-contrast] .quantity button svg{width:clamp(20px,calc(var(--ally-target) * .5 - 4px),24px);height:clamp(20px,calc(var(--ally-target) * .5 - 4px),24px);stroke-width:2.25;flex-shrink:0}
+[data-ally-root][data-ally-contrast] .quantity>span{min-width:24px}
+[data-ally-root][data-ally-contrast] .address-fields label{height:auto;min-height:56px;padding-block:calc(8px * var(--ally-space))}
+[data-ally-root][data-ally-contrast] .address-fields :is(input,textarea){min-height:var(--ally-target);font-size:calc(13px * var(--ally-font));line-height:1.5}
+[data-ally-root][data-ally-contrast] .checkout-message{min-height:var(--ally-target);height:auto}
+[data-ally-root][data-ally-contrast] .checkout-message input{min-height:var(--ally-target);font-size:calc(12px * var(--ally-font))}
+[data-ally-root][data-ally-contrast] .edit-address-page main{padding-bottom:160px}
+[data-ally-root][data-ally-contrast][data-ally-contrast="high"] :is(.checkout-page,.cart-page,.edit-address-page) :is(.muted,small,.protection p,.address-fields input,.address-fields textarea){color:#333}
+[data-ally-root][data-ally-contrast][data-ally-inline-hints="true"] .field-error{font-weight:500;font-size:13px;line-height:1.5}
 [data-ally-root] .ally-controls{position:fixed;z-index:140;left:50%;bottom:100px;transform:translateX(-50%);width:calc(100% - 20px);max-width:370px;border:1px solid #ddd;border-radius:10px;background:#fff;box-shadow:0 3px 18px #0003;color:#222;max-height:45dvh;overflow:auto}
 [data-ally-root]:has(.cart-page) .ally-controls{bottom:174px}
 [data-ally-root]:has(.edit-address-page) .ally-controls{bottom:116px}
@@ -57,59 +58,59 @@
 .ally-scenarios p { margin: 4px 0; font-size: 12px; }
 
 /* Reuse the SDK's bounded tokens on the other supplied mobile screens. */
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) :is(.flow-page,.mobile-dialog) :is(.primary-btn,.outline-btn) {
+[data-ally-root][data-ally-contrast] :is(.flow-page,.mobile-dialog) :is(.primary-btn,.outline-btn) {
   height: auto;
   min-height: var(--ally-target);
   font-size: calc(14px * var(--ally-font));
   padding-block: calc(8px * var(--ally-space));
 }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-code { height: auto; align-items: stretch; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-code :is(input,button) { min-height: var(--ally-target); height: auto; font-size: calc(13px * var(--ally-font)); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-card { height: auto; min-height: 110px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-card > img { flex-shrink: 0; align-self: center; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-card > div { padding: 12px calc(var(--ally-target) + 8px) 12px 10px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-card h3 { max-width: none; font-size: calc(14px * var(--ally-font)); line-height: 1.4; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-card :is(p,small) { white-space: normal; font-size: calc(11px * var(--ally-font)); line-height: 1.5; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-select { width: var(--ally-target); height: var(--ally-target); top: 50%; right: 3px; transform: translateY(-50%); background: transparent; border: 0; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-select::before { content: ''; position: absolute; inset: calc((var(--ally-target) - 22px) / 2); border: 1px solid #888; border-radius: 50%; background: #fff; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-select.selected::before { border-color: #ee4d2d; background: #ee4d2d; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .voucher-select svg { position: relative; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .show-more { min-height: var(--ally-target); height: auto; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .shipping-option { height: auto; min-height: calc(70px * var(--ally-space)); padding-block: 14px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .shipping-option :is(p,span) { font-size: calc(12px * var(--ally-font)); line-height: 1.5; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .shipping-option.instant { min-height: 104px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) :is(.bank-transfer,.bank-choice) { height: auto; min-height: var(--ally-target); padding-block: 10px; font-size: calc(14px * var(--ally-font)); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .payment-later { height: auto; min-height: 144.5px; padding-bottom: 12px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .plan-button { height: auto; min-height: calc(75px * var(--ally-space)); font-size: calc(13px * var(--ally-font)); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-entry { padding-top: 14px; gap: 8px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-entry > input { width: var(--ally-target); height: var(--ally-target); border: calc((var(--ally-target) - 22px) / 2) solid white; box-shadow: inset 0 0 0 1px #777; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-entry > input:checked { background: #ee4d2d; box-shadow: inset 0 0 0 3px white, inset 0 0 0 4px #ee4d2d; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-name { flex-wrap: wrap; white-space: normal; line-height: 1.4; font-size: calc(14px * var(--ally-font)); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-name a { display: inline-flex; align-items: center; justify-content: center; min-width: var(--ally-target); min-height: var(--ally-target); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-entry p { max-width: none; font-size: calc(12px * var(--ally-font)); line-height: 1.5; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .purchase-tabs { height: auto; min-height: var(--ally-target); gap: 0; padding-inline: 7px; overflow-x: auto; justify-content: space-between; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .purchase-tabs button { flex-shrink: 0; min-height: var(--ally-target); padding-inline: 8px; font-size: calc(13px * var(--ally-font)); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) :is(.purchase-card,.purchase-card.compact,.order-product) { height: auto; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .order-product .truncate { white-space: normal; overflow: visible; font-size: calc(13px * var(--ally-font)); line-height: 1.4; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .purchase-buttons { height: auto; flex-wrap: wrap; gap: 6px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .tracking-heading { height: auto; min-height: 65px; flex-wrap: wrap; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .tracking-step time { font-size: calc(11px * var(--ally-font)); line-height: 1.5; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .tracking-step p { font-size: calc(14px * var(--ally-font)); line-height: 1.5; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"])[data-ally-contrast="high"] :is(.tracking-step,.address-entry p,.voucher-card small,.shipping-option p,.order-info small) { color: #444; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .home-page .header { height: auto; min-height: 89px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .home-page :is(.search-row,.search) { height: auto; min-height: var(--ally-target); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .home-page .search input { font-size: calc(13.5px * var(--ally-font)); min-height: var(--ally-target); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .home-page .categories { height: auto; min-height: 110px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .home-page .category-scroll { height: auto; min-height: 80px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .home-page .category span { font-size: calc(9.7px * var(--ally-font)); line-height: 1.4; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .profile-wallet { height: auto; min-height: 180px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .profile-actions :is(a,button) { min-height: var(--ally-target); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .profile-actions span { font-size: calc(10px * var(--ally-font)); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .mobile-dialog :is(input,textarea,select) { min-height: var(--ally-target); font-size: calc(14px * var(--ally-font)); line-height: 1.5; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .review-stars { gap: 2px; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .review-stars button { min-width: var(--ally-target); min-height: var(--ally-target); }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-fields textarea { field-sizing: content; height: auto; min-height: 6em; }
-[data-ally-root]:is([data-ally-status="applied"],[data-ally-status="kept"]) .address-fields .street-field textarea { min-height: 7.5em; }
+[data-ally-root][data-ally-contrast] .voucher-code { height: auto; align-items: stretch; }
+[data-ally-root][data-ally-contrast] .voucher-code :is(input,button) { min-height: var(--ally-target); height: auto; font-size: calc(13px * var(--ally-font)); }
+[data-ally-root][data-ally-contrast] .voucher-card { height: auto; min-height: 110px; }
+[data-ally-root][data-ally-contrast] .voucher-card > img { flex-shrink: 0; align-self: center; }
+[data-ally-root][data-ally-contrast] .voucher-card > div { padding: 12px calc(var(--ally-target) + 8px) 12px 10px; }
+[data-ally-root][data-ally-contrast] .voucher-card h3 { max-width: none; font-size: calc(14px * var(--ally-font)); line-height: 1.4; }
+[data-ally-root][data-ally-contrast] .voucher-card :is(p,small) { white-space: normal; font-size: calc(11px * var(--ally-font)); line-height: 1.5; }
+[data-ally-root][data-ally-contrast] .voucher-select { width: var(--ally-target); height: var(--ally-target); top: 50%; right: 3px; transform: translateY(-50%); background: transparent; border: 0; }
+[data-ally-root][data-ally-contrast] .voucher-select::before { content: ''; position: absolute; inset: calc((var(--ally-target) - 22px) / 2); border: 1px solid #888; border-radius: 50%; background: #fff; }
+[data-ally-root][data-ally-contrast] .voucher-select.selected::before { border-color: #ee4d2d; background: #ee4d2d; }
+[data-ally-root][data-ally-contrast] .voucher-select svg { position: relative; }
+[data-ally-root][data-ally-contrast] .show-more { min-height: var(--ally-target); height: auto; }
+[data-ally-root][data-ally-contrast] .shipping-option { height: auto; min-height: calc(70px * var(--ally-space)); padding-block: 14px; }
+[data-ally-root][data-ally-contrast] .shipping-option :is(p,span) { font-size: calc(12px * var(--ally-font)); line-height: 1.5; }
+[data-ally-root][data-ally-contrast] .shipping-option.instant { min-height: 104px; }
+[data-ally-root][data-ally-contrast] :is(.bank-transfer,.bank-choice) { height: auto; min-height: var(--ally-target); padding-block: 10px; font-size: calc(14px * var(--ally-font)); }
+[data-ally-root][data-ally-contrast] .payment-later { height: auto; min-height: 144.5px; padding-bottom: 12px; }
+[data-ally-root][data-ally-contrast] .plan-button { height: auto; min-height: calc(75px * var(--ally-space)); font-size: calc(13px * var(--ally-font)); }
+[data-ally-root][data-ally-contrast] .address-entry { padding-top: 14px; gap: 8px; }
+[data-ally-root][data-ally-contrast] .address-entry > input { width: var(--ally-target); height: var(--ally-target); border: calc((var(--ally-target) - 22px) / 2) solid white; box-shadow: inset 0 0 0 1px #777; }
+[data-ally-root][data-ally-contrast] .address-entry > input:checked { background: #ee4d2d; box-shadow: inset 0 0 0 3px white, inset 0 0 0 4px #ee4d2d; }
+[data-ally-root][data-ally-contrast] .address-name { flex-wrap: wrap; white-space: normal; line-height: 1.4; font-size: calc(14px * var(--ally-font)); }
+[data-ally-root][data-ally-contrast] .address-name a { display: inline-flex; align-items: center; justify-content: center; min-width: var(--ally-target); min-height: var(--ally-target); }
+[data-ally-root][data-ally-contrast] .address-entry p { max-width: none; font-size: calc(12px * var(--ally-font)); line-height: 1.5; }
+[data-ally-root][data-ally-contrast] .purchase-tabs { height: auto; min-height: var(--ally-target); gap: 0; padding-inline: 7px; overflow-x: auto; justify-content: space-between; }
+[data-ally-root][data-ally-contrast] .purchase-tabs button { flex-shrink: 0; min-height: var(--ally-target); padding-inline: 8px; font-size: calc(13px * var(--ally-font)); }
+[data-ally-root][data-ally-contrast] :is(.purchase-card,.purchase-card.compact,.order-product) { height: auto; }
+[data-ally-root][data-ally-contrast] .order-product .truncate { white-space: normal; overflow: visible; font-size: calc(13px * var(--ally-font)); line-height: 1.4; }
+[data-ally-root][data-ally-contrast] .purchase-buttons { height: auto; flex-wrap: wrap; gap: 6px; }
+[data-ally-root][data-ally-contrast] .tracking-heading { height: auto; min-height: 65px; flex-wrap: wrap; }
+[data-ally-root][data-ally-contrast] .tracking-step time { font-size: calc(11px * var(--ally-font)); line-height: 1.5; }
+[data-ally-root][data-ally-contrast] .tracking-step p { font-size: calc(14px * var(--ally-font)); line-height: 1.5; }
+[data-ally-root][data-ally-contrast][data-ally-contrast="high"] :is(.tracking-step,.address-entry p,.voucher-card small,.shipping-option p,.order-info small) { color: #444; }
+[data-ally-root][data-ally-contrast] .home-page .header { height: auto; min-height: 89px; }
+[data-ally-root][data-ally-contrast] .home-page :is(.search-row,.search) { height: auto; min-height: var(--ally-target); }
+[data-ally-root][data-ally-contrast] .home-page .search input { font-size: calc(13.5px * var(--ally-font)); min-height: var(--ally-target); }
+[data-ally-root][data-ally-contrast] .home-page .categories { height: auto; min-height: 110px; }
+[data-ally-root][data-ally-contrast] .home-page .category-scroll { height: auto; min-height: 80px; }
+[data-ally-root][data-ally-contrast] .home-page .category span { font-size: calc(9.7px * var(--ally-font)); line-height: 1.4; }
+[data-ally-root][data-ally-contrast] .profile-wallet { height: auto; min-height: 180px; }
+[data-ally-root][data-ally-contrast] .profile-actions :is(a,button) { min-height: var(--ally-target); }
+[data-ally-root][data-ally-contrast] .profile-actions span { font-size: calc(10px * var(--ally-font)); }
+[data-ally-root][data-ally-contrast] .mobile-dialog :is(input,textarea,select) { min-height: var(--ally-target); font-size: calc(14px * var(--ally-font)); line-height: 1.5; }
+[data-ally-root][data-ally-contrast] .review-stars { gap: 2px; }
+[data-ally-root][data-ally-contrast] .review-stars button { min-width: var(--ally-target); min-height: var(--ally-target); }
+[data-ally-root][data-ally-contrast] .address-fields textarea { field-sizing: content; height: auto; min-height: 6em; }
+[data-ally-root][data-ally-contrast] .address-fields .street-field textarea { min-height: 7.5em; }
 
 /* Keep the transient explanation away from search and form fields at the top. */
 [data-ally-root] .ally-toast {

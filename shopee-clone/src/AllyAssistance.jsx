@@ -19,9 +19,9 @@ export function AllyHint({context}) {
 // inside that top layer, without creating another adaptation state or provider.
 export function AllyDialogControls() {
   const ally=useAlly(),[why,setWhy]=useState(false);
-  useEffect(()=>{if(!ally.plan)setWhy(false)},[ally.plan]);
+  useEffect(()=>{if(!ally.helpVisible)setWhy(false)},[ally.helpVisible]);
   if(ally.status==='pending')return <div className="ally-dialog-controls" data-ally-ui=""><p>Penyesuaian siap setelah input selesai.</p><button type="button" onClick={finishAllyInput}>Selesai mengisi, terapkan</button></div>;
-  if(!ally.plan||!['applied','kept'].includes(ally.status))return null;
+  if(!ally.plan||!ally.helpVisible||!['applied','kept'].includes(ally.status))return null;
   return <div className="ally-dialog-controls" data-ally-ui="" aria-label="Kontrol Ally dalam formulir">
     <div>{ally.status!=='kept'&&<button type="button" onClick={ally.keep}>Keep</button>}<button type="button" onClick={ally.undo}>Undo</button><button type="button" aria-expanded={why} onClick={()=>setWhy(!why)}>Why</button></div>
     {why&&<p>{ally.explanation}</p>}

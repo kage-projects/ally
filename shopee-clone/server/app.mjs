@@ -3,11 +3,12 @@ import { stat } from 'node:fs/promises';
 import { parseEnv } from 'node:util';
 import { resolve, sep, extname } from 'node:path';
 import { planAdaptation } from './planner.mjs';
+import { createDashboardProxy } from './dashboard-proxy.mjs';
 
 export function readSettings() {
   let file={};try{file=parseEnv(readFileSync(resolve('.env.local'),'utf8'))}catch{}
   const env={...file,...process.env};
-  return {apiKey:env.OPENAI_API_KEY?.trim()||'',model:env.OPENAI_MODEL?.trim()||'gpt-5.4-mini',aiEnabled:env.ALLY_AI_ENABLED!=='0'};
+  return {apiKey:env.OPENAI_API_KEY?.trim()||'',model:env.OPENAI_MODEL?.trim()||'gpt-5.4-mini',aiEnabled:env.ALLY_AI_ENABLED!=='0',dashboardOrigin:env.ALLY_DASHBOARD_ORIGIN?.trim()||'http://127.0.0.1:3000'};
 }
 
 function reply(res,status,body) {
@@ -52,7 +53,9 @@ export function createApiHandler({settings=readSettings,fetchImpl,now=Date.now}=
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff2':'font/woff2','.ico':'image/x-icon'};
 export function createAppHandler(options={}) {
   const api=createApiHandler(options),root=resolve(options.dist||'dist');
+  const dashboard=createDashboardProxy({origin:()=> (options.settings||readSettings)().dashboardOrigin||'http://127.0.0.1:3000'});
   return async(req,res)=>{
+    if(dashboard(req,res))return;
     if(await api(req,res))return;
     if(!['GET','HEAD'].includes(req.method)){reply(res,405,{error:'method_not_allowed'});return}
     try {

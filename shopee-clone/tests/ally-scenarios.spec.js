@@ -111,7 +111,9 @@ test('invalid voucher attempts show local guidance even when AI fails, without e
   expect(JSON.stringify(request)).not.toContain('PRIVATE-NOT-A-VOUCHER');
   await page.getByRole('button',{name:'Keep',exact:true}).tap();
   await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','kept');
-  await page.getByRole('button',{name:'Undo',exact:true}).tap();
+  await expect(page.locator('.ally-controls')).toHaveCount(0);
+  await page.locator('.ally-demo-trigger').tap();
+  await page.getByRole('button',{name:'Batalkan penyesuaian',exact:true}).tap();
   await expect(page.getByRole('complementary',{name:'Petunjuk Ally'})).toHaveCount(0);
   await expect(page.getByRole('textbox',{name:'Voucher code',exact:true})).toHaveValue('PRIVATE-NOT-A-VOUCHER');
 });
@@ -128,16 +130,19 @@ for(const type of ['review','refund']) {
     const controls=dialog.getByLabel('Kontrol Ally dalam formulir');
     await expect(controls).toBeVisible();
     await page.screenshot({path:`screenshots/actual/ally-cases/${type}-dialog-${page.viewportSize().width}.png`});
-    await controls.getByRole('button',{name:'Keep',exact:true}).tap();
-    await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','kept');
     await controls.getByRole('button',{name:'Why',exact:true}).tap();
     await expect(controls).toContainText('Teks, jarak, dan petunjuk');
-    await controls.getByRole('button',{name:'Undo',exact:true}).tap();
-    await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','observing');
+    await controls.getByRole('button',{name:'Keep',exact:true}).tap();
+    await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','kept');
+    await expect(controls).toHaveCount(0);
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('complementary',{name:'Petunjuk Ally'})).toHaveCount(0);
     if(type==='review')await expect(dialog.getByRole('radio',{checked:true})).toHaveCount(0);
     else await expect(dialog.getByRole('combobox')).toHaveValue('');
+    await dialog.getByRole('button',{name:'Tutup',exact:true}).tap();
+    await page.locator('.ally-demo-trigger').tap();
+    await page.getByRole('button',{name:'Batalkan penyesuaian',exact:true}).tap();
+    await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','observing');
+    await expect(page.getByRole('complementary',{name:'Petunjuk Ally'})).toHaveCount(0);
   });
 }
 

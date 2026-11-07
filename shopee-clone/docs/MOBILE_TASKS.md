@@ -164,3 +164,74 @@ sibling SDK source remains unchanged. Reference mode remains the default.
   20px glyphs in 48px visual targets, including the quantity dialog. Plus/minus
   actions work, Undo restores 12px cart glyphs while retaining the selected
   quantity, and neither mobile size has horizontal overflow.
+
+### Live Ally dashboard integration — complete
+
+| ID | Work | Validation |
+| --- | --- | --- |
+| D1 | Publish actual SDK observations, correlated decisions and measured latency using dashboard v1 | Actual sibling validator/reducer; disjoint fast/full windows; privacy and lifecycle tests |
+| D2 | Serve `/dashboard`, Next assets/evaluation and dev HMR through the Shopee origin | HTTP and bidirectional upgrade tests; live two-tab browser checks |
+| D3 | Opt-in analytics and dashboard link in Ally panel; preserve reference mode | Zero reference events; denied BroadcastChannel does not break local help |
+| D4 | Apply/Keep/Undo, profile, signals and source visible in the actual dashboard | Six new checks at 360×800 @2 and 390×844 @1; screenshots inspected |
+
+- Host snapshot `0.1.0-shopee.4` adds observation/correlation telemetry while
+  keeping the sibling SDK source unchanged. The sibling dashboard source and
+  shared wire contract are also unchanged.
+- Host build, 25 host unit tests, 50 dashboard unit tests, all 66 existing mobile
+  browser checks and six new integration checks pass. The 27 reference captures
+  retain their comparison scores and show no page errors, broken images or
+  horizontal overflow. An unmocked cart smoke verified genuine missed clicks,
+  Motor Support, Apply, Keep and Undo across two tabs without page errors.
+- Run the dashboard upstream on port 3000 and Shopee on 5173; open
+  `http://127.0.0.1:5173/dashboard` before triggering an opt-in Shopee scenario.
+  Ports/origins must match in the browser. See [setup, lifecycle and limitations](ALLY_DASHBOARD.md).
+- Exact dashboard locked dependencies could not be installed offline; browser
+  validation used a cached dependency mirror inside the clone. The dashboard's
+  exact-lock production build remains unverified. Evaluation evidence stays
+  pending until a validated, measured `eval/results.json` is supplied.
+
+### SDK upstream synchronization — complete
+
+- Reviewed upstream SDK change `737f6d4` (highlight and post-Keep lifecycle) and
+  documentation update `13c260d`. Its package version remains `0.1.0`; Shopee's
+  frozen `.4` artifact did not include these changes. Old sensor/runtime patch
+  anchors also failed against the new source.
+- Rebuilt and installed host snapshot `0.1.0-shopee.5`. Preserve the independent
+  miss/rage/error fast triggers, add fast zoom to the new trigger set, and retain
+  the host's six-error threshold for immediate guarded combined assistance.
+- Include upstream change highlighting and help dismissal on Keep. Native modal
+  controls follow the same help visibility. The demo panel provides explicit
+  **Batalkan penyesuaian** for a kept plan. New evidence after Keep reopens help
+  without the previous cooldown while old evidence/late AI cannot reopen it.
+- Instrument actual SDK baseline captures with local transaction counters. Undo
+  only rolls back revisions in that transaction; dashboard and effective host
+  CSS preserve the prior kept baseline. Shared dashboard/planner schemas and
+  backend configuration need no changes.
+- The artifact records SHA-256 of its upstream source snapshot. Verified that
+  the installed package matches current SDK source and lockfile integrity.
+  SDK, dashboard and shared-contract source directories remain unchanged.
+- Validation: package and host builds, 26 host unit checks and all 76 mobile
+  Playwright checks pass. Four-second highlight expiry, Keep dismissal, fresh
+  post-Keep assistance, retained-baseline Undo, modal behavior and dashboard
+  synchronization are covered at both mobile sizes. Screenshots in
+  `screenshots/actual/ally-sdk-update/` were inspected. All 27 reference captures
+  retain their comparison scores with no errors, broken images or overflow.
+
+### Observe-only dashboard reporting — complete
+
+- Explicit `?ally=0` now runs the same SDK observation pipeline and reports
+  anonymous counters, timings, coarse phases and friction profile to dashboard.
+  It returns before adaptation, preference reuse or AI; controls, hints and
+  highlights stay absent. Plain URLs retain the default no-reporting behavior.
+- Host snapshot `0.1.0-shopee.6` adds `observationOnly` to runtime configuration
+  and rebuilds the SDK when this mode changes. Switching from an adaptive mode
+  restores reference styling, cancels pending work and resets the bus session.
+- Validation: package/host builds, 26 unit checks and all 82 mobile browser
+  checks pass. Six new checks cover real miss/error signals, regular windows,
+  no API/adaptation events, private form content exclusion, navigation and
+  in-page mode changes. At both mobile sizes, observe-only cart captures are
+  byte-identical to plain reference-mode captures. Dashboard screenshots show
+  the actual signals/profile and **No adaptation applied** with zero decisions.
+- Captures are in `screenshots/actual/ally-observation/`. SDK, dashboard and
+  shared-contract source remain unchanged; installed package integrity matches
+  the updated dependency lock.
