@@ -65,6 +65,20 @@ export type DashboardViewModel = {
 
 export type ConnectionStatus = "waiting" | "live" | "idle" | "unavailable";
 
+export type FrictionTrendWindow = {
+  at: number;
+  windowMs: number;
+  taps: number;
+  missTap: number;
+};
+
+export type AdaptationMarker = {
+  at: number;
+  type: "applied" | "undo";
+  decisionId: string;
+  preset: Preset;
+};
+
 export type DashboardState = DashboardViewModel & {
   mode: "live" | "demo";
   lastReceivedAt: number | null;
@@ -74,4 +88,6 @@ export type DashboardState = DashboardViewModel & {
   afterWindows: FrictionSummary[];
   firstAppliedAt: number | null;
   adaptationChangedAt: number | null;
+  trendWindows: FrictionTrendWindow[];
+  adaptationMarkers: AdaptationMarker[];
 };

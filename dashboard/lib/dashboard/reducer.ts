@@ -29,6 +29,8 @@ export function createDashboardState(): DashboardState {
     afterWindows: [],
     firstAppliedAt: null,
     adaptationChangedAt: null,
+    trendWindows: [],
+    adaptationMarkers: [],
   };
 }
 
@@ -58,6 +60,10 @@ function applyEvent(state: DashboardState, event: AllyBusEvent): DashboardState 
       const { summary, profile, preset, confidence } = event.payload;
       next.currentSummary = summary;
       next.summaryHistory = [...state.summaryHistory, summary].slice(-SUMMARY_HISTORY_LIMIT);
+      next.trendWindows = [...state.trendWindows, {
+        at: event.at, windowMs: summary.windowMs,
+        taps: summary.counts.taps, missTap: summary.counts.missTap,
+      }].slice(-SUMMARY_HISTORY_LIMIT);
       next.profile = profile;
       next.preset = preset;
       next.confidence = confidence;
@@ -94,6 +100,11 @@ function applyEvent(state: DashboardState, event: AllyBusEvent): DashboardState 
         : event.type === "keep" ? decision.status === "applied"
         : decision.status === "applied" || decision.status === "kept";
       if (!allowed) break;
+      if (event.type === "applied" || event.type === "undo") {
+        next.adaptationMarkers = [...state.adaptationMarkers, {
+          at: event.at, type: event.type, decisionId: decision.id, preset: decision.preset,
+        }].slice(-60);
+      }
       const updated = { ...decision, status: event.type === "applied" ? "applied" as const
         : event.type === "keep" ? "kept" as const : "undone" as const };
       next.decisions = state.decisions.map((item) => item.id === decision.id ? updated : item);

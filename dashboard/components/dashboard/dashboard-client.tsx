@@ -10,6 +10,7 @@ import { DashboardEmptyState } from "./dashboard-empty-state";
 import { DashboardHeader } from "./dashboard-header";
 import { DecisionStream } from "./decision-stream";
 import { EvaluationPanel } from "./evaluation-panel";
+import { FrictionTrend } from "./friction-trend";
 import { LiveSignalsPanel } from "./live-signals-panel";
 import { ProfileGauge } from "./profile-gauge";
 import { SessionImpactPanel } from "./session-impact-panel";
@@ -31,7 +32,7 @@ export function DashboardClient({
   const hasData = dashboard.currentSummary !== null || dashboard.decisions.length > 0;
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.overviewPage}`}>
       <a className={styles.skipLink} href="#dashboard-content">Skip to dashboard content</a>
       <main className={styles.shell}>
         <DashboardHeader
@@ -50,22 +51,31 @@ export function DashboardClient({
               <ActiveAdaptationBanner decision={dashboard.activeDecision} />
 
               <div className={styles.dashboardLayout}>
-              <div className={styles.overviewGrid}>
-                <LiveSignalsPanel summary={dashboard.currentSummary} />
-                <ProfileGauge profile={dashboard.profile} />
-              </div>
-
-              <div className={styles.analyticsGrid}>
-                <DecisionStream decisions={dashboard.decisions} />
-                <SessionImpactPanel comparison={dashboard.comparison} />
-                <EvaluationPanel
-                  evidence={evidence}
-                  demoResults={dashboard.mode === "demo" ? demoEvaluation : undefined}
-                  onRefresh={refresh}
-                  refreshing={refreshing}
-                  refreshError={refreshError}
-                />
-              </div>
+                <div className={styles.activityColumn}>
+                  <div className={styles.signalColumn}>
+                    <LiveSignalsPanel summary={dashboard.currentSummary} />
+                    <ProfileGauge profile={dashboard.profile} />
+                  </div>
+                  <DecisionStream decisions={dashboard.decisions} />
+                </div>
+                <div className={styles.evidenceColumn}>
+                  <FrictionTrend
+                    windows={dashboard.trendWindows}
+                    markers={dashboard.adaptationMarkers}
+                    isDemo={dashboard.mode === "demo"}
+                  />
+                  <div className={styles.outcomeColumn}>
+                    <SessionImpactPanel comparison={dashboard.comparison} />
+                    <EvaluationPanel
+                      compact
+                      evidence={evidence}
+                      demoResults={dashboard.mode === "demo" ? demoEvaluation : undefined}
+                      onRefresh={refresh}
+                      refreshing={refreshing}
+                      refreshError={refreshError}
+                    />
+                  </div>
+                </div>
               </div>
             </>
           ) : (
