@@ -31,6 +31,11 @@
   flex-basis: 100%;
 }
 
+[data-ally-root] [data-ally-highlighted] {
+  outline: 3px solid var(--ally-highlight-color, #b45309);
+  outline-offset: 3px;
+}
+
 [data-ally-hide~="promoBanner"] [data-ally-optional="promoBanner"],
 [data-ally-hide~="recommendations"] [data-ally-optional="recommendations"],
 [data-ally-hide~="voucherCarousel"] [data-ally-optional="voucherCarousel"],
