@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BusSimulator } from "@/components/dashboard/bus-simulator";
 import { parseAllyBusEvent } from "@/lib/dashboard/event-parser";
-import fixtures from "../../../../../mocks/dashboard/ally-events.v1.json";
+import fixtures from "../../../mocks/ally-events.v1.json";
 
 export const metadata: Metadata = {
   title: "Event Simulator | Ally",

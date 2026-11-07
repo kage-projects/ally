@@ -6,7 +6,7 @@
     "noEmit": false,
     "incremental": false,
     "outDir": ".test-output",
-    "rootDir": "../..",
+    "rootDir": "..",
     "plugins": []
   },
   "include": ["tests/**/*.test.ts"],

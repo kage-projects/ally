@@ -1,5 +1,5 @@
 packages:
-  - "apps/*"
+  - "dashboard"
   - "packages/*"
 allowBuilds:
   sharp: true

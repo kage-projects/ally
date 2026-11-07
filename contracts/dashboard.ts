@@ -1,9 +1,9 @@
 /**
- * Provisional dashboard contract v1.
+ * Shared dashboard integration contract v1.
  *
- * This file intentionally lives outside apps/demo and packages/ally-react while
- * the app scaffold and SDK bus are being built in parallel. The SDK should own
- * the final runtime contract in packages/ally-react/src/bus.ts.
+ * Checkout event producers and the dashboard share this wire format. Runtime
+ * code imports it independently of the dashboard's simulator fixtures. Keep v1
+ * payloads compatible; coordinate any schema changes with the SDK in sdk/.
  */
 
 export const ALLY_BUS_VERSION = 1 as const;

@@ -3,7 +3,7 @@ import fs, { mkdtemp, mkdir, rm, rmdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { mock, test } from "node:test";
-import fixture from "../../../mocks/dashboard/eval-results.mock.json";
+import fixture from "../mocks/eval-results.mock.json";
 import {
   formatEvaluationSample,
   parseEvaluationEvidence,
@@ -85,12 +85,12 @@ test("validates API evidence and never accepts a mocked file as measured evidenc
   assert.equal(parseEvaluationEvidence({ ...missing, reason: "surprise" }), null);
 });
 
-test("resolves fixed repo eval paths from root and apps/demo, including standalone layout", () => {
+test("resolves fixed repo eval paths from root and dashboard, including standalone layout", () => {
   const repo = path.join(tmpdir(), "ally-test-repository");
   assert.equal(getEvaluationDirectory(repo), path.join(repo, "eval"));
-  assert.equal(getEvaluationDirectory(path.join(repo, "apps", "demo")), path.join(repo, "eval"));
-  const standalone = path.join(repo, "apps", "demo", ".next", "standalone");
-  assert.equal(getEvaluationDirectory(path.join(standalone, "apps", "demo")), path.join(standalone, "eval"));
+  assert.equal(getEvaluationDirectory(path.join(repo, "dashboard")), path.join(repo, "eval"));
+  const standalone = path.join(repo, "dashboard", ".next", "standalone");
+  assert.equal(getEvaluationDirectory(path.join(standalone, "dashboard")), path.join(standalone, "eval"));
 });
 
 test("missing files produce unavailable evidence and no report", async () => withDirectory(async (directory) => {

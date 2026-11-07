@@ -1,4 +1,4 @@
-import { ALLY_BUS_VERSION } from "../../../../mocks/dashboard/contracts";
+import { ALLY_BUS_VERSION } from "../../../contracts/dashboard";
 import type { AllyBusEvent } from "./types";
 
 type RecordValue = Record<string, unknown>;

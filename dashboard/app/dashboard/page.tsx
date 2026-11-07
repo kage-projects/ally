@@ -4,8 +4,8 @@ import { DashboardClient } from "@/components/dashboard/dashboard-client";
 import { parseAllyBusEvent } from "@/lib/dashboard/event-parser";
 import { parseEvaluationResults } from "@/lib/dashboard/evaluation";
 import { loadEvaluationEvidence } from "@/lib/dashboard/evaluation-loader";
-import eventFixtures from "../../../../mocks/dashboard/ally-events.v1.json";
-import evaluationFixture from "../../../../mocks/dashboard/eval-results.mock.json";
+import eventFixtures from "../../mocks/ally-events.v1.json";
+import evaluationFixture from "../../mocks/eval-results.mock.json";
 
 export const metadata: Metadata = {
   title: "Judge Dashboard | Ally",

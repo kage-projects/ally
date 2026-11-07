@@ -1,13 +1,13 @@
 # Evaluation producer handoff
 
-The dashboard consumes measured output from this directory. This repository does
-not yet include the checkout SDK or checkout evaluation harness. No measured
-`results.json` or `results.md` has been generated here.
+The dashboard consumes measured output from this directory. This repository
+includes the SDK in `sdk/` and checkout in `shopee-clone/`; their measured
+evaluation output still needs to be supplied here.
 
 After running real Ally OFF/ON evaluation sessions, save:
 
 - `results.json`: the `EvaluationResults` v1 object defined in
-  `mocks/dashboard/contracts.ts`.
+  `contracts/dashboard.ts`.
 - `results.md`: an optional human-readable report for the same run.
 
 The JSON must set `isMock` to `false`, include a valid ISO timestamp in
