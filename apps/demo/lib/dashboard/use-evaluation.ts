@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { parseEvaluationEvidence, type EvaluationEvidence } from "./evaluation";
+import type { EvaluationEvidence } from "./evaluation";
+import { EvaluationRequestError, requestEvaluationEvidence } from "./evaluation-client";
 
 export function useEvaluation(initialEvidence: EvaluationEvidence) {
   const [evidence, setEvidence] = useState(initialEvidence);
@@ -15,20 +16,16 @@ export function useEvaluation(initialEvidence: EvaluationEvidence) {
     pending.current = controller;
     setRefreshing(true);
     try {
-      const response = await fetch("/api/ally/evaluation", {
-        cache: "no-store",
-        signal: controller.signal,
-      });
-      if (!response.ok) throw new Error("Evaluation request failed");
-      const nextEvidence = parseEvaluationEvidence(await response.json());
-      if (!nextEvidence) throw new Error("Invalid evaluation response");
+      const nextEvidence = await requestEvaluationEvidence(controller.signal);
       if (!controller.signal.aborted) {
         setEvidence(nextEvidence);
         setRefreshError(null);
       }
-    } catch {
+    } catch (error) {
       if (!controller.signal.aborted) {
-        setRefreshError("Could not refresh evaluation. Showing the last loaded state.");
+        setRefreshError(error instanceof EvaluationRequestError && error.kind === "timeout"
+          ? "Evaluation refresh timed out. Showing the last loaded state."
+          : "Could not refresh evaluation. Showing the last loaded state.");
       }
     } finally {
       if (pending.current === controller) {

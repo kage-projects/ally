@@ -71,6 +71,9 @@ The panel displays Ally off/on mean ± SD, sample size, scenario, and provenance
 the browser refreshes every 15 seconds and offers **Refresh results**. Missing,
 invalid, unreadable, or oversized files produce explicit unavailable evidence.
 Transport errors keep the last loaded state with a visible refresh error.
+Refresh requests time out after 8 seconds, including a stalled response body,
+so a hung connection cannot leave the refresh action permanently busy. A newer
+refresh or component unmount cancels the pending request.
 
 If `eval/results.md` also exists alongside validated measured JSON, **View full
 results** opens `/api/ally/evaluation/results`. Otherwise that endpoint returns
@@ -106,10 +109,11 @@ runner (Node 24 recommended for the Windows test-file glob). It covers validatio
 connection timing, cleanup, unsupported browsers, and real channel delivery using
 two Node channel instances.
 
-The suite currently contains 37 tests, including decision diffs, direction of
+The suite currently contains 45 tests, including decision diffs, direction of
 metric changes, complete adaptation windows, zero-tap handling, measured-results
 validation, file loading, and missing/report error cases. No new dependencies
-are required.
+are required. Client refresh tests also cover HTTP 500, invalid JSON/evidence,
+network failure, timeout, and lifecycle cancellation.
 
 Phase 2 browser verification (2026-11-07): Playwright exercised the dashboard and
 simulator in two same-origin tabs. The 11-event replay rendered both decisions
