@@ -11,7 +11,7 @@
 | Route | `/dashboard` |
 | Owner | Dashboard developer |
 | Branch | `feature/dashboard` |
-| Status | Phase 0 mock-first contract ready → waiting for `apps/demo` scaffold |
+| Status | Phase 1 complete → static dashboard shell runnable with Arc UI and mock fixtures |
 | Target | Hackathon MVP, projector 1080p, live two-window demo |
 
 ---
@@ -860,8 +860,8 @@ packages/ally-react/src/bus.ts
 
 ### Phase 0 — Team synchronization
 
-- [ ] Confirm siapa yang membuat scaffold `apps/demo`.
-- [ ] Confirm Next.js/Tailwind versions yang sudah terpasang.
+- [x] Dashboard branch created a minimal shared `apps/demo` scaffold because no remote scaffold was available.
+- [x] Confirm stack: Next.js 15.5.29, React 19.1, TypeScript, Tailwind CSS 4.
 - [x] Tetapkan ownership Arc UI: dashboard owns components; checkout owns scaffold/global layout.
 - [x] Tetapkan provisional `AllyBusEvent` v1 untuk mock-first development.
 - [x] Tambahkan event `keep` secara eksplisit.
@@ -875,18 +875,21 @@ packages/ally-react/src/bus.ts
 
 Target: tampilan lengkap menggunakan mock data tanpa bergantung pada SDK.
 
-- [ ] Buat route `/dashboard`.
-- [ ] Buat desktop grid tiga kolom.
-- [ ] Buat dashboard header.
-- [ ] Buat active adaptation banner.
-- [ ] Buat live signal rows untuk sembilan counter.
-- [ ] Buat profile gauge tiga dimensi.
-- [ ] Buat decision log table.
-- [ ] Buat before/after metric cards.
-- [ ] Buat evaluation evidence placeholder.
-- [ ] Buat privacy footer.
-- [ ] Buat waiting/empty state.
-- [ ] Label mock data secara jelas selama belum live.
+- [x] Buat route `/dashboard`.
+- [x] Buat desktop grid tiga kolom.
+- [x] Buat dashboard header.
+- [x] Buat active adaptation banner.
+- [x] Buat live signal rows untuk sembilan counter.
+- [x] Buat profile gauge tiga dimensi.
+- [x] Buat decision log table.
+- [x] Buat before/after metric cards.
+- [x] Buat evaluation evidence placeholder.
+- [x] Buat privacy footer.
+- [x] Buat waiting/empty state.
+- [x] Label mock data secara jelas selama belum live.
+- [x] Install Arc foundation, Button, Badge, dan Segmented Control.
+- [x] Validate with typecheck, ESLint, production build, and HTTP smoke test.
+- [x] Visual QA at 1440×1000 using a fresh production server and Chrome headless.
 
 Suggested commit:
 
@@ -1224,7 +1227,8 @@ Update this table while implementing:
 
 | Date/time | Phase | Work completed | Blocker | Next action |
 |---|---|---|---|---|
-| 2026-11-07 | Phase 0 | Provisional contract v1, event fixtures, mock evaluation, ownership decisions, and integration rules added | Waiting only for `apps/demo` scaffold | Merge latest scaffold, then build static dashboard shell |
+| 2026-11-07 | Phase 1 | Next.js workspace scaffold, responsive dashboard shell, Arc UI primitives, mock adapter, reset/empty state, metrics, and decision filters completed | Must reconcile shared scaffold when checkout branch becomes available | Start Phase 2 live `BroadcastChannel` adapter |
+| 2026-11-07 | Phase 0 | Provisional contract v1, event fixtures, mock evaluation, ownership decisions, and integration rules added | Resolved by minimal dashboard-owned scaffold | Build static dashboard shell |
 | 2026-11-07 | Planning | Dashboard plan, architecture, preview, event proposal, tests, and DoD documented | Waiting for app scaffold/event contract | Sync with checkout and SDK developers |
 | | | | | |
 | | | | | |

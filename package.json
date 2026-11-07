@@ -1,0 +1,12 @@
+{
+  "name": "ally",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.21.0",
+  "scripts": {
+    "dev": "pnpm --filter @ally/demo dev",
+    "build": "pnpm --filter @ally/demo build",
+    "lint": "pnpm --filter @ally/demo lint",
+    "typecheck": "pnpm --filter @ally/demo typecheck"
+  }
+}
