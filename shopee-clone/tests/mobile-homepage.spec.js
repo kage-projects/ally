@@ -5,6 +5,8 @@ test("mobile homepage renders its reference sections and intact local images", a
   await expect(page.getByRole("heading", { name: "Shopee Live", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Shopee Video", exact: true })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Navigasi utama" })).toBeVisible();
+  await expect(page.locator('[data-ally-root]')).toHaveAttribute('data-ally-status','disabled');
+  await expect(page.locator('.ally-toast')).not.toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(await page.locator("img").evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
 });

@@ -11,7 +11,12 @@ const subscribe = (callback) => {
   window.addEventListener('popstate', callback);
   return () => window.removeEventListener('popstate', callback);
 };
-export const usePath = () => useSyncExternalStore(subscribe, () => location.pathname);
+export const useRoute = () => useSyncExternalStore(subscribe, () => location.pathname + location.search);
+export const usePath = () => useRoute().split('?')[0];
+export function returnPath(fallback='/checkout') {
+  const from=new URLSearchParams(location.search).get('from');
+  return ({cart:'/cart',profile:'/profile',home:'/'})[from]||fallback;
+}
 
 export function AppLink({ to, children, onClick, ...props }) {
   return <a {...props} href={to} onClick={event => {

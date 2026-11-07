@@ -10,7 +10,10 @@ Test 360 × 800 CSS pixels at device scale factor 2 for a matching 720 × 1600
 capture, and 390 × 844 CSS pixels for mobile responsiveness. Use the provided
 screenshots, retain the original component density, and add no unseen sections.
 Track each page task and its validation in `docs/MOBILE_TASKS.md`. Connect the
-visible flows with frontend navigation and local state; do not add a backend.
+visible flows with frontend navigation and local state. The user has authorized
+the Ally SDK and a planner backend for the hackathon. Keep commerce transactions
+local simulations; API keys must remain server-side. Reference mode stays the
+default; opt-in Ally testing must not change the reference screenshot baseline.
 
 ## ROLE
 
