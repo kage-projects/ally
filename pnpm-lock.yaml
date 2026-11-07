@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  apps/demo:
+  dashboard:
     dependencies:
       motion:
         specifier: ^14.9.1

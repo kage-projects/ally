@@ -5,10 +5,10 @@ import { EVALUATION_SOURCE, parseEvaluationResults, type EvaluationEvidence } fr
 const MAX_RESULTS_BYTES = 1_048_576;
 const MAX_REPORT_BYTES = 2_097_152;
 
-/** Handles pnpm --filter (apps/demo cwd), root invocations, and traced standalone layouts. */
+/** Handles the dashboard cwd, root invocations, and traced standalone layouts. */
 export function getEvaluationDirectory(cwd = process.cwd()): string {
-  const appDirectory = path.basename(cwd) === "demo" && path.basename(path.dirname(cwd)) === "apps";
-  return path.resolve(cwd, appDirectory ? "../../eval" : "eval");
+  const appDirectory = path.basename(cwd) === "dashboard";
+  return path.resolve(cwd, appDirectory ? "../eval" : "eval");
 }
 
 function missing(error: unknown): boolean {

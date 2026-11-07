@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import fixtures from "../../../mocks/dashboard/ally-events.v1.json";
-import { ALLY_CHANNEL_NAME } from "../../../mocks/dashboard/contracts";
+import fixtures from "../mocks/ally-events.v1.json";
+import { ALLY_CHANNEL_NAME } from "../../contracts/dashboard";
 import { BUS_IDLE_AFTER_MS, getConnectionStatus, subscribeAllyBus } from "../lib/dashboard/bus";
 import { parseAllyBusEvent } from "../lib/dashboard/event-parser";
 import { createDashboardState, dashboardReducer } from "../lib/dashboard/reducer";

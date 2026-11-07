@@ -1,4 +1,4 @@
-import { ALLY_CHANNEL_NAME } from "../../../../mocks/dashboard/contracts";
+import { ALLY_CHANNEL_NAME } from "../../../contracts/dashboard";
 import { parseAllyBusEvent } from "./event-parser";
 import type { AllyBusEvent, ConnectionStatus } from "./types";
 

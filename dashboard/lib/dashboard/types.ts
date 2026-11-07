@@ -9,7 +9,7 @@ import type {
   InputModality,
   Preset,
   Profile,
-} from "../../../../mocks/dashboard/contracts";
+} from "../../../contracts/dashboard";
 
 export type {
   AdaptationPlan,

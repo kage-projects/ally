@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import fixtures from "../../../mocks/dashboard/ally-events.v1.json";
+import fixtures from "../mocks/ally-events.v1.json";
 import { getPlanDiff } from "../lib/dashboard/decision-diff";
 import { describeMetricChange, formatImprovement } from "../lib/dashboard/formatters";
 import { parseAllyBusEvent } from "../lib/dashboard/event-parser";

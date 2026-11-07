@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ALLY_CHANNEL_NAME } from "../../../../mocks/dashboard/contracts";
+import { ALLY_CHANNEL_NAME } from "../../../contracts/dashboard";
 import type { AllyBusEvent } from "@/lib/dashboard/types";
 import styles from "./dashboard.module.css";
 

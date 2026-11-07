@@ -1,6 +1,6 @@
-# Ally Demo
+# Ally Dashboard
 
-Next.js application for the Ally checkout demo and judge dashboard.
+Next.js application for the Ally judge dashboard. Checkout lives in shopee-clone/ and the React SDK lives in sdk/.
 
 ## Run locally
 
@@ -12,8 +12,8 @@ pnpm dev
 
 Open `http://localhost:3000/dashboard`.
 
-Development output is isolated in `apps/demo/.next-dev`; production builds use
-`apps/demo/.next`. This allows `pnpm build` to run without overwriting an active
+Development output is isolated in `dashboard/.next-dev`; production builds use
+`dashboard/.next`. This allows `pnpm build` to run without overwriting an active
 dev server's manifests and causing HTTP 500 responses.
 
 The dashboard starts empty and listens on `BroadcastChannel("ally")`. A valid v1
@@ -60,7 +60,7 @@ labels instead of being displayed as improvements.
 ## Measured evaluation
 
 Place actual evaluation output at repository-root `eval/results.json`, following
-`EvaluationResults` in `mocks/dashboard/contracts.ts`. The reader requires
+`EvaluationResults` in `contracts/dashboard.ts`. The reader requires
 `schemaVersion: 1`, `isMock: false`, a valid `generatedAt`, a positive integer
 `sessionsPerVariant`, and all four metrics with finite means and standard
 deviations. Percent metrics use percentage points from 0–100. No result numbers
@@ -84,7 +84,7 @@ See `eval/README.md` for the producer handoff.
 
 ## Integration contract
 
-The provisional v1 contract is in `mocks/dashboard/contracts.ts`. Incoming events
+The provisional v1 contract is in `contracts/dashboard.ts`. Incoming events
 are validated before reaching the reducer; unknown versions, invalid nested
 fields, extra fields, and non-finite numeric values are ignored. Development
 warnings omit the rejected payload. Event IDs are deduplicated within a bounded
@@ -92,8 +92,8 @@ warnings omit the rejected payload. Event IDs are deduplicated within a bounded
 six windows per comparison group. Local **Reset view** clears only this view and
 keeps its listener open; a bus `reset` clears every listening dashboard.
 
-The final SDK should own these types under `packages/ally-react/src/bus.ts` once
-available. No form values, screen content, or device identifiers belong in events.
+Checkout producers and the dashboard share this versioned wire contract. Coordinate
+SDK adapters with `sdk/src/schema.ts` without changing v1 payloads silently. No form values, screen content, or device identifiers belong in events.
 
 ## Quality checks
 

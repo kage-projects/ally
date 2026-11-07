@@ -1,11 +1,11 @@
 # Ally Dashboard Mocks
 
-This directory unblocks dashboard development while `apps/demo` and the SDK bus
-are being built on other branches.
+Sample data for the dashboard simulator, local demo mode, and automated tests.
+The live integration contract is separate, at `contracts/dashboard.ts` in the
+repository root.
 
 ## Files
 
-- `contracts.ts` — provisional TypeScript contract v1.
 - `ally-events.v1.json` — ordered fixture events for dashboard state/reducer work.
 - `eval-results.mock.json` — clearly labelled evaluation fixture for presentation work.
 
@@ -33,14 +33,14 @@ The event fixture covers:
 - `heartbeat` is optional; the dashboard must also work from `lastEventAt`.
 - Decision guardrail claims are explicit fields, never inferred by the UI.
 - Evaluation data must expose `isMock`.
-- Final Playwright results should replace the fixture via `eval/results.json`.
+- Save measured evaluation results to repository-root `eval/results.json`.
 
 ## Integration rule
 
 When the SDK bus is ready:
 
-1. Move/adapt the shared types into `packages/ally-react/src/bus.ts`.
-2. Import the SDK-owned types from the dashboard.
+1. Use the versioned wire types in repository-root `contracts/dashboard.ts`.
+2. Adapt SDK events to that contract, coordinating core types with `sdk/src/schema.ts`.
 3. Keep backward compatibility with `version: 1`, or increment the version and
    add a small adapter.
 4. Never copy form values, screen content, PII, absolute pointer coordinates, or
