@@ -12,6 +12,10 @@ pnpm dev
 
 Open `http://localhost:3000/dashboard`.
 
+Development output is isolated in `apps/demo/.next-dev`; production builds use
+`apps/demo/.next`. This allows `pnpm build` to run without overwriting an active
+dev server's manifests and causing HTTP 500 responses.
+
 The dashboard starts empty and listens on `BroadcastChannel("ally")`. A valid v1
 event changes the status to **Live**; 15 seconds without a valid event changes it
 to **Idle** while retaining session data. Heartbeats are optional. Status uses the
@@ -60,4 +64,13 @@ pnpm build
 `test:dashboard` uses the existing TypeScript compiler and Node's built-in test
 runner (Node 20+). It covers validation, reducer lifecycle, memory bounds,
 connection timing, cleanup, unsupported browsers, and real channel delivery using
-two Node channel instances. Browser-tab verification is a separate manual check.
+two Node channel instances.
+
+Phase 2 browser verification (2026-11-07): Playwright exercised the dashboard and
+simulator in two same-origin tabs. The 11-event replay rendered both decisions
+with Kept/Undone states; 15 seconds of silence showed Idle; remote reset restored
+Live and cleared the view; the next live heartbeat replaced local demo data.
+The unavailable-channel fallback and demo loading passed without browser errors.
+The dashboard was inspected at 1440px; no horizontal overflow occurred at 768px.
+These checks use synthetic events; checkout SDK integration and real evaluation
+results remain separate phases.

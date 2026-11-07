@@ -907,7 +907,7 @@ feat(dashboard): add judge dashboard shell and mock states
 - [x] Update last event timestamp.
 - [x] Tampilkan `Listening`, `Live`, dan `Idle` secara jujur.
 - [x] Limit summary history ke 30.
-- [ ] Test dengan dua tab origin yang sama.
+- [x] Test dengan dua tab origin yang sama.
 
 Implementation notes: dashboard starts in live-listening mode with no fixture data.
 Local demo mode is explicit and is replaced by the first valid bus event. Idle
@@ -1234,7 +1234,7 @@ Update this table while implementing:
 
 | Date/time | Phase | Work completed | Blocker | Next action |
 |---|---|---|---|---|
-| 2026-11-07 | Phase 2 | Validated v1 bus listener, bounded reducer, receive-time connection status, explicit demo/live isolation, and synthetic event sender implemented; 15 tests, typecheck, lint, build, and HTTP 200 smoke checks pass | Browser access host unavailable; same-origin browser-tab QA remains unverified | Open dashboard and simulator in two same-origin tabs and replay the sample session |
+| 2026-11-07 | Phase 2 | Validated v1 bus listener, bounded reducer, receive-time connection status, explicit demo/live isolation, and synthetic event sender implemented; 15 tests, typecheck, lint, and production build pass. Playwright verified two same-origin tabs, 11-event replay, Kept/Undone, Idle, reset, live replacement of demo data, unavailable-channel fallback, and tablet overflow | None for Phase 2; checkout SDK integration still uses provisional contract | Continue Phase 3 decision stream refinements |
 | 2026-11-07 | Phase 1 | Next.js workspace scaffold, responsive dashboard shell, Arc UI primitives, mock adapter, reset/empty state, metrics, and decision filters completed | Must reconcile shared scaffold when checkout branch becomes available | Start Phase 2 live `BroadcastChannel` adapter |
 | 2026-11-07 | Phase 0 | Provisional contract v1, event fixtures, mock evaluation, ownership decisions, and integration rules added | Resolved by minimal dashboard-owned scaffold | Build static dashboard shell |
 | 2026-11-07 | Planning | Dashboard plan, architecture, preview, event proposal, tests, and DoD documented | Waiting for app scaffold/event contract | Sync with checkout and SDK developers |

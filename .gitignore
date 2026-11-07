@@ -1,6 +1,7 @@
 node_modules/
 .pnpm-store/
 .next/
+.next-dev/
 out/
 build/
 coverage/
@@ -11,4 +12,5 @@ coverage/
 *.log
 .test-output/
 .playwright-cli/
+/output/playwright/
 .DS_Store
