@@ -39,6 +39,7 @@ export interface Sensor {
   reportStep(step: string): void;
   reportError(error: { field: string; category: string }): void;
   updateContext(context: { priorPreset: Preset; undoCount: number }): void;
+  beginObservation(): void;
   inject(signal: SimulatedSignal): void;
 }
 
@@ -87,7 +88,7 @@ export function createSensor(
   let modalities = new Set<'touch' | 'mouse' | 'keyboard'>();
   let sequence = 0;
   let windowId = 0;
-  let fastEmitted = false;
+  let fastEmitted = new Set<'miss' | 'rage' | 'error'>();
   let interval: ReturnType<typeof setInterval> | null = null;
   let focusTimer: ReturnType<typeof setTimeout> | null = null;
   let focusedField: Element | null = null;
@@ -126,7 +127,7 @@ export function createSensor(
     targetSizeTotal = 0;
     targetSizeSamples = 0;
     modalities = new Set();
-    fastEmitted = false;
+    fastEmitted = new Set();
     clickTarget = null;
     clickTimes = [];
     rageCounted = false;
@@ -168,8 +169,11 @@ export function createSensor(
   }
 
   function maybeFast() {
-    if (fastEmitted || (counts.missTap < 3 && counts.rageClick < 1)) return;
-    fastEmitted = true;
+    const trigger = counts.missTap >= 3 && !fastEmitted.has('miss') ? 'miss'
+      : counts.errorLoop >= 5 && !fastEmitted.has('error') ? 'error'
+        : counts.rageClick >= 1 && !fastEmitted.has('rage') ? 'rage' : null;
+    if (!trigger) return;
+    fastEmitted.add(trigger);
     emit(snapshot('fast'));
   }
 
@@ -319,7 +323,7 @@ export function createSensor(
   function reportError({ field, category }: { field: string; category: string }) {
     if (!active || paused || !allowedFields.has(field) || !errorCategories.has(category)) return;
     const key = JSON.stringify([field, category]);
-    if (seenErrors.has(key)) counts.errorLoop++;
+    if (seenErrors.has(key)) { counts.errorLoop++; maybeFast(); }
     else seenErrors.add(key);
   }
 
@@ -372,6 +376,13 @@ export function createSensor(
     },
     reportStep,
     reportError,
+    beginObservation() {
+      if (!active) return;
+      resetWindow(clock.now());
+      seenErrors.clear();
+      hesitationCounted = false;
+      armFocusTimer();
+    },
     updateContext(context) {
       priorPreset = context.priorPreset;
       undoCount = context.undoCount;

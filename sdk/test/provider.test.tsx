@@ -84,10 +84,20 @@ describe('AllyProvider integration', () => {
     const keep = [...scope.querySelectorAll('button')].find((item) => item.textContent === 'Keep')!;
     act(() => keep.click());
     expect(scope.getAttribute('data-ally-status')).toBe('kept');
+    expect(scope.querySelector('.ally-controls')).toBeNull();
+    expect(scope.querySelector('[role="status"]')?.textContent).toBe('');
+    // Fresh friction can reopen help immediately, even for the same preset.
+    act(() => {
+      pointer(scope, 90, 110);
+      pointer(scope, 90, 110);
+      pointer(scope, 90, 110);
+    });
+    expect(scope.getAttribute('data-ally-status')).toBe('applied');
+    expect(scope.querySelector('.ally-controls')).not.toBeNull();
     const undo = [...scope.querySelectorAll('button')].find((item) => item.textContent === 'Undo')!;
     act(() => undo.click());
     expect(scope.getAttribute('data-ally-status')).toBe('observing');
-    expect(events.map((event) => event.action)).toEqual(['applied', 'kept', 'undone']);
+    expect(events.map((event) => event.action)).toEqual(['applied', 'kept', 'applied', 'undone']);
   });
 
   it('cleans up extra Strict Mode setup and rejects nested providers', () => {
