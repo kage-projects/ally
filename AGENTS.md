@@ -2,15 +2,23 @@
 
 ## Project Structure & Module Organization
 
-Ally is an adaptive UI engine in development. This repository contains planning documents, `Poster.pdf`, SDK design documents, and the SDK package through Phase 5.
+Ally is an adaptive UI engine in development. This repository contains planning documents, `Poster.pdf`, the dashboard, checkout app, and SDK package.
+
+- `dashboard/`: Next.js judge dashboard, with its own tests and sample fixtures in `dashboard/mocks/`.
+- `sdk/`: React SDK and its independent package setup.
+- `shopee-clone/`: teammate-owned checkout app and its independent package setup.
+- `contracts/dashboard.ts`: shared dashboard event and evaluation wire types.
+- `eval/`: measured evaluation output consumed by the dashboard.
 
 - `ALLY_PRD.md`: product requirements, data contracts, privacy rules, and evaluation targets.
 - `ALLY_BUILD_PLAN.md`: implementation milestones, target architecture, and acceptance criteria.
 - `ALLY_PLAYBOOK.md`: strategy and pitch guidance.
 
-Use `sdk/` for the React SDK, its script-based tests, and documentation. The older `packages/ally-react/` path in `ALLY_BUILD_PLAN.md` has been superseded. A teammate owns the host app and its server endpoint; this repository's implementation scope is the SDK. Start with `sdk/docs/ARCHITECTURE.md`, `CONTRACTS.md`, and `IMPLEMENTATION_PHASES.md`.
+Use `sdk/` for the React SDK, its script-based tests, and documentation. The older `packages/ally-react/` and `apps/demo/` paths in the original plans have been superseded by `sdk/` and `dashboard/`. A teammate owns the checkout app and its server endpoint. SDK work starts with `sdk/docs/ARCHITECTURE.md`, `CONTRACTS.md`, and `IMPLEMENTATION_PHASES.md`; dashboard setup is in `dashboard/README.md`.
 
 ## Build, Test, and Development Commands
+
+Root scripts target `@ally/dashboard`: `pnpm dev`, `pnpm build`, `pnpm start`, `pnpm typecheck`, `pnpm lint`, and `pnpm test:dashboard`. The root workspace includes `dashboard/`; SDK and checkout keep their existing independent package setup.
 
 The SDK package in `sdk/` exposes:
 
@@ -28,7 +36,7 @@ These scripts are available. Live model quality remains unverified until the hos
 
 Use strict TypeScript, React functional components, and two-space indentation. Follow the planned naming: lowercase module files such as `sensor.ts` and `engine-client.ts`; PascalCase component files such as `Toast.tsx`.
 
-Keep `FrictionSummary`, `AdaptationPlan`, and `AllyPolicy` centralized in `schema.ts`. Prefer CSS variables (`--ally-*`) and data attributes for adaptations. No formatter or linter is configured yet.
+Keep SDK `FrictionSummary`, `AdaptationPlan`, and `AllyPolicy` centralized in `sdk/src/schema.ts`. Coordinate changes to the dashboard wire format in `contracts/dashboard.ts` with its producers and consumers. Prefer CSS variables (`--ally-*`) and data attributes for adaptations. The dashboard uses ESLint; the SDK has no configured formatter or linter.
 
 ## Testing Guidelines
 

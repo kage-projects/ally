@@ -1,0 +1,14 @@
+{
+  "name": "ally",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.21.0",
+  "scripts": {
+    "dev": "pnpm --filter @ally/dashboard dev",
+    "build": "pnpm --filter @ally/dashboard build",
+    "start": "pnpm --filter @ally/dashboard start",
+    "lint": "pnpm --filter @ally/dashboard lint",
+    "typecheck": "pnpm --filter @ally/dashboard typecheck",
+    "test:dashboard": "pnpm --filter @ally/dashboard test:dashboard"
+  }
+}
